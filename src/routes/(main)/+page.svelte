@@ -1,0 +1,9 @@
+<script lang="ts">
+  import type { PageData } from './$types'
+
+  export let data: PageData
+</script>
+
+<svelte:head>
+  <title>Le JDL - La Roche</title>
+</svelte:head>
