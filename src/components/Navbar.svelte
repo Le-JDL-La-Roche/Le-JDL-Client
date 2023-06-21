@@ -2,39 +2,27 @@
   import NavbarLink from './NavbarLink.svelte'
   import { page } from '$app/stores'
 
-  let mobile: boolean = window.innerWidth < 850 ? true : false
   let mobileNavOpen: boolean = false
 </script>
 
-<svelte:window
-  on:resize={() => {
-    mobile = window.innerWidth < 850 ? true : false
-  }}
-/>
-
-<nav class:mobile>
-  {#if mobile}
-    <div class="content">
-      <button class="menu" on:click={() => (mobileNavOpen = true)}><i class="fa-solid fa-bars" /></button>
-    </div>
-  {/if}
+<nav>
+  <div class="content mobile">
+    <button class="menu" on:click={() => (mobileNavOpen = true)}><i class="fa-solid fa-bars" /></button>
+  </div>
   <div class="content" class:open={mobileNavOpen}>
     <div class="nav">
-      <!-- close button only shown when mobile -->
-      {#if mobile}
-        <button class="close" on:click={() => (mobileNavOpen = false)}><i class="fa-solid fa-times" /></button>
-      {/if}
-      <NavbarLink href="/" exact bind:mobile bind:mobileNavOpen>
+      <button class="close mobile" on:click={() => (mobileNavOpen = false)}><i class="fa-solid fa-times" /></button>
+      <NavbarLink href="/" exact bind:mobileNavOpen>
         <b>Accueil</b>
       </NavbarLink>
-      <NavbarLink href="/actualites" bind:mobile bind:mobileNavOpen>Actualités</NavbarLink>
-      <NavbarLink href="/culture" bind:mobile bind:mobileNavOpen>Culture</NavbarLink>
-      <NavbarLink href="/sport" bind:mobile bind:mobileNavOpen>Sport</NavbarLink>
-      <NavbarLink href="/sciences" bind:mobile bind:mobileNavOpen>Sciences</NavbarLink>
-      <NavbarLink href="/tech" bind:mobile bind:mobileNavOpen>Tech</NavbarLink>
-      <NavbarLink href="/laroche" bind:mobile bind:mobileNavOpen>La Roche</NavbarLink>
+      <NavbarLink href="/actualites" bind:mobileNavOpen>Actualités</NavbarLink>
+      <NavbarLink href="/culture" bind:mobileNavOpen>Culture</NavbarLink>
+      <NavbarLink href="/sport" bind:mobileNavOpen>Sport</NavbarLink>
+      <NavbarLink href="/sciences" bind:mobileNavOpen>Sciences</NavbarLink>
+      <NavbarLink href="/tech" bind:mobileNavOpen>Tech</NavbarLink>
+      <NavbarLink href="/laroche" bind:mobileNavOpen>La Roche</NavbarLink>
       <!-- <img src="/assets/images/new.png" alt="New" width="30" style="position: absolute; top: -3px; left: -3px; opacity: 93%" /> -->
-      <NavbarLink href="/radio" bind:mobile bind:mobileNavOpen customClass="podcasts">Podcasts radio</NavbarLink>
+      <NavbarLink href="/radio" bind:mobileNavOpen customClass="podcasts">Podcasts radio</NavbarLink>
     </div>
   </div>
   <!-- <ul class="content">
@@ -73,9 +61,7 @@
   nav {
     background-color: var(--background-gray-color);
     margin: 0 auto 30px auto;
-  }
 
-  nav.mobile {
     position: sticky;
     top: 0;
     z-index: 100;
@@ -84,11 +70,6 @@
     button.close,
     button.menu {
       margin: 0;
-      &.close {
-        margin-top: 0.1px;
-        width: 100%;
-      }
-
       display: block;
       padding: 12px 15px;
       color: black;
@@ -102,7 +83,12 @@
       text-align: left;
     }
 
-    div.content:nth-of-type(2) {
+    button.close {
+      margin-top: 0.1px;
+      width: 100%;
+    }
+
+    div.content:not(.mobile) {
       position: fixed;
       top: 0;
       left: 0;
@@ -122,20 +108,34 @@
       &.open {
         width: 100%;
       }
+    }
+  }
 
-      a {
-        display: block;
-        padding: 12px 15px;
-        color: black;
-        text-decoration: none;
-        transition: all 0.3s;
+  @media screen and (min-width: 850px) {
+    nav {
+      position: relative;
+      box-shadow: none;
+
+      .mobile {
+        display: none !important;
+      }
+
+      div.content:not(.mobile) {
         position: relative;
+        width: 800px;
+        height: auto;
 
-        p {
-          margin: 0;
-          padding-left: 15px;
-          min-width: 50vw;
+        div.nav {
+          width: auto;
+          margin: auto;
+          display: flex;
         }
+      }
+    }
+
+    @media screen and (min-width: 1150px) {
+      div.content:not(.mobile) {
+        width: 1100px !important;
       }
     }
   }
