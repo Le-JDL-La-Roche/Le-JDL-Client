@@ -7,16 +7,15 @@
   export let shows: WebradioShow[] | undefined = undefined
   export let videos: Video[] | undefined = undefined
   export let articles: Article[] | undefined = undefined
+  export let elements: (WebradioShow | Video | Article)[] | undefined = undefined
 
-  const type = shows ? 'radio' : videos ? 'video' : articles ? 'article' : null
+  elements = shows || videos || articles || elements
 
-  const elements: WebradioShow[] | Video[] | Article[] | undefined = shows || videos || articles
-
-  if (!elements || !type) {
+  if (!elements) {
     throw new Error('No element provided')
   }
 </script>
 
-{#each elements as element}
-  <ListElement {element} {type} />
+{#each elements || [] as element}
+  <ListElement {element} type={'streamId' in element ? 'radio' : ('type' in element ? 'video' : 'article')} />
 {/each}

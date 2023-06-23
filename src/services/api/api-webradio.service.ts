@@ -5,7 +5,7 @@ import { Buffer } from 'buffer'
 import { api } from '$services/store'
 import type { WebradioShow } from '$models/features/webradio-show.model'
 
-export default class ApiAuthService {
+export default class ApiWebradioService {
   async getPublishedShows() {
     return await http.get<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows`)
   }

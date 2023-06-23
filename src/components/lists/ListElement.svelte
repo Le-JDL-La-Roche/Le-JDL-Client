@@ -12,6 +12,7 @@
   export let type: 'radio' | 'video' | 'article'
 
   const content = new ContentService()
+  const url = new UrlService()
 
   if (!element || !type) {
     throw new Error('No element provided')
@@ -21,11 +22,14 @@
     element.description = content.replaceNewLineByBr(element.description)
   }
 
-  const url = new UrlService()
+  const href = 'category' in element 
+    ? `/${utils.categoriesFr[element.category as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche' | 'radio'].slug}/${type}/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`
+    : `/${type}/podcast/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`
+
 </script>
 
-<a href={`${type}/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`} class="element not-a" class:main>
-  {#if type === 'radio'}
+<a {href} class="element not-a" class:main>
+  {#if type === 'radio' || type === 'video'}
     <i class="fa-solid fa-circle-play" />
   {/if}
   <img src={`${api}/public/images/thumbnails/${element.thumbnail}`} alt={element.title} />

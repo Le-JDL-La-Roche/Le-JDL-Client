@@ -1,4 +1,71 @@
 class Utils {
+  readonly categories = ['actualites', 'culture', 'sport', 'sciences', 'tech', 'laroche', 'radio']
+  readonly categoriesFr = {
+    actualites: {
+      name: 'Actualités',
+      slug: 'actualites',
+      id: 'news',
+      icon: 'fa-newspaper',
+      color: '#f51527'
+    },
+    news: {
+      name: 'Actualités',
+      slug: 'actualites',
+      id: 'news',
+      icon: 'fa-newspaper',
+      color: '#f51527'
+    },
+    culture: {
+      name: 'Culture',
+      slug: 'culture',
+      id: 'culture',
+      icon: 'fa-book',
+      color: '#f5a527'
+    },
+    sport: {
+      name: 'Sport',
+      slug: 'sport',
+      id: 'sport',
+      icon: 'fa-futbol',
+      color: '#3bad15'
+    },
+    sciences: {
+      name: 'Sciences',
+      slug: 'sciences',
+      id: 'science',
+      icon: 'fa-dna',
+      color: '#15f5aa'
+    },
+    science: {
+      name: 'Sciences',
+      slug: 'sciences',
+      id: 'science',
+      icon: 'fa-dna',
+      color: '#15f5aa'
+    },
+    tech: {
+      name: 'Tech',
+      slug: 'tech',
+      id: 'tech',
+      icon: 'fa-microchip',
+      color: '#3715f5'
+    },
+    laroche: {
+      name: 'La Roche',
+      slug: 'laroche',
+      id: 'laroche',
+      icon: 'fa-star',
+      color: '#c31718'
+    },
+    radio: {
+      name: 'Podcasts radio',
+      slug: 'radio',
+      id: 'radio',
+      icon: 'fa-podcast',
+      color: '#72238e'
+    }
+  }
+
   sleep(duration: number) {
     return new Promise((resolve) => setTimeout(resolve, duration))
   }
