@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types'
   import List from '$components/lists/List.svelte'
+  import { onDestroy } from 'svelte'
 
   export let data: PageData
 </script>
@@ -9,6 +10,7 @@
   <title>{data.category.name} • Le JDL - La Roche</title>
 </svelte:head>
 
+<button class="filter"><i class="fa-solid fa-filter" />&nbsp;&nbsp;Filtrer et Trier</button>
 <h2><i class={'fa-solid ' + data.category.icon} style={'color: ' + data.category.color} />{data.category.name}</h2>
 
 <List elements={data.data} />
@@ -29,6 +31,7 @@
 
   button.filter {
     position: relative;
+    width: auto;
     top: -5px;
     z-index: 10;
     padding: 10px;
@@ -55,17 +58,5 @@
         color: black;
       }
     }
-  }
-
-  input[type='checkbox'],
-  input[type='radio'] {
-    display: inline;
-    min-width: auto;
-    max-width: fit-content;
-    margin-bottom: 0;
-  }
-
-  label {
-    margin-bottom: 0;
   }
 </style>

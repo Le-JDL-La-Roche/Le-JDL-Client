@@ -11,8 +11,8 @@ export default class ApiVideosService {
     return await http.get<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos`)
   }
 
-  async getVideo(id: string) {
-    return await http.delete<DataHttpResponse<{ video: Video }>>(`${api}/videos/${id}`)
+  async getVideo(id: number | string) {
+    return await http.get<DataHttpResponse<{ video: Video }>>(`${api}/videos/${id}`)
   }
 
   async postVideo(video: Video) {
@@ -24,7 +24,7 @@ export default class ApiVideosService {
     return await http.post<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos`, video, req)
   }
 
-  async putVideo(video: Video, id: string) {
+  async putVideo(video: Video, id: number | string) {
     const req: RequestInit = {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -33,8 +33,7 @@ export default class ApiVideosService {
     return await http.put<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos/${id}`, video, req)
   }
 
-
-  async deleteVideo(id: string) {
+  async deleteVideo(id: number | string) {
     return await http.delete<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos/${id}`)
   }
 }

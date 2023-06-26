@@ -1,4 +1,4 @@
-import adapter from '@sveltejs/adapter-static'
+import adapter from '@sveltejs/adapter-node'
 import preprocess from 'svelte-preprocess'
 import { vitePreprocess } from '@sveltejs/kit/vite'
 
@@ -11,13 +11,7 @@ const config = {
   }),
 
   kit: {
-    adapter: adapter({
-      pages: 'build',
-      assets: 'build',
-      fallback: 'app.html',
-      precompress: false,
-      strict: true
-    }),
+    adapter: adapter(),
     alias: {
       // $assets: './src/assets',
       // '$assets/*': './src/assets/*',

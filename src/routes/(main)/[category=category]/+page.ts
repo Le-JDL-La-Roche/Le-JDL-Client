@@ -1,4 +1,3 @@
-import { error } from '@sveltejs/kit'
 import type { PageLoad } from './$types'
 import type { Video } from '$models/features/video.model'
 import type { Article } from '$models/features/article.model'
@@ -6,8 +5,8 @@ import type { WebradioShow } from '$models/features/webradio-show.model'
 import ApiWebradioService from '$services/api/api-webradio.service'
 import ApiVideosService from '$services/api/api-videos.service'
 import ApiArticlesService from '$services/api/api-articles.service'
-import CookiesService from '$services/cookies.service'
 import utils from '$services/utils'
+import CookiesService from '$services/cookies.service'
 
 const apiWebradio = new ApiWebradioService()
 const apiVideos = new ApiVideosService()
