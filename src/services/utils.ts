@@ -94,7 +94,6 @@ class Utils {
     return strs_.join('-')
   }
 
-  // create a function that transforms a timestamp (in seconds) into a string in the format dd MM yyyy (eg. 01 janvier 2023):
   timestampToString(timestamp: number): string {
     const date = new Date(timestamp * 1000)
     const day = date.getDate()

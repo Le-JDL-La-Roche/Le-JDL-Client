@@ -1,20 +1,18 @@
 import { error } from '@sveltejs/kit'
-import type { PageLoad } from './$types'
+import type { PageServerLoad } from './$types'
 import type { Video } from '$models/features/video.model'
 import type { Article } from '$models/features/article.model'
 import type { WebradioShow } from '$models/features/webradio-show.model'
 import ApiWebradioService from '$services/api/api-webradio.service'
 import ApiVideosService from '$services/api/api-videos.service'
 import ApiArticlesService from '$services/api/api-articles.service'
-import CookiesService from '$services/cookies.service'
 import utils from '$services/utils'
 
 const apiWebradio = new ApiWebradioService()
 const apiVideos = new ApiVideosService()
 const apiArticles = new ApiArticlesService()
-const cookies = new CookiesService()
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params, cookies }) => {
   const category = params.category as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche' | 'radio'
 
   let data: (WebradioShow | Video | Article)[] = []
@@ -22,11 +20,11 @@ export const load: PageLoad = async ({ params }) => {
   let articles: Article[] = []
 
   if (!cookies.get('SHOW_ARTICLES')) {
-    cookies.add({ name: 'SHOW_ARTICLES', value: 'true' })
+    cookies.set('SHOW_ARTICLES', 'true')
   }
 
   if (!cookies.get('ORDER_BY')) {
-    cookies.add({ name: 'ORDER_BY', value: 'date' })
+    cookies.set('ORDER_BY', 'date')
   }
 
   if (category === 'radio') {

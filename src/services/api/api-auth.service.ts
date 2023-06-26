@@ -14,11 +14,21 @@ export default class ApiAuthService {
     return await http.get<DataHttpResponse<{ jwt: string }>>(`${api}/auth`, req)
   }
 
-  async getVerify() {
-    return await http.get<DataHttpResponse<{ jwt: string }>>(`${api}/verify`)
+  async getVerify(jwt: string) {
+    const req: RequestInit = {
+      headers: {
+        Authorization: 'Bearer ' + jwt
+      }
+    }
+    return await http.get<DataHttpResponse<{ jwt: string }>>(`${api}/verify`, req)
   }
 
-  async deleteLogout() {
-    return await http.delete<DefaultHttpResponse>(`${api}/logout`)
+  async deleteLogout(jwt: string) {
+    const req: RequestInit = {
+      headers: {
+        Authorization: 'Bearer ' + jwt
+      }
+    }
+    return await http.delete<DefaultHttpResponse>(`${api}/logout`, req)
   }
 }

@@ -1,10 +1,7 @@
 import type { Observable, HttpResponse } from '$models/responses/api-response.model'
 import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
 import { redirect } from '@sveltejs/kit'
-import CookiesService from './cookies.service'
 import { goto } from '$app/navigation'
-
-const cookies = new CookiesService()
 
 class Http {
   private headers: HeadersInit = {
@@ -47,8 +44,6 @@ class Http {
   }
 
   private setRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', req?: RequestInit, body?: any): RequestInit {
-    this.sendInterceptor(url)
-
     let req_: RequestInit = {
       ...req,
       method: method,
@@ -105,12 +100,6 @@ class Http {
     return formBody.join('&')
   }
 
-  private sendInterceptor(url: string): void {
-    if (!url.includes('/auth')) {
-      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT') } }
-    }
-  }
-
   private responseInterceptor<T extends DefaultHttpResponse>(
     response: { response: Response; body: T },
     url: string,
@@ -118,7 +107,6 @@ class Http {
   ): void {
     if (response.body.code == 'AUTH_ERROR') {
       if (url.includes('/verify') || response.body.message == 'Token expired') {
-        cookies.delete('JWT')
         throw redirect(300, '/admin')
       }
     } else if (response.body.code == 'DB_ERROR') {

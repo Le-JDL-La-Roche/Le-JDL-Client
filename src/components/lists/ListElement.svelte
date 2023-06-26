@@ -9,7 +9,7 @@
 
   export let main: boolean = false
   export let element: WebradioShow | Video | Article
-  export let type: 'radio' | 'video' | 'article'
+  export let type: 'podcast' | 'video' | 'article'
 
   const content = new ContentService()
   const url = new UrlService()
@@ -22,14 +22,19 @@
     element.description = content.replaceNewLineByBr(element.description)
   }
 
-  const href = 'category' in element 
-    ? `/${utils.categoriesFr[element.category as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche' | 'radio'].slug}/${type}/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`
-    : `/${type}/podcast/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`
+  $: category =
+    'category' in element
+      ? utils.categoriesFr[element.category as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche'].slug
+      : ''
 
+  $: href =
+    'category' in element 
+      ? `/${category}/${type}/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`
+      : `/radio/podcast/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`
 </script>
 
 <a {href} class="element not-a" class:main>
-  {#if type === 'radio' || type === 'video'}
+  {#if type === 'podcast' || type === 'video'}
     <i class="fa-solid fa-circle-play" />
   {/if}
   <img src={`${api}/public/images/thumbnails/${element.thumbnail}`} alt={element.title} />
@@ -44,7 +49,7 @@
     {#if 'article' in element}
       {@html content.getChapo(element.article)}
     {:else if 'description' in element}
-      {@html element.description}
+      {@html content.replaceNewLineByBr(element.description)}
     {/if}
   </p>
 </a>

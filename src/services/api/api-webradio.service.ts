@@ -15,11 +15,11 @@ export default class ApiWebradioService {
   }
 
   async getAllShows() {
-    return await http.delete<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/all`)
+    return await http.get<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/all`)
   }
 
-  async getShow(id: string) {
-    return await http.delete<DataHttpResponse<{ show: WebradioShow }>>(`${api}/webradio/shows/${id}`)
+  async getShow(id: number | string) {
+    return await http.get<DataHttpResponse<{ show: WebradioShow }>>(`${api}/webradio/shows/${id}`)
   }
 
   async postShow(show: WebradioShow) {
@@ -31,7 +31,7 @@ export default class ApiWebradioService {
     return await http.post<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows`, show, req)
   }
 
-  async putShow(show: WebradioShow, id: string) {
+  async putShow(show: WebradioShow, id: number | string) {
     const req: RequestInit = {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -40,8 +40,7 @@ export default class ApiWebradioService {
     return await http.put<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/${id}`, show, req)
   }
 
-
-  async deleteShow(id: string) {
+  async deleteShow(id: number | string) {
     return await http.delete<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/${id}`)
   }
 }

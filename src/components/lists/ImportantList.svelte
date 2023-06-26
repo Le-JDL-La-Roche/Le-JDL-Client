@@ -9,7 +9,7 @@
   export let videos: Video[] | undefined = undefined
   export let articles: Article[] | undefined = undefined
 
-  const type = shows ? 'radio' : videos ? 'video' : articles ? 'article' : null
+  const type = shows ? 'podcast' : videos ? 'video' : articles ? 'article' : null
 
   const elements: WebradioShow[] | Video[] | Article[] | undefined = shows || videos || articles
 

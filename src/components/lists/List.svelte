@@ -17,5 +17,5 @@
 </script>
 
 {#each elements || [] as element}
-  <ListElement {element} type={'streamId' in element ? 'radio' : ('type' in element ? 'video' : 'article')} />
+  <ListElement {element} type={'streamId' in element ? 'podcast' : ('type' in element ? 'video' : 'article')} />
 {/each}

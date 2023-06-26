@@ -11,8 +11,8 @@ export default class ApiArticlesService {
     return await http.get<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles`)
   }
 
-  async getArticle(id: string) {
-    return await http.delete<DataHttpResponse<{ article: Article }>>(`${api}/articles/${id}`)
+  async getArticle(id: number | string) {
+    return await http.get<DataHttpResponse<{ article: Article }>>(`${api}/articles/${id}`)
   }
 
   async postArticle(article: Article) {
@@ -24,7 +24,7 @@ export default class ApiArticlesService {
     return await http.post<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles`, article, req)
   }
 
-  async putArticle(article: Article, id: string) {
+  async putArticle(article: Article, id: number | string) {
     const req: RequestInit = {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -33,8 +33,7 @@ export default class ApiArticlesService {
     return await http.put<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles/${id}`, article, req)
   }
 
-
-  async deleteArticle(id: string) {
+  async deleteArticle(id: number | string) {
     return await http.delete<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles/${id}`)
   }
 }
