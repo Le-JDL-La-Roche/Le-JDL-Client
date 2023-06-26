@@ -164,12 +164,19 @@ figure img {
 figcaption {
   color: #666666;
   text-align: center;
+  font-size: 15px;
 }
 
 figure figcaption p {
   margin: 0;
   text-align: right;
   font-size: 14px
+}
+
+p.article h4 {
+  display: inline;
+  font-size: 21px;
+  padding: 5px 0 0 0;
 }
 
 @media screen and (min-width: 850px) {
