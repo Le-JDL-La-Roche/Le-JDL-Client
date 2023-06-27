@@ -12,14 +12,12 @@
       <section class="close">
         <button class="close secondary" on:click={() => (show = false)}><i class="fa-solid fa-times" /></button>
       </section>
-      <slot />
+      <slot /> 
     </div>
   </div>
 {/if}
 
 <style lang="scss">
-  @use '../../../static/assets/sass/modal.scss';
-
   div.modal-background {
     background-color: rgba(0, 0, 0, 0.3);
     width: 100%;

@@ -22,6 +22,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>{data.logged ? 'Administration' : 'Connexion administrateur'} • Le JDL - La Roche</title>
+</svelte:head>
+
 {#if !data.logged}
   <div out:popOut in:popIn style="padding: 0.02px 0">
     <AdminLoginForm bind:logged={data.logged} />
@@ -31,7 +35,7 @@
     <button class="logout" on:click={logout}><i class="fa-solid fa-right-from-bracket" />&nbsp;&nbsp;Déconnexion</button>
     <h2 style="margin-top: 0">Espace administration</h2>
     <p class="desc">Cette page est destinée à l'administration du Blog du JDL.</p>
-    <a class="not-a" href="/admin/webradio">
+    <a class="not-a" href="/admin/emissions">
       <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Gérer la Webradio et ses podcasts</button>
     </a>
     <a class="not-a" href="/admin/videos">

@@ -6,8 +6,6 @@ const apiAuth = new ApiAuthService()
 const cookies = new CookiesService()
 
 export const load: PageLoad = async () => {
-  console.log('run');
-  
   if (!cookies.get('JWT') || cookies.get('JWT') == null) {
     return { logged: false }
   }

@@ -10,7 +10,7 @@
 <a
   class={'not-a ' + customClass}
   {href}
-  class:active={exact ? $page.url.pathname == href : $page.url.pathname.includes(href)}
+  class:active={exact ? $page.url.pathname == href : ($page.url.pathname.includes(href) && !$page.url.pathname.includes('/admin'))}
   on:click={() => (mobileNavOpen = false)}
 >
   <slot />

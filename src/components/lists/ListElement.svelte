@@ -81,9 +81,6 @@
 
       p.title {
         font-size: 18px;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        text-overflow: ellipsis;
         max-height: 60px;
         line-clamp: 2;
         -webkit-line-clamp: 2;
@@ -185,6 +182,12 @@
             color: var(--dark-gray-color);
           }
         }
+      }
+
+      p.title {
+        max-height: 30px;
+        line-clamp: 1;
+        -webkit-line-clamp: 1;
       }
 
       i.fa-solid {
