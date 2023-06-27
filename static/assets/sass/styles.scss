@@ -83,34 +83,34 @@ button {
   width: 100%;
   transition: all 0.3s;
   cursor: pointer;
+}
 
-  &.primary {
-    padding: 10px;
-    background-color: var(--primary-red-color);
-    display: block;
-    margin-top: 30px;
-    color: white;
+button.primary {
+  padding: 10px;
+  background-color: var(--primary-red-color);
+  display: block;
+  margin-top: 30px;
+  color: white;
 
-    &:disabled {
-      background-color: var(--light-gray-color);
-      cursor: not-allowed;
-    }
-  }
-
-  &.secondary {
-    padding: 7px 10px;
-    background-color: var(--mid-gray-color);
-    margin-top: 20px;
-    color: black;
-
-    &:disabled {
-      background-color: var(--light-gray-color);
-      cursor: not-allowed;
-    }
+  &:disabled {
+    background-color: var(--light-gray-color);
+    cursor: not-allowed;
   }
 }
 
-input,
+button.secondary {
+  padding: 7px 10px;
+  background-color: var(--mid-gray-color);
+  margin-top: 20px;
+  color: black;
+
+  &:disabled {
+    background-color: var(--light-gray-color);
+    cursor: not-allowed;
+  }
+}
+
+input:not([type=checkbox]):not([type=radio]),
 textarea,
 select {
   padding: 10px;
@@ -133,6 +133,10 @@ select {
   width: 100%;
   max-width: 100%;
   min-width: 100%;
+}
+
+label {
+  display: block
 }
 
 div.error {

@@ -17,5 +17,7 @@
 </script>
 
 {#each elements || [] as element}
-  <ListElement {element} type={'streamId' in element ? 'podcast' : ('type' in element ? 'video' : 'article')} />
+  <ListElement {element} type={'streamId' in element ? 'podcast' : 'type' in element ? 'video' : 'article'} />
+{:else}
+  <p>Aucun élément</p>
 {/each}

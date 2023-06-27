@@ -28,7 +28,7 @@
       : ''
 
   $: href =
-    'category' in element 
+    'category' in element
       ? `/${category}/${type}/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`
       : `/radio/podcast/${url.idToSlug(element.id || 0)}--${url.slugify(element.title)}`
 </script>
@@ -81,6 +81,13 @@
 
       p.title {
         font-size: 18px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        max-height: 60px;
+        line-clamp: 2;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
       }
 
       p.info {

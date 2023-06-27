@@ -28,3 +28,16 @@ export function popOut(node: HTMLElement) {
     }
   }
 }
+
+export function unscale(node: HTMLElement) {
+  return {
+    duration: 200,
+    css: (t: number) => {
+      const eased = cubicInOut(t)
+      return `
+        display: ${eased === 0 ? 'none' : 'block'};
+        opacity: ${eased};
+				transform: scale(${1.5 - eased / 2});`
+    }
+  }
+}

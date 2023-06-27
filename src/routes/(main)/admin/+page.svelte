@@ -4,7 +4,7 @@
   import AdminLoginForm from '$components/AdminLoginForm.svelte'
   import { scale } from 'svelte/transition'
   import { popIn, popOut } from '$services/transitions'
-  import { goto, invalidate, invalidateAll } from '$app/navigation'
+  import { invalidateAll } from '$app/navigation'
   import CookiesService from '$services/cookies.service'
 
   export let data: PageData
