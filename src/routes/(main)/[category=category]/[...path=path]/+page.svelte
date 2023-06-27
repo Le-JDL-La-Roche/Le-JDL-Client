@@ -3,8 +3,8 @@
   import ContentService from '$services/content.service'
   import utils from '$services/utils'
   import { api } from '$services/store'
-  import InstagramVideo from '$components/InstagramVideo.svelte'
-  import AushaPlayer from '$components/AushaPlayer.svelte'
+  import InstagramVideo from '$components/players/InstagramVideo.svelte'
+  import AushaPlayer from '$components/players/AushaPlayer.svelte'
 
   export let data: PageData
 
