@@ -23,7 +23,7 @@ export const load: PageLoad = async ({ params }) => {
 
   const category = categoryParam as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche' | 'radio'
 
-  let data: WebradioShow | Video | Article | undefined  
+  let data: WebradioShow | Video | Article | undefined
 
   if (type === 'podcast') {
     ;(await apiWebradio.getShow(+slug.split('--')[0])).subscribe({
@@ -34,7 +34,11 @@ export const load: PageLoad = async ({ params }) => {
         throw error(404, 'Non trouvée')
       }
     })
-    data
+    if (data && 'streamId' in data) {
+      if (!data.podcastId) {
+        throw error(404, 'Non trouvée')
+      }
+    }
   } else if (type === 'video') {
     ;(await apiVideos.getVideo(+slug.split('--')[0])).subscribe({
       next: (res) => {

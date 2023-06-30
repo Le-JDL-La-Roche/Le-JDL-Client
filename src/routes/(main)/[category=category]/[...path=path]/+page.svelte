@@ -5,6 +5,7 @@
   import { api } from '$services/store'
   import InstagramVideo from '$components/players/InstagramVideo.svelte'
   import AushaPlayer from '$components/players/AushaPlayer.svelte'
+  import { error } from '@sveltejs/kit'
 
   export let data: PageData
 

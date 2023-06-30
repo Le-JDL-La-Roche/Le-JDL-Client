@@ -47,7 +47,7 @@
     border-radius: 5px;
     box-shadow: 0 0 30px rgba(100, 100, 100, 0.05);
     border: 1px solid var(--light-gray-color);
-    margin: 41px auto 30px auto;
+    margin: 32px auto 25px auto;
     transition: all 0.1s;
     &.error {
       animation-name: error-jerk;

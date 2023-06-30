@@ -23,21 +23,24 @@ export default class ApiWebradioService {
   }
 
   async postShow(show: WebradioShow) {
-    const req: RequestInit = {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+    let body = new FormData()
+    for (const [key, value] of Object.entries(show)) {
+      body.set(key, value)
     }
-    return await http.post<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows`, show, req)
+    return await http.post<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows`, body)
   }
 
-  async putShow(show: WebradioShow, id: number | string) {
-    const req: RequestInit = {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+  
+  async putShow(show: Partial<WebradioShow>, id: number | string) {
+    let body = new FormData()
+    for (const [key, value] of Object.entries(show)) {
+      if (typeof value === 'number') {
+        body.set(key, value.toString())
+      } else {
+        body.set(key, value)
       }
     }
-    return await http.put<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/${id}`, show, req)
+    return await http.put<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/${id}`, body)
   }
 
   async deleteShow(id: number | string) {

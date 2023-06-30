@@ -106,6 +106,7 @@ button.secondary {
 
   &:disabled {
     background-color: var(--light-gray-color);
+    color: var(--dark-gray-color);
     cursor: not-allowed;
   }
 }
@@ -205,7 +206,7 @@ p.article h4 {
 
   button {
     &.primary {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: var(--secondary-red-color);
 
         &:active {
@@ -216,7 +217,7 @@ p.article h4 {
     }
 
     &.secondary {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: var(--mid2-gray-color);
 
         &:active {

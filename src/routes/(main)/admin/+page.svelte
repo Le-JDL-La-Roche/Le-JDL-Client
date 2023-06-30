@@ -33,10 +33,10 @@
 {:else}
   <div in:popIn out:popOut style="padding: 0.02px 0">
     <button class="logout" on:click={logout}><i class="fa-solid fa-right-from-bracket" />&nbsp;&nbsp;Déconnexion</button>
-    <h2 style="margin-top: 0">Espace administration</h2>
-    <p class="desc">Cette page est destinée à l'administration du Blog du JDL.</p>
+    <h2 style="margin-top: 10px">Espace administration</h2>
+    
     <a class="not-a" href="/admin/emissions">
-      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Gérer la Webradio et ses podcasts</button>
+      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Emissions de radio et Podcasts</button>
     </a>
     <a class="not-a" href="/admin/videos">
       <button class="primary"><i class="fa-solid fa-video" />&nbsp;&nbsp;Gérer les vidéos</button>

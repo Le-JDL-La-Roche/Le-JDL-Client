@@ -6,7 +6,7 @@ import CookiesService from './cookies.service'
 const cookies = new CookiesService()
 
 class Http {
-  private headers: HeadersInit = {
+  private headers: Record<string, string> = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
 
@@ -47,7 +47,18 @@ class Http {
 
   private setRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', req?: RequestInit, body?: any): RequestInit {
     this.sendInterceptor(url)
-    
+
+    let body_: any
+    let headers_: any = req?.headers
+
+    // check if header type is multipart/form-data. if so, do not url encode body
+    if (body instanceof FormData) {
+      body_ = body
+      delete this.headers['Content-Type']
+    } else {
+      body_ = this.urlEncode(body)
+    }
+
     let req_: RequestInit = {
       ...req,
       method: method,
@@ -55,7 +66,7 @@ class Http {
         ...this.headers,
         ...req?.headers
       },
-      body: this.urlEncode(body) + ''
+      body: body_
     }
 
     if (method == 'GET') {

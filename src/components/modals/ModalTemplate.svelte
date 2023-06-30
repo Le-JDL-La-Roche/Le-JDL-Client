@@ -45,7 +45,7 @@
 
       button.close {
         float: right;
-        width: 30px;
+        width: 31px;
         margin-top: 0;
       }
     }
