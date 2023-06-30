@@ -12,7 +12,7 @@
       <section class="close">
         <button class="close secondary" on:click={() => (show = false)}><i class="fa-solid fa-times" /></button>
       </section>
-      <slot /> 
+      <slot />
     </div>
   </div>
 {/if}
@@ -43,6 +43,13 @@
       position: relative;
       transition: opacity 0.2s, background-color 0.2s, transform 0.2s, display 0s;
 
+      &.size-l {
+        width: calc(100% - 30px);
+        height: calc(100% - 60px);
+        margin: 15px;
+        overflow-y: auto;
+      }
+
       button.close {
         float: right;
         width: 31px;
@@ -67,7 +74,8 @@
 
         &.size-l {
           width: calc(100% - 60px);
-          height: calc(100% - 60px);
+          height: calc(100% - 120px);
+          max-height: calc(100% - 120px);
           margin: 30px;
         }
       }

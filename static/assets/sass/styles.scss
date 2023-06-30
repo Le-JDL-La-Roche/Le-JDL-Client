@@ -113,8 +113,9 @@ button.secondary {
 
 input:not([type=checkbox]):not([type=radio]),
 textarea,
+div.editor,
 select {
-  padding: 10px;
+  padding: 10px !important;
   border-radius: 3px;
   border: 1px solid var(--light-gray-color);
   width: calc(100% - 22px);
@@ -124,10 +125,15 @@ select {
   margin-bottom: 20px;
   outline: none;
   transition: border 0.3s;
+  background-color: white;
+  font-size: 14px;
+}
 
-  &:focus {
-    border-color: var(--secondary-red-color);
-  }
+input:not([type=checkbox]):not([type=radio]):focus,
+textarea:focus,
+div.editor:focus,
+select:focus {
+  border-color: var(--secondary-red-color);
 }
 
 select {
@@ -227,8 +233,9 @@ p.article h4 {
     }
   }
 
-  input,
+  input:not([type=checkbox]):not([type=radio]),
   textarea,
+  div.editor,
   select {
     &:hover {
       border-color: var(--primary-red-color);

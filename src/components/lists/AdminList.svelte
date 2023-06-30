@@ -12,6 +12,8 @@
 
   export let element: WebradioShow | Video | Article
   export let data: PageData
+  export let showAddEditModal: boolean
+  export let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
 
   const content = new ContentService()
   const apiWebradio = new ApiWebradioService()
@@ -66,21 +68,21 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
         },
-        error: (resp) => {}
+        error: () => {}
       })
     } else if ('type' in element) {
       ;(await apiVideos.deleteVideo(element.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.videos || []
         },
-        error: (resp) => {}
+        error: () => {}
       })
     } else if ('article' in element) {
       ;(await apiArticles.deleteArticle(element.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.articles || []
         },
-        error: (resp) => {}
+        error: () => {}
       })
     }
   }
@@ -117,9 +119,15 @@
   </div>
   <div class="actions">
     <div class="edit">
-      <a href={`/admin/${data.type}/${element.id}`} class="not-a">
-        <button class="secondary"><i class="fa-solid fa-pencil" /></button>
-      </a>
+      <button
+        class="secondary"
+        on:click={() => {
+          showAddEditModal = true
+          action = { action: 'edit', element }
+        }}
+      >
+        <i class="fa-solid fa-pencil" />
+      </button>
       <button class="secondary" on:click={() => deleteElement(element)}><i class="fa-solid fa-trash" /></button>
       {#if 'streamId' in element}
         <a
@@ -144,11 +152,11 @@
     {#if 'status' in element}
       {#if element.status === -1}
         <button class="secondary red" on:click={() => startLivestream(element)} {disabled} {title}>
-          <i class="fa-solid fa-video" /><br />Démarrer
+          <i class="fa-solid fa-video" />Démarrer
         </button>
       {:else if element.status === 0}
         <button class="secondary red flash" on:click={() => stopLivestream(element)}>
-          <i class="fa-solid fa-video-slash" /><br />Arrêter
+          <i class="fa-solid fa-video-slash" />Arrêter
         </button>
       {:else if element.status === 1}
         {#if !element.podcastId}
@@ -158,11 +166,11 @@
             disabled
             title="Il manque un ID de podcast pour cette émission"
           >
-            <i class="fa-solid fa-check" /><br />Publier
+            <i class="fa-solid fa-check" />Publier
           </button>
         {:else}
           <button class="secondary green" on:click={() => publishPodcast(element)}>
-            <i class="fa-solid fa-check" /><br />Publier
+            <i class="fa-solid fa-check" />Publier
           </button>
         {/if}
       {/if}
@@ -177,10 +185,16 @@
     flex: 1;
     overflow: hidden;
     margin-bottom: 20px;
-    height: 90px;
     padding: 30px;
     border: 1px solid var(--light-gray-color);
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    div.left {
+      flex: 1;
+    }
 
     img {
       height: 90px;
@@ -188,7 +202,6 @@
       margin-right: 15px;
       float: left;
       border-radius: 5px;
-      margin-bottom: 15px;
     }
 
     p.title {
@@ -219,7 +232,15 @@
   }
 
   div.actions {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+
     div.edit {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+
       button.secondary {
         margin: 0;
         width: 31px;
@@ -229,6 +250,11 @@
 
     button.secondary {
       margin-top: 0;
+
+      i.fa-solid {
+        display: inline-block;
+        margin-right: 10px;
+      }
     }
 
     button.red:not(:disabled) {
@@ -249,7 +275,6 @@
   @media screen and (min-width: 850px) {
     div.element {
       height: 102px;
-      display: flex;
       flex-direction: row;
 
       div.left {
@@ -283,19 +308,17 @@
 
     div.actions {
       text-align: right;
-      display: flex;
       flex-direction: column;
-      gap: 15px;
-
-      div.edit {
-        display: flex;
-        flex-direction: row;
-        gap: 15px;
-      }
 
       button.red,
       button.green {
         height: 100%;
+
+        i.fa-solid {
+          display: block;
+          margin-bottom: 3px;
+          margin-right: 0;
+        }
 
         &:hover:active:not(:disabled) {
           background-color: var(--light-gray-color);

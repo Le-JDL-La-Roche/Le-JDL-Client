@@ -6,7 +6,8 @@ export default class ContentService {
   }
 
   getChapo(string: string): string {
-    return (string.match(/^### (.+) ###/gm) + '').replace('### ', '').replace(' ###', '')
+    let c = (string.match(/^### (.+) ###/gm) + '').replace('### ', '').replace(' ###', '')
+    return c != 'null' ? c : ''
   }
 
   markdownToHtml(string: string): string {
