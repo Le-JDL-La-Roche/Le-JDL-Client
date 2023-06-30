@@ -1,19 +1,27 @@
 <script lang="ts">
   import type { PageData } from './$types'
   import List from '$components/lists/List.svelte'
-  import { onDestroy } from 'svelte'
+  import FilterModal from '$components/modals/FilterModal.svelte'
 
   export let data: PageData
+
+  let showFilterModal = false
 </script>
 
 <svelte:head>
   <title>{data.category.name} • Le JDL - La Roche</title>
 </svelte:head>
 
-<button class="filter"><i class="fa-solid fa-filter" />&nbsp;&nbsp;Filtrer et Trier</button>
+{#if data.category.id !== 'radio'}
+  <button class="filter" on:click={() => (showFilterModal = true)}>
+    <i class="fa-solid fa-filter" />&nbsp;&nbsp;Filtrer et Trier
+  </button>
+{/if}
 <h2><i class={'fa-solid ' + data.category.icon} style={'color: ' + data.category.color} />{data.category.name}</h2>
 
 <List elements={data.data} />
+
+<FilterModal bind:show={showFilterModal} />
 
 <style lang="scss">
   h2 {

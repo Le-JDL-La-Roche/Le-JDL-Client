@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores'
-  import Header from '$components/Header.svelte'
-  import Footer from '$components/Footer.svelte'
+  import Header from '$components/layouts/Header.svelte'
+  import Footer from '$components/layouts/Footer.svelte'
 
   const error: any = {
     '404': `L'erreur <b>404 - Not found</b> signifie que la page que vous demandez n'existe pas !<br />

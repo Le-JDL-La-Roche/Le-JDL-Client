@@ -10,7 +10,7 @@ export default class ContentService {
   }
 
   markdownToHtml(string: string): string {
-    const r = string
+    return string
       .replaceAll(/^###( |&nbsp;|\xa0)(.+)( |&nbsp;|\xa0)###/gm, '')
       .replaceAll(/^\n+|\n+$/g, '')
       .replaceAll('\n', '<br>\n')
@@ -45,7 +45,5 @@ export default class ContentService {
       .replaceAll(' ?', '&nbsp;?')
       .replaceAll(' :', '&nbsp;:')
       .replaceAll(' ;', '&nbsp;;')
-      console.log(r);
-      return r
   }
 }

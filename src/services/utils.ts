@@ -102,6 +102,14 @@ class Utils {
     return `${day} ${this.monthToString(month)} ${year}`
   }
 
+  timestampToDate(timestamp: number): string {
+    const date = new Date(timestamp * 1000)
+    const day = date.getDate()
+    const month = date.getMonth() + 1
+    const year = date.getFullYear()
+    return `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`
+  }
+
   monthToString(month: number): string {
     const months = ['jan.', 'fév.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']
     return months[month]

@@ -29,6 +29,7 @@ body {
 div.content {
   width: calc(100% - 25px);
   margin: 0 auto;
+  position: relative;
 }
 
 h2 {
@@ -82,34 +83,35 @@ button {
   width: 100%;
   transition: all 0.3s;
   cursor: pointer;
+}
 
-  button.primary {
-    padding: 10px;
-    background-color: var(--primary-red-color);
-    display: block;
-    margin-top: 30px;
-    color: white;
+button.primary {
+  padding: 10px;
+  background-color: var(--primary-red-color);
+  display: block;
+  margin-top: 30px;
+  color: white;
 
-    &:disabled {
-      background-color: var(--light-gray-color);
-      cursor: not-allowed;
-    }
-  }
-
-  button.secondary {
-    padding: 7px 10px;
-    background-color: var(--mid-gray-color);
-    margin-top: 20px;
-    color: black;
-
-    &:disabled {
-      background-color: var(--light-gray-color);
-      cursor: not-allowed;
-    }
+  &:disabled {
+    background-color: var(--light-gray-color);
+    cursor: not-allowed;
   }
 }
 
-input,
+button.secondary {
+  padding: 7px 10px;
+  background-color: var(--mid-gray-color);
+  margin-top: 20px;
+  color: black;
+
+  &:disabled {
+    background-color: var(--light-gray-color);
+    color: var(--dark-gray-color);
+    cursor: not-allowed;
+  }
+}
+
+input:not([type=checkbox]):not([type=radio]),
 textarea,
 select {
   padding: 10px;
@@ -132,6 +134,10 @@ select {
   width: 100%;
   max-width: 100%;
   min-width: 100%;
+}
+
+label {
+  display: block
 }
 
 div.error {
@@ -200,7 +206,7 @@ p.article h4 {
 
   button {
     &.primary {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: var(--secondary-red-color);
 
         &:active {
@@ -211,7 +217,7 @@ p.article h4 {
     }
 
     &.secondary {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: var(--mid2-gray-color);
 
         &:active {
@@ -254,64 +260,4 @@ p.article h4 {
 
   }
 
-}
-
-@keyframes error-jerk {
-  0% {
-    transform: translateX(0);
-  }
-
-  20% {
-    transform: translateX(10px);
-  }
-
-  40% {
-    transform: translateX(-10px);
-  }
-
-  60% {
-    transform: translateX(10px);
-  }
-
-  80% {
-    transform: translateX(-10px);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes pop-in {
-  0% {
-    opacity: 0;
-    transform: scale(170%);
-    display: none;
-  }
-
-  99% {
-    opacity: 1;
-    transform: scale(100%);
-  }
-
-  100% {
-    display: block
-  }
-}
-
-@keyframes pop-out {
-  0% {
-    opacity: 1;
-    transform: scale(100%);
-    display: block;
-  }
-
-  99% {
-    opacity: 0;
-    transform: scale(0%);
-  }
-
-  100% {
-    display: none
-  }
 }

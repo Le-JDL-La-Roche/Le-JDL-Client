@@ -36,9 +36,9 @@
       <p><a href="/mises-a-jour/blog">Mises à jour du Blog</a></p>
       <p><a href="/mises-a-jour/api">Mises à jour de l'API</a></p>
     </div>
-
-    <a href="/admin" class="admin">Admin</a>
   </div>
+
+  <a href="/admin" class="admin">Admin</a>
 </footer>
 
 <style lang="scss">

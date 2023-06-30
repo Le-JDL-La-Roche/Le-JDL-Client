@@ -1,10 +1,12 @@
 import type { Observable, HttpResponse } from '$models/responses/api-response.model'
 import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
 import { redirect } from '@sveltejs/kit'
-import { goto } from '$app/navigation'
+import CookiesService from './cookies.service'
+
+const cookies = new CookiesService()
 
 class Http {
-  private headers: HeadersInit = {
+  private headers: Record<string, string> = {
     'Content-Type': 'application/x-www-form-urlencoded'
   }
 
@@ -44,6 +46,19 @@ class Http {
   }
 
   private setRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', req?: RequestInit, body?: any): RequestInit {
+    this.sendInterceptor(url)
+
+    let body_: any
+    let headers_: any = req?.headers
+
+    // check if header type is multipart/form-data. if so, do not url encode body
+    if (body instanceof FormData) {
+      body_ = body
+      delete this.headers['Content-Type']
+    } else {
+      body_ = this.urlEncode(body)
+    }
+
     let req_: RequestInit = {
       ...req,
       method: method,
@@ -51,7 +66,7 @@ class Http {
         ...this.headers,
         ...req?.headers
       },
-      body: this.urlEncode(body) + ''
+      body: body_
     }
 
     if (method == 'GET') {
@@ -100,13 +115,25 @@ class Http {
     return formBody.join('&')
   }
 
+  private sendInterceptor(url: string): void {
+    if (!url.includes('/auth') && !url.includes('/register')) {
+      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT') } }
+    }
+  }
+
   private responseInterceptor<T extends DefaultHttpResponse>(
     response: { response: Response; body: T },
     url: string,
     method: 'GET' | 'POST' | 'PUT' | 'DELETE'
   ): void {
     if (response.body.code == 'AUTH_ERROR') {
-      if (url.includes('/verify') || response.body.message == 'Token expired') {
+      if (
+        (url.includes('/verify') || response.body.message == 'Token expired') &&
+        window.location.pathname != '/admin' &&
+        window.location.pathname.includes('/admin')
+      ) {
+        console.log(window.location.pathname)
+
         throw redirect(300, '/admin')
       }
     } else if (response.body.code == 'DB_ERROR') {
