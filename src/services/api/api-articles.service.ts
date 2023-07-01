@@ -16,21 +16,23 @@ export default class ApiArticlesService {
   }
 
   async postArticle(article: Article) {
-    const req: RequestInit = {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+    let body = new FormData()
+    for (const [key, value] of Object.entries(article)) {
+      body.set(key, value)
     }
-    return await http.post<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles`, article, req)
+    return await http.post<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles`, body)
   }
 
-  async putArticle(article: Article, id: number | string) {
-    const req: RequestInit = {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+  async putArticle(article: Partial<Article>, id: number | string) {
+    let body = new FormData()
+    for (const [key, value] of Object.entries(article)) {
+      if (typeof value === 'number') {
+        body.set(key, value.toString())
+      } else {
+        body.set(key, value)
       }
     }
-    return await http.put<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles/${id}`, article, req)
+    return await http.put<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles/${id}`, body)
   }
 
   async deleteArticle(id: number | string) {

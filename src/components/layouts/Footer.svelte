@@ -1,7 +1,7 @@
 <footer id="footer ">
   <div class="content">
     <p style="width: 100%; text-align: center; margin-bottom: 25px; font-size: 18px;">
-      <b>Rejoignez-nous !</b>
+      <strong>Rejoignez-nous !</strong>
       <a class="social" href="https://podcast.ausha.co/ecouter-la-roche" target="_blank">
         <i class="fa-solid fa-podcast" />
       </a>

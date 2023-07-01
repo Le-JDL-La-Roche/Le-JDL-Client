@@ -16,21 +16,23 @@ export default class ApiVideosService {
   }
 
   async postVideo(video: Video) {
-    const req: RequestInit = {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+    let body = new FormData()
+    for (const [key, value] of Object.entries(video)) {
+      body.set(key, value)
     }
-    return await http.post<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos`, video, req)
+    return await http.post<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos`, body)
   }
 
-  async putVideo(video: Video, id: number | string) {
-    const req: RequestInit = {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+  async putVideo(video: Partial<Video>, id: number | string) {
+    let body = new FormData()
+    for (const [key, value] of Object.entries(video)) {
+      if (typeof value === 'number') {
+        body.set(key, value.toString())
+      } else {
+        body.set(key, value)
       }
     }
-    return await http.put<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos/${id}`, video, req)
+    return await http.put<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos/${id}`, body)
   }
 
   async deleteVideo(id: number | string) {

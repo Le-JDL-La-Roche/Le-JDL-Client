@@ -13,7 +13,7 @@
     <div class="nav">
       <button class="close mobile" on:click={() => (mobileNavOpen = false)}><i class="fa-solid fa-times" /></button>
       <NavbarLink href="/" exact bind:mobileNavOpen>
-        <b>Accueil</b>
+        <strong>Accueil</strong>
       </NavbarLink>
       <NavbarLink href="/actualites" bind:mobileNavOpen>Actualités</NavbarLink>
       <NavbarLink href="/culture" bind:mobileNavOpen>Culture</NavbarLink>
@@ -25,36 +25,6 @@
       <NavbarLink href="/radio" bind:mobileNavOpen customClass="podcasts">Podcasts radio</NavbarLink>
     </div>
   </div>
-  <!-- <ul class="content">
-    <a class="not-a" href="/" class:active={$page.url.pathname == '/'}>
-      <li>
-        <b>Accueil</b>
-      </li>
-    </a>
-    <a class="not-a" href="/actualites" class:active={$page.url.pathname.includes($$props.href)}>
-      <li>Actualités</li>
-    </a>
-    <a class="not-a" href="/culture" class:active={$page.url.pathname.includes('/culture')}>
-      <li>Culture</li>
-    </a>
-    <a class="not-a" href="/sport" class:active={$page.url.pathname.includes('/sport')}>
-      <li>Sport</li>
-    </a>
-    <a class="not-a" href="/sciences" class:active={$page.url.pathname.includes('/sciences')}>
-      <li>Sciences</li>
-    </a>
-    <a class="not-a" href="/tech" class:active={$page.url.pathname.includes('/tech')}>
-      <li>Tech</li>
-    </a>
-    <a class="not-a" href="/laroche" class:active={$page.url.pathname.includes('/laroche')}>
-      <li>La Roche</li>
-    </a>
-
-    <a class="not-a podcasts" href="/radio" class:active={$page.url.pathname.includes('/radio')} style="position: relative">
-      <!- <img src="/assets/images/new.png" alt="New" width="30" style="position: absolute; top: -3px; left: -3px; opacity: 93%"> ->
-      <li>Podcasts radio</li>
-    </a>
-  </ul> -->
 </nav>
 
 <style lang="scss">

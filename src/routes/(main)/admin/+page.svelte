@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types'
   import ApiAuthService from '$services/api/api-auth.service'
-  import AdminLoginForm from '$components/AdminLoginForm.svelte'
+  import AdminLoginForm from '$components/others/AdminLoginForm.svelte'
   import { scale } from 'svelte/transition'
   import { popIn, popOut } from '$services/transitions'
   import { invalidateAll } from '$app/navigation'
@@ -36,7 +36,7 @@
     <h2 style="margin-top: 10px">Espace administration</h2>
     
     <a class="not-a" href="/admin/emissions">
-      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Emissions de radio et Podcasts</button>
+      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Emissions de radio et podcasts</button>
     </a>
     <a class="not-a" href="/admin/videos">
       <button class="primary"><i class="fa-solid fa-video" />&nbsp;&nbsp;Gérer les vidéos</button>

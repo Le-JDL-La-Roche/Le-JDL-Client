@@ -113,8 +113,9 @@ button.secondary {
 
 input:not([type=checkbox]):not([type=radio]),
 textarea,
+div.editor,
 select {
-  padding: 10px;
+  padding: 10px !important;
   border-radius: 3px;
   border: 1px solid var(--light-gray-color);
   width: calc(100% - 22px);
@@ -124,10 +125,15 @@ select {
   margin-bottom: 20px;
   outline: none;
   transition: border 0.3s;
+  background-color: white;
+  font-size: 14px;
+}
 
-  &:focus {
-    border-color: var(--secondary-red-color);
-  }
+input:not([type=checkbox]):not([type=radio]):focus,
+textarea:focus,
+div.editor:focus,
+select:focus {
+  border-color: var(--secondary-red-color);
 }
 
 select {
@@ -162,8 +168,17 @@ figure {
   margin: 30px auto;
 }
 
+// article.preview figure {
+//   width: calc(50% - 60px);
+// }
+
 figure img {
   width: calc(100vw - 25px);
+  border-radius: 5px;
+}
+
+article.preview figure img {
+  width: 100%;
   border-radius: 5px;
 }
 
@@ -227,20 +242,26 @@ p.article h4 {
     }
   }
 
-  input,
+  input:not([type=checkbox]):not([type=radio]),
   textarea,
+  div.editor,
   select {
     &:hover {
       border-color: var(--primary-red-color);
     }
   }
 
-  p.article figure {
+  article:not(.preview) p.article figure {
     width: 500px;
   }
 
-  p.article figure img {
+  article:not(.preview) p.article figure img {
     width: 500px;
+  }
+
+  article.preview figure img {
+    width: 100%;
+    border-radius: 5px;
   }
 
   @media screen and (min-width: 1150px) {
@@ -250,11 +271,11 @@ p.article h4 {
       width: 1100px;
     }
 
-    p.article figure {
+    article:not(.preview) p.article figure {
       width: 700px;
     }
 
-    p.article figure img {
+    article:not(.preview) p.article figure img {
       width: 700px;
     }
 
