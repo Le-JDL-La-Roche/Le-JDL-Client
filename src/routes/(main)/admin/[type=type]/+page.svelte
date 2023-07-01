@@ -60,4 +60,4 @@
   {/if}
 {/each}
 
-<AddEditElementModal type={data.type} bind:show={showAddEditModal} {action} />
+<AddEditElementModal type={data.type} bind:show={showAddEditModal} {action} bind:data />

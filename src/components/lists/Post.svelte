@@ -31,7 +31,7 @@
   {#if 'thumbnail' in data.data && 'thumbnailSrc' in data.data && data.data.thumbnail && data.data.thumbnailSrc}
     <figure class="thumbnail">
       <img src={`${api}/public/images/thumbnails/${data.data.thumbnail}`} alt={data.data.title} />
-      <figcaption><p><i>Source : {data.data.thumbnailSrc}</i></p></figcaption>
+      <figcaption><p><em>Source : {data.data.thumbnailSrc}</em></p></figcaption>
     </figure>
   {:else if 'videoId' in data.data}
     {#if data.data.type === 'youtube'}
@@ -148,60 +148,57 @@
         width: 700px;
       }
 
-      article {
-        figure.thumbnail,
-        figure.video {
+      figure.thumbnail,
+      figure.video {
+        width: 700px;
+
+        img,
+        iframe {
           width: 700px;
-
-          img,
-          iframe {
-            width: 700px;
-          }
-        }
-
-        figure.video {
-          height: calc(700px * 9 / 16);
-
-          iframe {
-            height: calc(700px * 9 / 16);
-          }
-        }
-
-        p.article {
-          width: 500px;
-          margin-left: 75px;
         }
       }
+
+      figure.video {
+        height: calc(700px * 9 / 16);
+
+        iframe {
+          height: calc(700px * 9 / 16);
+        }
+      }
+
+      p.article {
+        width: 500px;
+        margin-left: 75px;
+      }
     }
+
     @media screen and (min-width: 1150px) {
       article:not(.preview) {
         p.chapo {
           width: 900px;
         }
 
-        article {
-          figure.thumbnail,
-          figure.video {
+        figure.thumbnail,
+        figure.video {
+          width: 900px;
+
+          img,
+          iframe {
             width: 900px;
-
-            img,
-            iframe {
-              width: 900px;
-            }
           }
+        }
 
-          figure.video {
+        figure.video {
+          height: calc(900px * 9 / 16);
+
+          iframe {
             height: calc(900px * 9 / 16);
-
-            iframe {
-              height: calc(900px * 9 / 16);
-            }
           }
+        }
 
-          p.article {
-            width: 700px;
-            margin-left: 100px;
-          }
+        p.article {
+          width: 700px;
+          margin-left: 100px;
         }
       }
     }

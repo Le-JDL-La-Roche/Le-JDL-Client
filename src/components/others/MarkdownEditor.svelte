@@ -34,6 +34,14 @@
     }
   }
 
+  async function handlePaste(event: ClipboardEvent) {
+    event.preventDefault()
+    const text = event.clipboardData?.getData('text/plain')
+    if (text) {
+      document.execCommand('insertText', false, text)
+    }
+  }
+
   function preview() {
     value = editor.innerText
   }
@@ -299,6 +307,7 @@
     on:keyup={preview}
     bind:this={editor}
     on:keyup={shrotcutFormat}
+    on:paste={handlePaste}
   />
 </div>
 

@@ -21,11 +21,11 @@
     <a href="mailto:lejdl@laroche.org">mail</a>.<br />
   </p>
   <!-- <div class="archives">
-      <p class="title-archives"><b>Vous cherchez les anciens articles et vidéos ?</b></p>
+      <p class="title-archives"><strong>Vous cherchez les anciens articles et vidéos ?</strong></p>
       <p>Patientez encore quelques jours, ils sont en cours d'intégration sur notre nouveau blog !</p>
     </div> -->
   <!-- <div class="archives" style="background-color: #f1ffe8">
-      <p class="title-archives"><b>Les anciens articles et vidéos on été ajoutés !</b></p>
+      <p class="title-archives"><strong>Les anciens articles et vidéos on été ajoutés !</strong></p>
       <p>Vous pouvez dès maintenant les retrouver dans leur rubrique correspondante.</p>
     </div> -->
 </div>

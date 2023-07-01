@@ -91,7 +91,13 @@
 <div class="element">
   <div class="left">
     <img src={`${api}/public/images/thumbnails/${element.thumbnail}`} alt={element.title} />
-    {#if 'category' in element}
+    {#if 'article' in element}
+      <p class="info">
+        {utils.categoryToString(element.category)}&nbsp;&nbsp•&nbsp;&nbsp{utils.timestampToString(
+          +element.date
+        )}&nbsp;&nbsp;•&nbsp;&nbsp;{element.views || 0} vues
+      </p>
+    {:else if 'type' in element}
       <p class="info">
         {utils.categoryToString(element.category)}&nbsp;&nbsp•&nbsp;&nbsp{utils.timestampToString(+element.date)}
       </p>

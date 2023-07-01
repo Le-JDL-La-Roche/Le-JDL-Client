@@ -132,8 +132,6 @@ class Http {
         window.location.pathname != '/admin' &&
         window.location.pathname.includes('/admin')
       ) {
-        console.log(window.location.pathname)
-
         throw redirect(300, '/admin')
       }
     } else if (response.body.code == 'DB_ERROR') {

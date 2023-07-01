@@ -10,9 +10,11 @@
   import type { WebradioShow } from '$models/features/webradio-show.model'
   import type { Video } from '$models/features/video.model'
   import type { Article } from '$models/features/article.model'
+  import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
 
+  export let data: PageData
   export let show: boolean
-  export let type: 'emissions' | 'videos' | 'articles' | undefined
+  export let type: 'emissions' | 'videos' | 'articles'
   export let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
 
   const cookies = new CookiesService()
@@ -20,6 +22,7 @@
   const apiVideos = new ApiVideosService()
   const apiArticles = new ApiArticlesService()
 
+  $: required = false as boolean
   $: title = '' as string
   $: content = '' as string
   $: thumbnail = undefined as File | string | undefined
@@ -31,16 +34,18 @@
   $: category = null as 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche' | null
   $: videoType = null as 'youtube' | 'instagram' | null
   $: author = '' as string
-  $: date = type !== 'emissions' ? Date.now() / 1000 : new Date().getTime() / 1000 + ''
+  $: date = type !== 'emissions' ? Math.round(Date.now() / 1000) : Math.round(new Date().getTime() / 1000) + ''
+  $: error = '' as string
+  $: showDate = { date: '', time: '' } as { date: string; time: string }
 
   $: if (show) {
     update()
   }
 
   function update() {
-    console.log(action)
-
+    error = ''
     if (action.action === 'add') {
+      required = true
       title = ''
       content = ''
       thumbnail = undefined
@@ -54,6 +59,7 @@
       author = ''
       date = type !== 'emissions' ? Date.now() / 1000 : new Date().getTime() / 1000 + ''
     } else if (action.action === 'edit') {
+      required = false
       title = action.element.title
       date = action.element.date
       thumbnail = action.element.thumbnail
@@ -62,6 +68,11 @@
         streamId = action.element.streamId
         podcastId = action.element.podcastId || ''
         status = action.element.status
+        let d = new Date(+date * 1000).toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' }).split('/')
+        showDate = {
+          date: `${d[2]}-${d[1]}-${d[0]}`,
+          time: new Date(+date * 1000).toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris' })
+        }
       } else if ('videoId' in action.element) {
         content = action.element.description
         videoId = action.element.videoId
@@ -77,19 +88,69 @@
     }
   }
 
-  $: data = {
+  $: element = {
     data:
       type === 'emissions'
-        ? ({ title, description: content, thumbnail, streamId, podcastId, date, status } as WebradioShow)
+        ? ({
+            title,
+            description: content,
+            thumbnail,
+            streamId,
+            podcastId,
+            date: Date.parse(showDate.date + ' ' + showDate.time) / 1000 + '',
+            status
+          } as WebradioShow)
         : type === 'videos'
         ? ({ title, description: content, thumbnail, videoId, category, type: videoType, author, date } as Video)
         : ({ title, article: content, thumbnail, thumbnailSrc, category, author, date } as Article),
-    type: type === 'emissions' ? 'emissions' : type === 'videos' ? 'videos' : 'articles'
+    type
   }
 
-  function submit() {
-    show = false
-    invalidateAll()
+  async function submit() {
+    let exec
+    if (type === 'emissions') {
+      exec = action.action === 'add' ? apiWebradio.postShow : apiWebradio.putShow
+      ;(await exec(element.data as WebradioShow, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.shows || []
+          show = false
+        },
+        error: (err) => {
+          error = err.body.message
+        }
+      })
+    } else if (type === 'videos') {
+      exec = action.action === 'add' ? apiVideos.postVideo : apiVideos.putVideo
+      ;(await exec(element.data as Video, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.videos || []
+          show = false
+        },
+        error: (err) => {
+          error = err.body.message
+        }
+      })
+    } else {
+      exec = action.action === 'add' ? apiArticles.postArticle : apiArticles.putArticle
+      ;(await exec(element.data as Article, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.articles || []
+          show = false
+        },
+        error: (err) => {
+          error = err.body.message
+        }
+      })
+    }
+  }
+
+  function handleThumbnailChange(event: Event) {
+    const target = event.target as HTMLInputElement
+    if (target.files && target.files[0]) {
+      thumbnail = target.files[0]
+    } else {
+      thumbnail = undefined
+    }
   }
 </script>
 
@@ -100,33 +161,32 @@
     {:else}
       <h3>
         {type === 'emissions' ? "Modifier l'émission" : type === 'videos' ? 'Modifier la vidéo' : "Modifier l'article"}
-        <i>{action.element.title}</i>
+        <em>{action.element.title}</em>
       </h3>
     {/if}
 
     <div class="add-modal">
       <div class="add">
-        <p class="section-title"><b>{action.action === 'add' ? 'Ajouter du' : 'Modifier le'} contenu</b></p>
+        <p class="section-title"><strong>{action.action === 'add' ? 'Ajouter du' : 'Modifier le'} contenu</strong></p>
 
-        <input type="text" placeholder="Titre" bind:value={title} required />
+        <input type="text" placeholder="Titre" bind:value={title} {required} />
         <MarkdownEditor bind:value={content} />
         <label for="thumbnail">Image de miniature (vignette), au format 16:9 :</label>
-        <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" bind:value={thumbnail} required />
+        <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" on:change={handleThumbnailChange} {required} />
         {#if type === 'emissions'}
-          <input
-            type="datetime-local"
-            value={new Date().toISOString().slice(0, 16)}
-            on:change={(event) => (date = new Date(event.currentTarget.value).getTime() / 1000)}
-            required
-          />
-          <input type="text" placeholder="ID de stream sur OBS" bind:value={streamId} required />
+          <label for="date">Date de diffusion</label>
+          <div class="flex-date">
+            <input type="date" id="date" bind:value={showDate.date} />
+            <input type="time" bind:value={showDate.time} />
+          </div>
+          <input type="text" placeholder="ID de stream sur OBS (streamkey)" bind:value={streamId} {required} />
           <input
             type="text"
             placeholder="ID de podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
             bind:value={podcastId}
-            required
+            {required}
           />
-          <select bind:value={status}>
+          <select bind:value={status} {required}>
             <option value={null} disabled selected>-- Status de l'émission --</option>
             <option value={-1}>Brouillon, en attente de l'autorisation de diffusion par l'administration</option>
             <option value={0}>En direct</option>
@@ -134,7 +194,7 @@
             <option value={2}>Publié au format podcast</option>
           </select>
         {:else if type === 'videos'}
-          <select bind:value={category}>
+          <select bind:value={category} {required}>
             <option value={null} disabled selected>-- Rubrique --</option>
             <option value={'news'}>Actualités</option>
             <option value={'culture'}>Culture</option>
@@ -143,7 +203,7 @@
             <option value={'tech'}>Tech</option>
             <option value={'laroche'}>La Roche</option>
           </select>
-          <select bind:value={videoType}>
+          <select bind:value={videoType} {required}>
             <option value={null} disabled selected>-- Type de vidéo --</option>
             <option value={'instagram'}>Instagram</option>
             <option value={'youtube'}>YouTube</option>
@@ -152,19 +212,32 @@
             type="text"
             placeholder="ID de la vidéo (après ?v= sur YouTube, après /p/ sur Instagram)"
             bind:value={videoId}
-            required
+            {required}
           />
-          <input type="text" placeholder="Auteur" bind:value={author} required />
+          <input type="text" placeholder="Auteur" bind:value={author} {required} />
+        {:else}
+          <input type="text" bind:value={thumbnailSrc} placeholder="Source de la miniature (site)" {required} />
+          <select bind:value={category} {required}>
+            <option value={null} disabled selected>-- Rubrique --</option>
+            <option value={'news'}>Actualités</option>
+            <option value={'culture'}>Culture</option>
+            <option value={'sport'}>Sport</option>
+            <option value={'science'}>Sciences</option>
+            <option value={'tech'}>Tech</option>
+            <option value={'laroche'}>La Roche</option>
+          </select>
+          <input type="text" placeholder="Auteur" bind:value={author} {required} />
         {/if}
       </div>
 
       <div class="preview">
-        <p class="section-title"><b>Prévisualisation</b></p>
-        <Post {data} preview />
+        <p class="section-title"><strong>Prévisualisation</strong></p>
+        <Post data={element} preview />
       </div>
     </div>
 
     <div class="actions">
+      <p class="error">{error}</p>
       <button class="primary">{action.action === 'add' ? 'Ajouter' : 'Modifier'}</button>
     </div>
   </form>
@@ -181,6 +254,14 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
+  }
+
+  div.flex-date {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    gap: 15px;
+    width: calc(50% - 7.5px);
   }
 
   @media screen and (min-width: 850px) {
