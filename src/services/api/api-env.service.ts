@@ -11,4 +11,8 @@ export default class ApiEnvService {
   async putVisits() {
     return await http.put<DefaultHttpResponse>(`${api}/visits`)
   }
+
+  async deleteAdminVisits(timestamp: number) {
+    return await http.delete<DefaultHttpResponse>(`${api}/visits/${timestamp}`)
+  }
 }

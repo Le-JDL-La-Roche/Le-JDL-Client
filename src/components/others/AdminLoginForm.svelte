@@ -1,5 +1,6 @@
 <script lang="ts">
   import ApiAuthService from '$services/api/api-auth.service'
+  import ApiEnvService from '$services/api/api-env.service'
   import CookiesService from '$services/cookies.service'
   import utils from '$services/utils'
 
@@ -7,6 +8,7 @@
 
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
+  const apiEnv = new ApiEnvService()
 
   let username: string
   let password: string
@@ -17,8 +19,18 @@
   async function submit() {
     button = '...'
     ;(await apiAuth.getAuth(username, password)).subscribe({
-      next: (res) => {
+      next: async (res) => {
         cookies.add({ name: 'JWT', value: res.body.data?.jwt + '' })
+        if (sessionStorage.getItem('VISITED') && sessionStorage.getItem('VISITED') !== 'admin') {
+          ;(await apiEnv.deleteAdminVisits(+sessionStorage.getItem('VISITED')!)).subscribe({
+            next: () => {
+              sessionStorage.setItem('VISITED', 'admin')
+            }
+          })
+        } else {
+          sessionStorage.setItem('VISITED', 'admin')
+        }
+
         logged = true
       },
       error: async (resp) => {
@@ -47,7 +59,7 @@
     border-radius: 5px;
     box-shadow: 0 0 30px rgba(100, 100, 100, 0.05);
     border: 1px solid var(--light-gray-color);
-    margin: 32px auto 25px auto;
+    margin: 49px auto 45px auto;
     transition: all 0.1s;
     &.error {
       animation-name: error-jerk;

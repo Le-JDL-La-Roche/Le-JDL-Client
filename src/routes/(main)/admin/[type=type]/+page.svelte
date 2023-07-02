@@ -8,6 +8,8 @@
 
   export let data: PageData
 
+  let type = data.type as 'emissions' | 'videos' | 'articles'
+
   let showAddEditModal = false
   let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
 </script>
@@ -60,4 +62,4 @@
   {/if}
 {/each}
 
-<AddEditElementModal type={data.type} bind:show={showAddEditModal} {action} bind:data />
+<AddEditElementModal {type} bind:show={showAddEditModal} {action} bind:data />
