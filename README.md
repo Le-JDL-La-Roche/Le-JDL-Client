@@ -28,6 +28,6 @@ Le Blog est hébergé sur un server Node.js, qui sert les fichiers statiques gé
 
 ## *Open source*
 
-Le code source du Blog est disponible sur [GitHub](/) sous licence [GNU GPLv3](/LICENSE). Vous pouvez donc le consulter, le modifier et le redistribuer librement, à condition de respecter les termes de la licence.
+Le code source du Blog est disponible sur [GitHub](/https://github.com/Le-JDL-La-Roche/Le-JDL-Client) sous licence [GNU GPLv3](https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/LICENSE). Vous pouvez donc le consulter, le modifier et le redistribuer librement, à condition de respecter les termes de la licence.
 
-En cas de problème/bug/suggestion, vous pouvez [ouvrir une issue](/issues) sur GitHub.
+En cas de problème/bug/suggestion, vous pouvez [ouvrir une issue](https://github.com/Le-JDL-La-Roche/Le-JDL-Client/issues) sur GitHub.
