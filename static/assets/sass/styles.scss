@@ -132,7 +132,7 @@ select {
 input:not([type=checkbox]):not([type=radio]):focus,
 textarea:focus,
 div.editor:focus,
-select:focus {
+select:active {
   border-color: var(--secondary-red-color);
 }
 

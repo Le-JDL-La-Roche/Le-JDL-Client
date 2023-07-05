@@ -15,10 +15,11 @@
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^2.0.0",
+    "@sveltejs/adapter-cloudflare": "^2.3.0",
     "@sveltejs/adapter-node": "^1.2.4",
     "@sveltejs/adapter-static": "^2.0.2",
-    "@sveltejs/adapter-cloudflare": "^2.3.0",
     "@sveltejs/kit": "^1.20.4",
+    "@types/node": "^20.3.3",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "eslint": "^8.28.0",
@@ -35,6 +36,10 @@
   },
   "type": "module",
   "dependencies": {
-    "buffer": "^6.0.3"
+    "buffer": "^6.0.3",
+    "chart.js": "^4.3.0",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "os": "^0.1.2",
+    "os-browserify": "^0.3.0"
   }
 }

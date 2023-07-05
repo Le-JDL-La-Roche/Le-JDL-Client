@@ -11,9 +11,10 @@ const cookies = new CookiesService()
 export const load: LayoutLoad = async () => {
   if (!sessionStorage.getItem('VISITED')) {
     if (!cookies.get('JWT')) {
-      sessionStorage.setItem('VISITED', new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000 + '')
       ;(await apiEnv.putVisits()).subscribe({
-        finally: () => {}
+        next: () => {
+          sessionStorage.setItem('VISITED', new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000 + '')
+        }
       })
     } else {
       sessionStorage.setItem('VISITED', 'admin')

@@ -66,6 +66,25 @@ class Utils {
     }
   }
 
+  private readonly shortDateOptions: Intl.DateTimeFormatOptions = {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'Europe/Paris'
+  }
+
+  readonly shortDateFormatter = new Intl.DateTimeFormat('fr-FR', this.shortDateOptions)
+
+  private readonly digitalDateOptions: Intl.DateTimeFormatOptions = {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'Europe/Paris'
+  }
+
+  readonly digitalDateFormatter = new Intl.DateTimeFormat('fr-FR', this.digitalDateOptions)
+
   sleep(duration: number) {
     return new Promise((resolve) => setTimeout(resolve, duration))
   }
