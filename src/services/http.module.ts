@@ -106,10 +106,10 @@ class Http {
   }
 
   private urlEncode(object: any): string {
-    var formBody = []
-    for (var property in object) {
-      var encodedKey = encodeURIComponent(property)
-      var encodedValue = encodeURIComponent(object[property])
+    let formBody = []
+    for (let property in object) {
+      let encodedKey = encodeURIComponent(property)
+      let encodedValue = encodeURIComponent(object[property])
       formBody.push(encodedKey + '=' + encodedValue)
     }
     return formBody.join('&')
