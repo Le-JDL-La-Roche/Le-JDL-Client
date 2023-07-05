@@ -1,137 +1,34 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import type { PageData } from './$types'
-  import Chart from 'chart.js/auto'
-  import ChartDataLabels from 'chartjs-plugin-datalabels'
+  import utils from '$services/utils'
+  import { VisitsChart } from '$services/charts/visits-charts.service'
+  import { WebradioChart } from '$services/charts/webradio-charts.service'
+  import { VideoChart } from '$services/charts/videos-chart.services'
+  import { ArticlesChart } from '$services/charts/articles-chart.service'
 
   export let data: PageData
 
-  let webradioCanvas: HTMLCanvasElement
-
-  let visitsChart: any
-  let visitsData: { x: string; y: number }[] = []
-  let visitsDataSliced: { x: string; y: number }[] = []
+  let visitsCanvas: HTMLCanvasElement
+  let visitsChart: VisitsChart
   let visitsRange = 7
 
-  const options: Intl.DateTimeFormatOptions = {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'Europe/Paris'
-  }
-  const formatter = new Intl.DateTimeFormat('fr-FR', options)
+  let webradioCanvas: HTMLCanvasElement
+  let webradioChart: WebradioChart
+  
+  let videosCanvas: HTMLCanvasElement
+  let videosChart: VideoChart
+  let videosDisplay: 'category' | 'type' = 'category'
 
-  data.data!.visits.visits.forEach((visits) => {
-    visitsData.push({
-      x: formatter.format(new Date(visits.timestamp * 1000)),
-      y: visits.visits
-    })
-  })
+  let articlesCanvas: HTMLCanvasElement
+  let articlesChart: ArticlesChart
 
   onMount(() => {
-    visitsChart = new Chart(webradioCanvas, {
-      type: 'bar',
-      plugins: [ChartDataLabels],
-      data: {
-        datasets: [
-          {
-            label: '# de visites',
-            data: visitsDataSliced,
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        maintainAspectRatio: false,
-        aspectRatio: 1,
-        responsive: true,
-        animation: false,
-        plugins: {
-          legend: {
-            display: false
-          },
-          datalabels: {
-            // display only non-zero values
-            display: (context) => {
-              let data = context.dataset.data[context.dataIndex] as unknown as { x: string; y: number }
-              return data.y !== 0
-            },
-            formatter: (value) => {
-              return value.y
-            }
-          }
-        },
-        scales: {
-          x: {
-            reverse: false
-          },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              stepSize: 1
-            }
-          }
-        }
-      }
-    })
-
-    sliceVisits(visitsRange)
+    visitsChart = new VisitsChart(visitsCanvas, data)
+    webradioChart = new WebradioChart(webradioCanvas, data)
+    videosChart = new VideoChart(videosCanvas, data)
+    articlesChart = new ArticlesChart(articlesCanvas, data)
   })
-
-  function sliceVisits(n: number) {
-    if (n !== 0 && n !== 90) {
-      visitsDataSliced = visitsData.slice(0, n).reverse()
-    } else if (n === 90) {
-      visitsDataSliced = []
-      const optionsWeek: Intl.DateTimeFormatOptions = {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-      }
-      const formatterWeek = new Intl.DateTimeFormat('fr-FR', optionsWeek)
-      let date = new Date(data.data!.visits.visits[0].timestamp * 1000)
-      let y = 0
-      data.data!.visits.visits.slice(0, 90).forEach((visits, i) => {
-        const date_ = new Date(visits.timestamp * 1000)
-        if ((i + 1) % 7 === 0) {
-          visitsDataSliced.push({
-            x: `${formatterWeek.format(date_)} - ${formatterWeek.format(date)}`,
-            y
-          })
-          y = 0
-          date = new Date(visits.timestamp * 1000 - 86400000)
-        }
-        y += visits.visits
-      })
-      visitsDataSliced = visitsDataSliced.reverse()
-    } else {
-      visitsDataSliced = []
-      let date = new Date(data.data!.visits.visits[0].timestamp * 1000)
-      let month = date.toLocaleString('fr-FR', { month: 'long' })
-      let year = date.getFullYear()
-      let y = 0
-      data.data!.visits.visits.forEach((visits) => {
-        const date_ = new Date(visits.timestamp * 1000)
-        const month_ = date_.toLocaleString('fr-FR', { month: 'long' })
-        const year_ = date_.getFullYear()
-        if (month_ !== month) {
-          visitsDataSliced.push({
-            x: `${month} ${year}`,
-            y
-          })
-          y = 0
-        }
-        date = date_
-        month = month_
-        year = year_
-        y += visits.visits
-      })
-      visitsDataSliced = visitsDataSliced.reverse()
-    }
-    visitsChart.data.datasets[0].data = visitsDataSliced
-    visitsChart.update()
-  }
 </script>
 
 <svelte:head>
@@ -142,36 +39,55 @@
   <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp; Informations du Blog
 </h2>
 
-<select
-  bind:value={visitsRange}
-  style="position: relative;
-    width: auto !important;
-    min-width: 200px;
-    max-width: 300px;
-    top: -5px;
-    float: right"
-  on:change={() => sliceVisits(visitsRange)}
->
+<select bind:value={visitsRange} class="range" on:change={() => visitsChart.updateRange(visitsRange)}>
   <option value={7}>7 derniers jours</option>
   <option value={15}>15 derniers jours</option>
   <option value={30}>30 derniers jours</option>
   <option value={90}>3 derniers mois (en semaines)</option>
   <option value={0}>Tout (en mois)</option>
 </select>
+<h3>Visites ({data.data?.visits.total})</h3>
+<div class="chart">
+  <canvas bind:this={visitsCanvas} />
+</div>
 
-<h3>Visites</h3>
+<h3>Webradio ({data.data?.shows.total})</h3>
 <div class="chart">
   <canvas bind:this={webradioCanvas} />
+</div>
+
+<select bind:value={videosDisplay} class="range" on:change={() => videosChart.updateDisplay(videosDisplay)}>
+  <option value={'category'}>Rubrique</option>
+  <option value={'type'}>Type de vidéo</option>
+</select>
+<h3>Videos ({data.data?.videos.total})</h3>
+<div class="chart">
+  <canvas bind:this={videosCanvas} />
+</div>
+
+<h3>Videos ({data.data?.articles.total})</h3>
+<div class="chart">
+  <canvas bind:this={articlesCanvas} />
 </div>
 
 <style lang="scss">
   div.chart {
     height: 250px;
+    margin-bottom: 35px;
 
     canvas {
       height: 250px;
       max-height: 250px;
     }
+  }
+
+  select.range {
+    position: relative;
+    width: auto !important;
+    min-width: 200px;
+    max-width: 300px;
+    top: -5px;
+    float: right;
   }
 
   @media screen and (min-width: 850px) {
