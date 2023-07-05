@@ -25,3 +25,9 @@ Le nom de domaine [le-jdl-laroche.cf](https://le-jdl-laroche.cf) est enregistré
 Le Blog du JDL utilise la technologie [SvelteKit](https://kit.svelte.dev) de Svelte pour son développement, ainsi que différentes librairies Node.js qui lui sont associées. L'utilisation de cette technologie ne concerne que le front-end du Blog (partie visible par les utilisateurs).
 
 Le Blog est hébergé sur un server Node.js, qui sert les fichiers statiques générés par SvelteKit, en combinaison avec un server NGINX pour l'acheminement des requêtes.
+
+## *Open source*
+
+Le code source du Blog est disponible sur [GitHub](/) sous licence [GNU GPLv3](/LICENSE). Vous pouvez donc le consulter, le modifier et le redistribuer librement, à condition de respecter les termes de la licence.
+
+En cas de problème/bug/suggestion, vous pouvez [ouvrir une issue](/issues) sur GitHub.
