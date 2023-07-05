@@ -4,7 +4,7 @@ Le Blog (ou Site) du JDL (Journal du Lycée la Rochefoucauld) met à disposition
 Nous proposons sur ce Blog des directs webradio et leurs podcasts de rediffusion, des vidéos et des articles.
 
 
-- Les directs webradio sont rendus possibles à notre serveur de direct fonctionnant avec Nginx.
+- Les directs webradio sont rendus possibles à notre serveur de direct fonctionnant avec NGINX.
 Leurs rediffusions au format podcast se font à l'aide d'intégrations de la plateforme Ausha.
 - Les vidéos proposées sont intégrées au Blog à l'aide d'intégrations YouTube et/ou Instagram.
 - Les articles sont directement proposés sur le blog, sans intégration.
@@ -18,7 +18,7 @@ Ces intégrations sont susceptibles de déposer des cookies marketing que vous p
 ## Hébergement du Blog
 
 Ce blog est hébergé chez [Hostim](https://hostim.fr).
-Le nom de domaine [le-jdl-laroche.cf](/) est enregistré chez [Freenom](https://freenom.com).
+Le nom de domaine [le-jdl-laroche.cf](https://le-jdl-laroche.cf) est enregistré chez [Freenom](https://freenom.com).
 
 ## Développement du Blog
 
