@@ -23,18 +23,37 @@
       <div class="in-flex">
         <img src="/assets/images/logo_la_roche.png" alt="Logo La Rochefoucauld" />
         <p>
-          Le JDL est lié au <a href="https://laroche.org/" target="_blank"
-            >Lycée La Rochefoucauld <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px" /></a
-          > et est ainsi soumis à son règlement intérieur.
+          Le JDL est lié au
+          <a href="https://laroche.org/" target="_blank"
+            >Lycée La Rochefoucauld
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px" /></a
+          >
+          et est ainsi soumis à son règlement intérieur.
         </p>
       </div>
     </div>
 
     <div class="utils">
-      <p><a href="/a-propos/blog">A propos du Blog</a></p>
-      <p><a href="/a-propos/api">A propos de l'API</a></p>
-      <p><a href="/mises-a-jour/blog">Mises à jour du Blog</a></p>
-      <p><a href="/mises-a-jour/api">Mises à jour de l'API</a></p>
+      <p>
+        <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/README.md#a-propos-du-blog" target="_blank">
+          A propos du Blog
+        </a>
+      </p>
+      <p>
+        <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/CHANGESLOG.md#mises-à-jour-du-blog" target="_blank">
+          Mises à jour du Blog
+        </a>
+      </p>
+      <p>
+        <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-API/blob/main/README.md#a-propos-de-lapi" target="_blank">
+          A propos de l'API
+        </a>
+      </p>
+      <p>
+        <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-API/blob/main/CHANGESLOG.md#mises-à-jour-de-lapi" target="_blank">
+          Mises à jour de l'API
+        </a>
+      </p>
     </div>
   </div>
 
