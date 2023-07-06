@@ -23,9 +23,12 @@
       <div class="in-flex">
         <img src="/assets/images/logo_la_roche.png" alt="Logo La Rochefoucauld" />
         <p>
-          Le JDL est lié au <a href="https://laroche.org/" target="_blank"
-            >Lycée La Rochefoucauld <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px" /></a
-          > et est ainsi soumis à son règlement intérieur.
+          Le JDL est lié au
+          <a href="https://laroche.org/" target="_blank"
+            >Lycée La Rochefoucauld
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px" /></a
+          >
+          et est ainsi soumis à son règlement intérieur.
         </p>
       </div>
     </div>
