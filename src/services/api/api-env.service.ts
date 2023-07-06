@@ -2,6 +2,7 @@ import http from '../http.module'
 import type { DefaultHttpResponse } from '$models/responses/default-http-response.model'
 import type { DataHttpResponse } from '$models/responses/data-http-response.model'
 import { api } from '$services/store'
+import type { Journalist } from '$models/data/journalist.model'
 
 export default class ApiEnvService {
   async getEnv() {
@@ -14,6 +15,22 @@ export default class ApiEnvService {
 
   async deleteAdminVisits(timestamp: number) {
     return await http.delete<DefaultHttpResponse>(`${api}/visits/${timestamp}`)
+  }
+
+  async getJournalists() {
+    return await http.get<DataHttpResponse<{ journalists: Journalist[] }>>(`${api}/journalists`)
+  }
+
+  async postJournalist(journalist: Journalist) {
+    return await http.post<DataHttpResponse<{ journalists: Journalist[] }>>(`${api}/journalists`, journalist)
+  }
+
+  async putJournalist(journalist: Partial<Journalist>, id: number | string) {
+    return await http.put<DataHttpResponse<{ journalists: Journalist[] }>>(`${api}/journalists/${id}`, journalist)
+  }
+
+  async deleteJournalist(id: number | string) {
+    return await http.delete<DataHttpResponse<{ journalists: Journalist[] }>>(`${api}/journalists/${id}`)
   }
 }
 
