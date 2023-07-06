@@ -186,7 +186,6 @@
 
 <style lang="scss">
   div.element {
-    display: block;
     position: relative;
     flex: 1;
     overflow: hidden;

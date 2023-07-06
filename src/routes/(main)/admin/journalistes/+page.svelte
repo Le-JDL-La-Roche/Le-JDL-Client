@@ -72,7 +72,6 @@
 
 <style lang="scss">
   div.element {
-    display: block;
     position: relative;
     flex: 1;
     overflow: hidden;
@@ -135,13 +134,12 @@
   @media screen and (min-width: 850px) {
     div.container {
       display: flex;
-      // flex-direction: column;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 20px;
     }
 
     div.element {
-      flex-basis: calc(50% - 70px);
+      flex-basis: calc(50% - 72px);
       flex-grow: 0;
       flex-direction: row;
       margin-bottom: 0;
@@ -160,17 +158,6 @@
     div.actions {
       text-align: right;
       flex-direction: column;
-
-      button.red,
-      button.green {
-        height: 100%;
-
-        i.fa-solid {
-          display: block;
-          margin-bottom: 3px;
-          margin-right: 0;
-        }
-      }
     }
   }
 </style>

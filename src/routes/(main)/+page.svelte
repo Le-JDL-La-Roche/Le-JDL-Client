@@ -40,8 +40,52 @@
 <List articles={[data.articles[0]]} />
 
 <h2>La Rédaction</h2>
-<!-- for journalists -->
 <div class="editorial-staff">
-  <p class="name">... journalistes</p>
-  <p class="class" />
+  {#each data.journalists as journalist}
+    <div class="journalist">
+      <p class="name">{journalist.name}</p>
+      <p class="class">{journalist.class}</p>
+    </div>
+  {/each}
 </div>
+
+<style lang="scss">
+  div.editorial-staff {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  div.journalist {
+    display: block;
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    padding: 20px;
+    border: 1px solid var(--light-gray-color);
+    border-radius: 5px;
+
+    p {
+      margin: 0;
+
+      &.class {
+        color: var(--dark-gray-color);
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  @media screen and (min-width: 850px) {
+    div.editorial-staff {
+      flex-direction: row;
+    }
+
+    div.journalist {
+      flex-basis: calc(25% - 57px);
+      flex-grow: 0;
+      flex-direction: row;
+    }
+  }
+</style>
