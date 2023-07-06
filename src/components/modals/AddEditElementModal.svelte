@@ -169,7 +169,8 @@
       <div class="add">
         <p class="section-title"><strong>{action.action === 'add' ? 'Ajouter du' : 'Modifier le'} contenu</strong></p>
 
-        <input type="text" placeholder="Titre" bind:value={title} {required} />
+        <!-- svelte-ignore a11y-autofocus -->
+        <input type="text" placeholder="Titre" bind:value={title} {required} autofocus />
         <MarkdownEditor bind:value={content} />
         <label for="thumbnail">Image de miniature (vignette), au format 16:9 :</label>
         <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" on:change={handleThumbnailChange} {required} />

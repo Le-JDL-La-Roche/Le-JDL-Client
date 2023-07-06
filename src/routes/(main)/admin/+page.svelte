@@ -44,8 +44,8 @@
     <a class="not-a" href="/admin/articles">
       <button class="primary"><i class="fa-solid fa-file" />&nbsp;&nbsp;Gérer les articles</button>
     </a>
-    <a class="not-a" href="/admin/gestion">
-      <button class="primary"><i class="fa-solid fa-gear" />&nbsp;&nbsp;Gestion du Blog</button>
+    <a class="not-a" href="/admin/journalistes">
+      <button class="primary"><i class="fa-solid fa-gear" />&nbsp;&nbsp;Gestion des journalistes</button>
     </a>
     <a class="not-a" href="/admin/infos">
       <button class="primary"><i class="fa-solid fa-circle-info" />&nbsp;&nbsp;Informations sur le Blog</button>
