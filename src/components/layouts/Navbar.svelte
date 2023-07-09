@@ -8,8 +8,8 @@
 
   liveStream$.subscribe((value) => {
     if (value) {
-      navbarStyle = 'top: 49px'
-      mobileStyle = 'margin-top: 64px'
+      navbarStyle = 'top: 61px'
+      mobileStyle = 'margin-top: 76px'
     } else {
       navbarStyle = ''
       mobileStyle = ''
