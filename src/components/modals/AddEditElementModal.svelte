@@ -1,23 +1,21 @@
 <script lang="ts">
   import ModalTemplate from './ModalTemplate.svelte'
-  import CookiesService from '$services/cookies.service'
-  import { invalidateAll } from '$app/navigation'
   import ApiWebradioService from '$services/api/api-webradio.service'
   import ApiVideosService from '$services/api/api-videos.service'
   import ApiArticlesService from '$services/api/api-articles.service'
   import MarkdownEditor from '$components/others/MarkdownEditor.svelte'
-  import Post from '$components/lists/Post.svelte'
+  import Post from '$components/others/Post.svelte'
   import type { WebradioShow } from '$models/features/webradio-show.model'
   import type { Video } from '$models/features/video.model'
   import type { Article } from '$models/features/article.model'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
+  import io from '$services/api/socket.service'
 
   export let data: PageData
   export let show: boolean
   export let type: 'emissions' | 'videos' | 'articles'
   export let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
 
-  const cookies = new CookiesService()
   const apiWebradio = new ApiWebradioService()
   const apiVideos = new ApiVideosService()
   const apiArticles = new ApiArticlesService()
@@ -113,6 +111,11 @@
       ;(await exec(element.data as WebradioShow, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
+          if ((element.data as WebradioShow).status === 0) {
+            io.emit('launchLiveStream', element.data as WebradioShow)
+          } else {
+            io.emit('stopLiveStream')
+          }
           show = false
         },
         error: (err) => {
@@ -175,7 +178,7 @@
         <label for="thumbnail">Image de miniature (vignette), au format 16:9 :</label>
         <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" on:change={handleThumbnailChange} {required} />
         {#if type === 'emissions'}
-          <label for="date">Date de diffusion</label>
+          <label for="date">Date de diffusion :</label>
           <div class="flex-date">
             <input type="date" id="date" bind:value={showDate.date} />
             <input type="time" bind:value={showDate.time} />

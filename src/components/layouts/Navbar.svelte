@@ -1,17 +1,29 @@
 <script lang="ts">
   import NavbarLink from './NavbarLink.svelte'
-  import { page } from '$app/stores'
+  import { liveStream$ } from '$services/store'
 
   let mobileNavOpen: boolean = false
+  let navbarStyle = ''
+  let mobileStyle = ''
+
+  liveStream$.subscribe((value) => {
+    if (value) {
+      navbarStyle = 'top: 49px'
+      mobileStyle = 'margin-top: 64px'
+    } else {
+      navbarStyle = ''
+      mobileStyle = ''
+    }
+  })
 </script>
 
-<nav>
+<nav style={navbarStyle}>
   <div class="content mobile">
     <button class="menu" on:click={() => (mobileNavOpen = true)}><i class="fa-solid fa-bars" /></button>
   </div>
   <div class="content" class:open={mobileNavOpen}>
     <div class="nav">
-      <button class="close mobile" on:click={() => (mobileNavOpen = false)}><i class="fa-solid fa-times" /></button>
+      <button class="close mobile" on:click={() => (mobileNavOpen = false)} style={mobileStyle}><i class="fa-solid fa-times" /></button>
       <NavbarLink href="/" exact bind:mobileNavOpen>
         <strong>Accueil</strong>
       </NavbarLink>
@@ -31,7 +43,6 @@
   nav {
     background-color: var(--background-gray-color);
     margin: 0 auto 30px auto;
-
     position: sticky;
     top: 0;
     z-index: 100;
@@ -54,7 +65,7 @@
     }
 
     button.close {
-      margin-top: 0.1px;
+      margin-top: 0.05px;
       width: 100%;
     }
 
@@ -71,8 +82,10 @@
       display: block;
 
       div.nav {
+        position: relative;
         width: calc(100% - 25px);
         margin: 25px auto;
+        z-index: 10000000;
       }
 
       &.open {
@@ -85,6 +98,7 @@
     nav {
       position: relative;
       box-shadow: none;
+      top: 0 !important;
 
       .mobile {
         display: none !important;
@@ -99,6 +113,7 @@
           width: auto;
           margin: auto;
           display: flex;
+          z-index: 1;
         }
       }
     }

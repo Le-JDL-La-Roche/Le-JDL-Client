@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { PageData } from './$types'
   import ContentService from '$services/content.service'
-  import Post from '$components/lists/Post.svelte'
+  import Post from '$components/others/Post.svelte'
 
   export let data: PageData
 

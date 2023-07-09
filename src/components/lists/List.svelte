@@ -9,11 +9,7 @@
   export let articles: Article[] | undefined = undefined
   export let elements: (WebradioShow | Video | Article)[] | undefined = undefined
 
-  elements = shows || videos || articles || elements
-
-  if (!elements) {
-    throw new Error('No element provided')
-  }
+  $: elements = shows || videos || articles || elements
 </script>
 
 {#each elements || [] as element}

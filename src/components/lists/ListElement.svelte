@@ -49,7 +49,7 @@
     {#if 'article' in element}
       {@html content.getChapo(element.article)}
     {:else if 'description' in element}
-      {@html content.replaceNewLineByBr(content.markdownToHtml(element.description))}
+      {@html content.markdownToHtml(element.description)}
     {/if}
   </p>
 </a>
