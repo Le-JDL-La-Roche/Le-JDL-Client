@@ -1,47 +1,56 @@
 <script lang="ts">
   import type { WebradioShow } from '$models/features/webradio-show.model'
+  import WebradioModal from '$components/modals/WebradioModal.svelte'
 
   export let show: WebradioShow
+
+  let showWebradioModal = false
 
   let play = true
   let volume = 50
   let mute = false
-
-  function playPause() {
-    play = !play
-  }
-
-  function muteUnmute() {
-    mute = !mute
-  }
-
-  function unmute() {
-    mute = false
-  }
+  let showQuestions = false
 </script>
 
 <div class="container">
   <div class="content">
-    <button class="play" on:click={playPause}>
+    <button class="play" on:click={() => (play = !play)}>
       <i class={'fa-solid ' + (play ? 'fa-pause' : 'fa-play')} />
     </button>
 
     <div class="volume">
-      <button class="volume" on:click={muteUnmute}>
+      <button class="volume" on:click={() => (mute = !mute)}>
         <i
           class={'fa-solid ' +
             (volume >= 50 && !mute ? 'fa-volume-high' : volume > 0 && !mute ? 'fa-volume-low' : 'fa-volume-xmark')}
         />
       </button>
-      <input type="range" bind:value={volume} min="0" max="100" on:click={unmute} />
+      <input type="range" bind:value={volume} min="0" max="100" on:click={() => (mute = false)} />
     </div>
 
     <p class="title">
       <span class="live">En direct</span>
       <span class="title">{show.title}</span>
     </p>
+
+    <div class="actions">
+      <button
+        class="action"
+        on:click={() => {
+          showWebradioModal = true
+          showQuestions = true
+        }}
+      >
+        <i class="fa-solid fa-message" />
+      </button>
+      <button class="action" on:click={() => {showWebradioModal = true; showQuestions = false}}>
+        <i class="fa-solid fa-expand" />
+      </button>
+    </div>
   </div>
 </div>
+
+<WebradioModal bind:show={showWebradioModal} webradioShow={show} bind:play bind:mute bind:volume bind:showQuestions />
 
 <style lang="scss">
   div.container {
@@ -85,6 +94,15 @@
         width: 23px;
       }
     }
+
+    &.action {
+      display: block;
+      width: 35px !important;
+      flex: 35px;
+      font-size: 16px;
+      padding: 23px 0 22px;
+      margin: 0;
+    }
   }
 
   div.volume {
@@ -99,6 +117,12 @@
     input {
       opacity: 0;
     }
+  }
+
+  div.actions {
+    width: 80px;
+    display: flex;
+    flex-direction: row;
   }
 
   input[type='range'] {
@@ -138,6 +162,7 @@
   p.title {
     color: white;
     margin: 10px 0;
+    flex: 1;
 
     span.live {
       display: block;

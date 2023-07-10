@@ -183,10 +183,10 @@
             <input type="date" id="date" bind:value={showDate.date} />
             <input type="time" bind:value={showDate.time} />
           </div>
-          <input type="text" placeholder="ID de stream sur OBS (streamkey)" bind:value={streamId} {required} />
+          <input type="text" placeholder="ID du direct sur YouTube (après le ?v=) et sur OBS (streamkey)" bind:value={streamId} {required} />
           <input
             type="text"
-            placeholder="ID de podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
+            placeholder="ID du podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
             bind:value={podcastId}
             {required}
           />
@@ -258,6 +258,16 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
+
+    &:before {
+      content: '';
+      border-left: 1px solid var(--light-gray-color);
+      align-self: stretch;
+    }
+  }
+
+  div.add {
+    order: -1;
   }
 
   div.flex-date {
