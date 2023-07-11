@@ -12,6 +12,8 @@
 
   let showAddEditModal = false
   let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
+
+  $: shows = data.data && 'status' in data.data[0] ? (data.data as WebradioShow[]) : undefined
 </script>
 
 <svelte:head>
@@ -33,22 +35,27 @@
   {/if}
 </h2>
 
-<button
-  class="primary"
-  style="margin-bottom: 30px"
-  on:click={() => {
-    showAddEditModal = true
-    action = { action: 'add' }
-  }}
->
-  {#if data.type === 'emissions'}
-    <i class="fa-solid fa-plus" />&nbsp;&nbsp;Ajouter une émission
-  {:else if data.type === 'videos'}
-    <i class="fa-solid fa-plus" />&nbsp;&nbsp;Ajouter une vidéo
-  {:else}
-    <i class="fa-solid fa-plus" />&nbsp;&nbsp;Ajouter un article
+<div class="main-action">
+  <button
+    class="primary"
+    style="margin-bottom: 30px"
+    on:click={() => {
+      showAddEditModal = true
+      action = { action: 'add' }
+    }}
+  >
+    {#if data.type === 'emissions'}
+      <i class="fa-solid fa-plus" />&nbsp;&nbsp;Ajouter une émission
+    {:else if data.type === 'videos'}
+      <i class="fa-solid fa-plus" />&nbsp;&nbsp;Ajouter une vidéo
+    {:else}
+      <i class="fa-solid fa-plus" />&nbsp;&nbsp;Ajouter un article
+    {/if}
+  </button>
+  {#if data.type === 'emissions' && shows && shows.find((data) => data.status === 0)}
+    <a class="not-a" href="/admin/emissions/questions"><button class="secondary"><i class="fa-solid fa-message" /></button></a>
   {/if}
-</button>
+</div>
 
 {#each data.data || [] as element}
   <AdminList {element} bind:data bind:showAddEditModal bind:action />
@@ -63,3 +70,26 @@
 {/each}
 
 <AddEditElementModal {type} bind:show={showAddEditModal} {action} bind:data />
+
+<style lang="scss">
+  div.main-action {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+
+    button.primary {
+      flex: 1 1 87%;
+    }
+
+    a {
+      flex: 1 1 13%;
+      height: 37px;
+      margin-top: 30px;
+
+      button {
+        height: 37px;
+        margin: 0;
+      }
+    }
+  }
+</style>
