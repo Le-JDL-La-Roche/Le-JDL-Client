@@ -1,8 +1,10 @@
 <script lang="ts">
   import type { WebradioShow } from '$models/features/webradio-show.model'
   import WebradioModal from '$components/modals/WebradioModal.svelte'
+  import type { WebradioQuestion } from '$models/features/webradio-question.model'
 
   export let show: WebradioShow
+  export let questions: WebradioQuestion[]
 
   let showWebradioModal = false
 
@@ -50,7 +52,7 @@
   </div>
 </div>
 
-<WebradioModal bind:show={showWebradioModal} webradioShow={show} bind:play bind:mute bind:volume bind:showQuestions />
+<WebradioModal bind:show={showWebradioModal} webradioShow={show} bind:play bind:mute bind:volume bind:showQuestions bind:questions />
 
 <style lang="scss">
   div.container {

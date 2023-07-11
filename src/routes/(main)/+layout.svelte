@@ -21,7 +21,7 @@
 </script>
 
 {#if data.show}
-  <WebradioPlayer show={data.show} />
+  <WebradioPlayer show={data.show} questions={data.questions} />
 {/if}
 
 <Header />

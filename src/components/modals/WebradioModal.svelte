@@ -2,6 +2,11 @@
   import ModalTemplate from './ModalTemplate.svelte'
   import type { WebradioShow } from '$models/features/webradio-show.model'
   import ContentService from '$services/content.service'
+  import ApiWebradioService from '$services/api/api-webradio.service'
+  import io from '$services/api/socket.service'
+  import type { WebradioQuestion } from '$models/features/webradio-question.model'
+  import { onMount } from 'svelte'
+  import utils from '$services/utils'
 
   export let show: boolean
   export let webradioShow: WebradioShow
@@ -10,10 +15,38 @@
   export let volume: number
   export let mute: boolean
   export let showQuestions: boolean
+  export let questions: WebradioQuestion[]
 
   const content = new ContentService()
+  const apiWebradio = new ApiWebradioService()
 
-  async function sendQuestion() {}
+  let question: string
+
+  let questionsList: HTMLDivElement
+
+  $: if (show === true && questionsList) {
+    questionsList.scrollTop = questionsList.scrollHeight
+  }
+
+  async function sendQuestion() {
+    if ((question + '').replace(/\s/g, '').length && question) {
+      ;(await apiWebradio.postQuestion(question)).subscribe({
+        next: () => {
+          question = ''
+          io.emit('question')
+        },
+        error: (err) => {
+          console.error(err)
+        }
+      })
+    }
+  }
+
+  io.on('updateQuestions', async (questions_: WebradioQuestion[]) => {
+    questions = questions_
+    await utils.sleep(50)
+    questionsList.scrollTop = questionsList.scrollHeight
+  })
 </script>
 
 <ModalTemplate size={'l'} bind:show>
@@ -61,28 +94,34 @@
     </div>
 
     <div class="questions" class:showQuestions>
-      <div class="in-questions">
-        <div class="questions-header">
-          <button class="secondary" on:click={() => (showQuestions = false)}><i class="fa-solid fa-caret-left" /></button>
-          <p class="section-title"><strong>Questions</strong></p>
-        </div>
-        <p style="font-size: 14px; margin-top: 0">
-          Vous pouvez poser des questions ici.<br />
-          <span style="color: #c83232">Vos questions sont publiques ; merci d'être respectueux des autres.</span>
-        </p>
+      <div class="questions-header">
+        <button class="secondary" on:click={() => (showQuestions = false)}><i class="fa-solid fa-caret-left" /></button>
+        <p class="section-title"><strong>Questions</strong></p>
+      </div>
+      <p style="font-size: 14px; margin-top: 0">
+        Vous pouvez poser des questions ici.<br />
+        <span style="color: #c83232">Vos questions sont publiques ; merci d'être respectueux des autres.</span>
+      </p>
+      <div class="questions-list" bind:this={questionsList}>
+        {#each questions as question}
+          <p class="info">
+            {new Date(+question.date * 1000).getHours().toString().padStart(2, '0')}:{new Date(+question.date * 1000)
+              .getMinutes()
+              .toString()
+              .padStart(2, '0')}
+          </p>
+          <p class="question-text">{question.question}</p>
+        {/each}
       </div>
 
       <form on:submit|preventDefault={sendQuestion}>
-        <input type="text" placeholder="Posez votre question ici..." />
-        <button type="submit" class="secondary"><i class="fa-solid fa-paper-plane" /></button>
+        <input type="text" placeholder="Posez votre question ici..." bind:value={question} enterkeyhint="send" />
+        <button type="submit" class="secondary" disabled={!(question + '').replace(/\s/g, '').length || !question}
+          ><i class="fa-solid fa-paper-plane" /></button
+        >
       </form>
     </div>
   </div>
-
-  <!-- <div class="actions">
-      <p class="error">{error}</p>
-      <button class="primary">{action.action === 'add' ? 'Ajouter' : 'Modifier'}</button>
-    </div> -->
 </ModalTemplate>
 
 <style lang="scss">
@@ -164,7 +203,6 @@
     flex-direction: column;
     min-width: 100%;
     width: 100%;
-    // height: 100%;
     left: 0;
     position: relative;
     transition: left 0.3s;
@@ -175,23 +213,31 @@
       gap: 15px;
       align-items: center;
 
-      p.title {
-        margin: 0;
-      }
-
       button.secondary {
         width: 35px;
         margin: 0 0 15px 0;
       }
     }
 
-    div.in-questions {
+    div.questions-list {
       flex: 1;
+      overflow-y: auto;
+    }
+
+    p.info {
+      font-size: 14px;
+      color: var(--dark-gray-color);
+      margin: 0 7px 3px 0;
+    }
+
+    p.question-text {
+      margin-top: 0;
     }
 
     form {
       display: flex;
       flex-direction: row;
+      margin-top: 20px;
 
       input {
         margin: 0 15px 0 0;
@@ -314,10 +360,6 @@
         width: auto;
 
         div.questions-header {
-          p.title {
-            margin: 0 0 15px 0;
-          }
-
           button.secondary {
             display: none;
           }
