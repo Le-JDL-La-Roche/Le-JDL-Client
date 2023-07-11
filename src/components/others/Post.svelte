@@ -5,8 +5,11 @@
   import { api } from '$services/store'
   import InstagramVideo from '$components/players/InstagramVideo.svelte'
   import AushaPlayer from '$components/players/AushaPlayer.svelte'
+  import type { Article } from '$models/features/article.model'
+  import type { Video } from '$models/features/video.model'
+  import type { WebradioShow } from '$models/features/webradio-show.model'
 
-  export let data: PageData
+  export let data: { data: WebradioShow | Video | Article; type: string }
   export let preview = false
 
   const content = new ContentService()

@@ -45,16 +45,11 @@ export const load: PageLoad = async () => {
   })
   ;(await apiEnv.getJournalists()).subscribe({
     next: (res) => {
-      // order by name
       data.journalists =
         res.body.data?.journalists.sort((a, b) => {
-          if (a.name.split(' ')[1] < b.name.split(' ')[1]) {
-            return -1
-          } else {
-            return 1
-          }
+          if (a.name.split(' ')[1] < b.name.split(' ')[1]) return -1
+          else return 1
         }) || []
-      // data.journalists = res.body.data?.journalists || []
     }
   })
 

@@ -4,6 +4,7 @@ import type { DataHttpResponse } from '$models/responses/data-http-response.mode
 import { Buffer } from 'buffer'
 import { api } from '$services/store'
 import type { WebradioShow } from '$models/features/webradio-show.model'
+import type { WebradioQuestion } from '$models/features/webradio-question.model'
 
 export default class ApiWebradioService {
   async getPublishedShows() {
@@ -30,7 +31,6 @@ export default class ApiWebradioService {
     return await http.post<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows`, body)
   }
 
-  
   async putShow(show: Partial<WebradioShow>, id: number | string) {
     let body = new FormData()
     for (const [key, value] of Object.entries(show)) {
@@ -45,5 +45,17 @@ export default class ApiWebradioService {
 
   async deleteShow(id: number | string) {
     return await http.delete<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/${id}`)
+  }
+
+  async getCurrentShowQuestions() {
+    return await http.get<DataHttpResponse<{ questions: WebradioQuestion[] }>>(`${api}/webradio/questions/current`)
+  }
+
+  async postQuestion(question: WebradioQuestion['question']) {
+    return await http.post<DataHttpResponse<{ questions: WebradioQuestion[] }>>(`${api}/webradio/questions`, { question })
+  }
+
+  async deleteQuestion(id: number | string) {
+    return await http.delete<DataHttpResponse<{ questions: WebradioQuestion[] }>>(`${api}/webradio/questions/${id}`)
   }
 }

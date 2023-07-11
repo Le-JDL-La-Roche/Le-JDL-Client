@@ -9,6 +9,7 @@
   import ApiVideosService from '$services/api/api-videos.service'
   import ApiArticlesService from '$services/api/api-articles.service'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
+  import io from '$services/api/socket.service'
 
   export let element: WebradioShow | Video | Article
   export let data: PageData
@@ -31,19 +32,21 @@
       ;(await apiWebradio.putShow({ status: 0 }, show.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
+          io.emit('launchLiveStream')
         },
-        error: (resp) => {}
+        error: (err) => {}
       })
     }
   }
-
+  
   async function stopLivestream(show: WebradioShow | Video | Article) {
     if ('status' in show) {
       ;(await apiWebradio.putShow({ status: 1 }, show.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
+          io.emit('stopLiveStream')
         },
-        error: (resp) => {}
+        error: (err) => {}
       })
     }
   }
@@ -54,7 +57,7 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
         },
-        error: (resp) => {}
+        error: (err) => {}
       })
     }
   }
