@@ -18,6 +18,7 @@
     data.show = false
     liveStream$.set(false)
   })
+
 </script>
 
 {#if data.show}

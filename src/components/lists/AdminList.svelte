@@ -38,7 +38,7 @@
       })
     }
   }
-  
+
   async function stopLivestream(show: WebradioShow | Video | Article) {
     if ('status' in show) {
       ;(await apiWebradio.putShow({ status: 1 }, show.id || 0)).subscribe({
@@ -257,6 +257,7 @@
     }
 
     button.secondary {
+      height: 31px;
       margin-top: 0;
 
       i.fa-solid {

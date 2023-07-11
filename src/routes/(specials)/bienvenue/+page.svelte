@@ -24,9 +24,8 @@
 
 <style lang="scss">
   div.main {
-    background: linear-gradient(137deg, rgba(9, 9, 121, 1) 0%, rgba(0, 194, 255, 1) 100%);
     background: linear-gradient(137deg, #606c88, #191654);
-    min-height: 100vh;
+    min-height: calc(100vh - 50px);
     padding-top: 50px;
   }
 
