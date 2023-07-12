@@ -130,18 +130,6 @@
       flex-direction: row;
       gap: 15px;
 
-      div.edit {
-        display: flex;
-        flex-direction: row;
-        gap: 15px;
-
-        button.secondary {
-          margin: 0;
-          width: 31px;
-          height: 31px;
-        }
-      }
-
       button.secondary {
         height: 31px;
         margin-top: 0;
