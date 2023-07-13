@@ -2,8 +2,9 @@
 
 ### 1<sup>er</sup> septembre 2023 `v2.0.0`
 - Migration vers SvelteKit (Angular -> SvelteKit)
-- Nouveau système de direct Webradio
+- Amélioration du système de direct Webradio
 - Déplacement des pages *A propos* et *Mises à jour* sur GitHub
+- Gestion des cookies
 - Espace administrateur
 - Amélioration du design
 - *Open source*
