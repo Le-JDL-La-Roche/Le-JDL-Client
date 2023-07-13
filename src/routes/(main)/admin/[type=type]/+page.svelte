@@ -27,7 +27,7 @@
 <h2>
   <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp;
   {#if data.type === 'emissions'}
-    Gérer les émissions de radio et podcasts
+    Gérer les émissions de radio
   {:else if data.type === 'videos'}
     Gérer les vidéos
   {:else}
@@ -38,7 +38,6 @@
 <div class="main-action">
   <button
     class="primary"
-    style="margin-bottom: 30px"
     on:click={() => {
       showAddEditModal = true
       action = { action: 'add' }
@@ -79,16 +78,16 @@
 
     button.primary {
       flex: 1 1 87%;
+      margin: 0 0 30px 0;
     }
 
     a {
       flex: 1 1 13%;
       height: 37px;
-      margin-top: 30px;
 
       button {
         height: 37px;
-        margin: 0;
+        margin: 0 0 30px 0;
       }
     }
   }

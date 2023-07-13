@@ -9,6 +9,9 @@
   let showWebradioModal = false
 
   let play = true
+  /**
+   * TODO Gérer les cookies (en fonction de l'autorisation) pour le volume
+   */
   let volume = 50
   let mute = false
   let showQuestions = false
@@ -45,14 +48,28 @@
       >
         <i class="fa-solid fa-message" />
       </button>
-      <button class="action" on:click={() => {showWebradioModal = true; showQuestions = false}}>
+      <button
+        class="action"
+        on:click={() => {
+          showWebradioModal = true
+          showQuestions = false
+        }}
+      >
         <i class="fa-solid fa-expand" />
       </button>
     </div>
   </div>
 </div>
 
-<WebradioModal bind:show={showWebradioModal} webradioShow={show} bind:play bind:mute bind:volume bind:showQuestions bind:questions />
+<WebradioModal
+  bind:show={showWebradioModal}
+  webradioShow={show}
+  bind:play
+  bind:mute
+  bind:volume
+  bind:showQuestions
+  bind:questions
+/>
 
 <style lang="scss">
   div.container {
@@ -62,6 +79,7 @@
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 5px 5px #00000030;
   }
 
   div.content {

@@ -4,15 +4,12 @@
 
   let mobileNavOpen: boolean = false
   let navbarStyle = ''
-  let mobileStyle = ''
 
   liveStream$.subscribe((value) => {
     if (value) {
       navbarStyle = 'top: 61px'
-      mobileStyle = 'margin-top: 76px'
     } else {
       navbarStyle = ''
-      mobileStyle = ''
     }
   })
 </script>
@@ -23,7 +20,7 @@
   </div>
   <div class="content" class:open={mobileNavOpen}>
     <div class="nav">
-      <button class="close mobile" on:click={() => (mobileNavOpen = false)} style={mobileStyle}><i class="fa-solid fa-times" /></button>
+      <button class="close mobile" on:click={() => (mobileNavOpen = false)}><i class="fa-solid fa-times" /></button>
       <NavbarLink href="/" exact bind:mobileNavOpen>
         <strong>Accueil</strong>
       </NavbarLink>
@@ -33,7 +30,6 @@
       <NavbarLink href="/sciences" bind:mobileNavOpen>Sciences</NavbarLink>
       <NavbarLink href="/tech" bind:mobileNavOpen>Tech</NavbarLink>
       <NavbarLink href="/laroche" bind:mobileNavOpen>La Roche</NavbarLink>
-      <!-- <img src="/assets/images/new.png" alt="New" width="30" style="position: absolute; top: -3px; left: -3px; opacity: 93%" /> -->
       <NavbarLink href="/radio" bind:mobileNavOpen customClass="podcasts">Podcasts radio</NavbarLink>
     </div>
   </div>
@@ -45,7 +41,7 @@
     margin: 0 auto 30px auto;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
     box-shadow: 0 5px 5px #00000020;
 
     button.close,
@@ -99,6 +95,7 @@
       position: relative;
       box-shadow: none;
       top: 0 !important;
+      z-index: 100;
 
       .mobile {
         display: none !important;

@@ -57,11 +57,15 @@
       <div class="show-content">
         <p class="section-title"><strong>Emission</strong></p>
         <div class="in-show-content">
-          <div class="youtube">
-            Cette émission est également disponible en vidéo sur <a
-              href={'https://youtube.com/watch?v=' + webradioShow.streamId}
-              target="_blank"
-              on:click={() => (play = false)}>YouTube</a
+          <div class="youtube" style="margin: 10px 0 0 10px;">
+            <img
+              src="/assets/images/new.png"
+              alt="New"
+              width="30"
+              style="position: absolute; top: -10px; left: -10px; opacity: 93%;"
+            />Cette émission est également disponible en vidéo sur
+            <a href={'https://youtube.com/watch?v=' + webradioShow.streamId} target="_blank" on:click={() => (play = false)}
+              >YouTube</a
             > !
           </div>
 
@@ -154,6 +158,7 @@
     padding: 15px;
     border-radius: 5px;
     background-color: #ffe5e5;
+    position: relative;
   }
 
   div.showQuestions {

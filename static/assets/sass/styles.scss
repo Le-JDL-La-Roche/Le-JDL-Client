@@ -53,6 +53,10 @@ li {
   line-height: 1.5;
 }
 
+p.error {
+  color: #c83232
+}
+
 a:not(.not-a),
 span.like-a {
   color: var(--secondary-red-color);
@@ -68,12 +72,6 @@ a.not-a {
 
 code {
   font-family: 'Consolas', monospace;
-}
-
-#error {
-  color: #c83232;
-  position: relative;
-  bottom: -10px;
 }
 
 button {

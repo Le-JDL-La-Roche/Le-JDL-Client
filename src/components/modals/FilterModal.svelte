@@ -11,14 +11,16 @@
   $: orderBy = 'date'
 
   function submit() {
-    cookies.add({ name: 'SHOW_ARTICLES', value: showArticles + '' })
-    cookies.add({ name: 'ORDER_BY', value: orderBy === 'title' ? 'title' : orderBy === 'type' ? 'type' : 'date' })
+    if (cookies.get('COOKIES') === '1') {
+      cookies.add({ name: 'SHOW_ARTICLES', value: showArticles + '' })
+      cookies.add({ name: 'ORDER_BY', value: orderBy === 'title' ? 'title' : orderBy === 'type' ? 'type' : 'date' })
+    }
     show = false
     invalidateAll()
   }
 
   $: if (show) {
-    showArticles = cookies.get('SHOW_ARTICLES') === 'true'
+    showArticles = cookies.get('SHOW_ARTICLES') === 'false' ? false : true
     orderBy = cookies.get('ORDER_BY') === 'title' ? 'title' : cookies.get('ORDER_BY') === 'type' ? 'type' : 'date'
   }
 </script>
@@ -26,6 +28,10 @@
 <ModalTemplate size={'s'} bind:show>
   <form on:submit|preventDefault={submit}>
     <h3>Filtrer et Trier</h3>
+
+    {#if cookies.get('COOKIES') !== '1'}
+      <p class="error">Vous devez accepter les cookies pour pouvoir filtrer et trier les vidéos et articles.</p>
+    {/if}
 
     <p class="section-title">Filtrer :</p>
     <label for="show-videos">

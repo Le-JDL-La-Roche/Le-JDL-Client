@@ -6,6 +6,9 @@
   import { WebradioChart } from '$services/charts/webradio-charts.service'
   import { VideoChart } from '$services/charts/videos-chart.services'
   import { ArticlesChart } from '$services/charts/articles-chart.service'
+  import ApiEnvService from '$services/api/api-env.service'
+  import type { Journalist } from '$models/data/journalist.model'
+  import AddEditJournalistModal from '$components/modals/AddEditJournalistModal.svelte'
 
   export let data: PageData
 
@@ -15,7 +18,7 @@
 
   let webradioCanvas: HTMLCanvasElement
   let webradioChart: WebradioChart
-  
+
   let videosCanvas: HTMLCanvasElement
   let videosChart: VideoChart
   let videosDisplay: 'category' | 'type' = 'category'
@@ -32,11 +35,11 @@
 </script>
 
 <svelte:head>
-  <title>Informations du Blog • Le JDL - La Roche</title>
+  <title>Statistiques • Le JDL - La Roche</title>
 </svelte:head>
 
 <h2>
-  <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp; Informations du Blog
+  <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp; Statistiques du Blog
 </h2>
 
 <select bind:value={visitsRange} class="range" on:change={() => visitsChart.updateRange(visitsRange)}>
