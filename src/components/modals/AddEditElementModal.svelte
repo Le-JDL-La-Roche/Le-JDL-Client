@@ -5,11 +5,13 @@
   import ApiArticlesService from '$services/api/api-articles.service'
   import MarkdownEditor from '$components/others/MarkdownEditor.svelte'
   import Post from '$components/others/Post.svelte'
+  import AskGenerateAuthorizationModal from './AskGenerateAuthorizationModal.svelte'
   import type { WebradioShow } from '$models/features/webradio-show.model'
   import type { Video } from '$models/features/video.model'
   import type { Article } from '$models/features/article.model'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
   import io from '$services/api/socket.service'
+  import utils from '$services/utils'
 
   export let data: PageData
   export let show: boolean
@@ -19,6 +21,8 @@
   const apiWebradio = new ApiWebradioService()
   const apiVideos = new ApiVideosService()
   const apiArticles = new ApiArticlesService()
+
+  let showGenerationModal = false
 
   $: required = false as boolean
   $: title = '' as string
@@ -109,7 +113,7 @@
     if (type === 'emissions') {
       exec = action.action === 'add' ? apiWebradio.postShow : apiWebradio.putShow
       ;(await exec(element.data as WebradioShow, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
-        next: (res) => {
+        next: async (res) => {
           data.data = res.body.data?.shows || []
           if ((element.data as WebradioShow).status === 0) {
             io.emit('launchLiveStream', element.data as WebradioShow)
@@ -117,6 +121,8 @@
             io.emit('stopLiveStream')
           }
           show = false
+          await utils.sleep(300)
+          showGenerationModal = true
         },
         error: (err) => {
           error = err.body.message
@@ -125,9 +131,11 @@
     } else if (type === 'videos') {
       exec = action.action === 'add' ? apiVideos.postVideo : apiVideos.putVideo
       ;(await exec(element.data as Video, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
-        next: (res) => {
+        next: async (res) => {
           data.data = res.body.data?.videos || []
           show = false
+          await utils.sleep(300)
+          showGenerationModal = true
         },
         error: (err) => {
           error = err.body.message
@@ -136,9 +144,11 @@
     } else {
       exec = action.action === 'add' ? apiArticles.postArticle : apiArticles.putArticle
       ;(await exec(element.data as Article, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
-        next: (res) => {
+        next: async (res) => {
           data.data = res.body.data?.articles || []
           show = false
+          await utils.sleep(300)
+          showGenerationModal = true
         },
         error: (err) => {
           error = err.body.message
@@ -183,7 +193,12 @@
             <input type="date" id="date" bind:value={showDate.date} />
             <input type="time" bind:value={showDate.time} />
           </div>
-          <input type="text" placeholder="ID du direct sur YouTube (après le ?v=) et sur OBS (streamkey)" bind:value={streamId} {required} />
+          <input
+            type="text"
+            placeholder="ID du direct sur YouTube (après le ?v=) et sur OBS (streamkey)"
+            bind:value={streamId}
+            {required}
+          />
           <input
             type="text"
             placeholder="ID du podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
@@ -246,6 +261,8 @@
     </div>
   </form>
 </ModalTemplate>
+
+<AskGenerateAuthorizationModal bind:type bind:element={element.data} bind:show={showGenerationModal} />
 
 <style lang="scss">
   @use '../../../static/assets/sass/modal.scss';

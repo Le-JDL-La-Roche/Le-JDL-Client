@@ -5,6 +5,7 @@ import ApiEnvService from '$services/api/api-env.service'
 import { goto } from '$app/navigation'
 import { error } from '@sveltejs/kit'
 import type { Env } from '$models/data/env.model'
+import type { Journalist } from '$models/data/journalist.model'
 
 const cookies = new CookiesService()
 const apiAuth = new ApiAuthService()

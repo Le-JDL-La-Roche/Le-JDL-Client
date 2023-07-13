@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { cubicInOut } from 'svelte/easing'
-  import { unscale } from '$services/transitions'
+  import { scale } from 'svelte/transition'
 
   export let size: 's' | 'm' | 'l' = 'm'
   export let show: boolean
 </script>
 
 {#if show}
-  <div class="modal-background" transition:unscale>
+  <div class="modal-background" transition:scale={{ start: 1.5, duration: 300 }}>
     <div class={'modal size-' + size}>
       <section class="close">
         <button class="close secondary" on:click={() => (show = false)}><i class="fa-solid fa-times" /></button>

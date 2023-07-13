@@ -27,7 +27,7 @@
 <h2>
   <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp;
   {#if data.type === 'emissions'}
-    Gérer les émissions de radio et podcasts
+    Gérer les émissions de radio
   {:else if data.type === 'videos'}
     Gérer les vidéos
   {:else}

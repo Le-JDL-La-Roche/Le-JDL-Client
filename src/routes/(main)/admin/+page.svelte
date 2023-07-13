@@ -45,10 +45,10 @@
       <button class="primary"><i class="fa-solid fa-file" />&nbsp;&nbsp;Gérer les articles</button>
     </a>
     <a class="not-a" href="/admin/journalistes">
-      <button class="primary"><i class="fa-solid fa-gear" />&nbsp;&nbsp;Gestion des journalistes</button>
+      <button class="primary"><i class="fa-solid fa-user" />&nbsp;&nbsp;Gestion des journalistes</button>
     </a>
-    <a class="not-a" href="/admin/infos">
-      <button class="primary"><i class="fa-solid fa-circle-info" />&nbsp;&nbsp;Informations sur le Blog</button>
+    <a class="not-a" href="/admin/stats">
+      <button class="primary"><i class="fa-solid fa-circle-info" />&nbsp;&nbsp;Statistiques du Blog</button>
     </a>
   </div>
 {/if}
@@ -57,7 +57,6 @@
   button.logout {
     position: relative;
     width: auto;
-    top: -5px;
     z-index: 10;
     padding: 10px;
     border-radius: 3px;

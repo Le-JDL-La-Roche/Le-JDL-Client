@@ -1,6 +1,6 @@
 import Chart from 'chart.js/auto'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import type { PageData } from '../../routes/(main)/admin/infos/$types'
+import type { PageData } from '../../routes/(main)/admin/stats/$types'
 import type { Env } from '$models/data/env.model'
 import utils from '../utils'
 

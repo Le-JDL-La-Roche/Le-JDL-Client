@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { PageData } from './$types'
   import AddEditJournalistModal from '$components/modals/AddEditJournalistModal.svelte'
   import type { Journalist } from '$models/data/journalist.model'
   import ApiEnvService from '$services/api/api-env.service'
+  import type { PageData } from './$types'
 
   export let data: PageData
 
@@ -25,7 +25,7 @@
 </script>
 
 <svelte:head>
-  <title>Gestion des journalistes • Le JDL - La Roche</title>
+  <title>Journalistes • Le JDL - La Roche</title>
 </svelte:head>
 
 <h2>
@@ -45,7 +45,7 @@
   {#each data.data || [] as journalist}
     <div class="element">
       <div class="left">
-        <p class="title">{journalist.name}</p>
+        <p class="name">{journalist.name}</p>
         <p class="content">{journalist.class}</p>
       </div>
       <div class="actions">
@@ -87,7 +87,7 @@
       flex: 1;
     }
 
-    p.title {
+    p.name {
       font-size: 18px;
       font-weight: 600;
       margin: 0 0 5px 0;
@@ -148,7 +148,7 @@
         flex: 1;
       }
 
-      p.title {
+      p.name {
         max-height: 30px;
         line-clamp: 1;
         -webkit-line-clamp: 1;
