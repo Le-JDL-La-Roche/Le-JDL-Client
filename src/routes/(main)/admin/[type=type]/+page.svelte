@@ -38,7 +38,6 @@
 <div class="main-action">
   <button
     class="primary"
-    style="margin-bottom: 30px"
     on:click={() => {
       showAddEditModal = true
       action = { action: 'add' }
@@ -79,16 +78,16 @@
 
     button.primary {
       flex: 1 1 87%;
+      margin: 0 0 30px 0;
     }
 
     a {
       flex: 1 1 13%;
       height: 37px;
-      margin-top: 30px;
 
       button {
         height: 37px;
-        margin: 0;
+        margin: 0 0 30px 0;
       }
     }
   }

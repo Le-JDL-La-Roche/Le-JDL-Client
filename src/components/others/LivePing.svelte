@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { WebradioShow } from '$models/features/webradio-show.model'
-  import { scale } from 'svelte/transition'
+  import { scale, slide } from 'svelte/transition'
 
   export let show: boolean
   export let webradioShow: WebradioShow

@@ -3,8 +3,11 @@ import ApiWebradioService from '$services/api/api-webradio.service'
 import type { WebradioShow } from '$models/features/webradio-show.model'
 import { liveStream$ } from '$services/store'
 import type { WebradioQuestion } from '$models/features/webradio-question.model'
+import CookiesService from '$services/cookies.service'
+import { showAcceptCookies$ } from '$services/store'
 
 const apiWebradio = new ApiWebradioService()
+const cookies = new CookiesService()
 
 export const load: LayoutLoad = async () => {
   let show: WebradioShow | false = false
@@ -28,5 +31,8 @@ export const load: LayoutLoad = async () => {
     }
   })
 
-  return { show: show as WebradioShow | false, questions }
+  let acceptCookies = cookies.get('COOKIES') ? true : false
+  showAcceptCookies$.set(!cookies.get('COOKIES'))
+
+  return { show: show as WebradioShow | false, questions, acceptCookies }
 }

@@ -49,7 +49,7 @@
   <!-- svelte-ignore a11y-autofocus -->
   <input type="text" placeholder="Nom d'utilisateur" autocapitalize="off" autofocus bind:value={username} required />
   <input type="password" placeholder="Mot de passe" bind:value={password} required />
-  <button type="submit" class="primary" id="login-button">{button}</button>
+  <button type="submit" class="primary">{button}</button>
 </form>
 
 <style lang="scss">

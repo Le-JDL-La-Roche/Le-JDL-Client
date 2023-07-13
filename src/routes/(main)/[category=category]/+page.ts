@@ -20,11 +20,11 @@ export const load: PageLoad = async ({ params }) => {
   let videos: Video[] = []
   let articles: Article[] = []
 
-  if (!cookies.get('SHOW_ARTICLES')) {
+  if (!cookies.get('SHOW_ARTICLES') && cookies.get('COOKIES') === '1') {
     cookies.add({ name: 'SHOW_ARTICLES', value: 'true' })
   }
 
-  if (!cookies.get('ORDER_BY')) {
+  if (!cookies.get('ORDER_BY') && cookies.get('COOKIES') === '1') {
     cookies.add({ name: 'ORDER_BY', value: 'date' })
   }
 
@@ -41,7 +41,7 @@ export const load: PageLoad = async ({ params }) => {
         videos = videos.filter((video) => video.category === utils.categoriesFr[category].id)
       }
     })
-    if (cookies.get('SHOW_ARTICLES') == 'true') {
+    if (cookies.get('SHOW_ARTICLES') == 'true' || !cookies.get('SHOW_ARTICLES')) {
       ;(await apiArticles.getArticles()).subscribe({
         next: (res) => {
           articles = res.body.data?.articles || []
@@ -49,7 +49,7 @@ export const load: PageLoad = async ({ params }) => {
         }
       })
     }
-    if (cookies.get('ORDER_BY') == 'date') {
+    if (cookies.get('ORDER_BY') == 'date' || !cookies.get('ORDER_BY')) {
       data = [...videos, ...articles].sort((a: Video | Article, b: Video | Article) => +a.date - +b.date).reverse()
     } else if (cookies.get('ORDER_BY') == 'type') {
       data = [...videos, ...articles]

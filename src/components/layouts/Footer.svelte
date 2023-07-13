@@ -1,4 +1,8 @@
-<footer id="footer ">
+<script lang="ts">
+  import { showAcceptCookies$ } from '$services/store'
+</script>
+
+<footer>
   <div class="content">
     <p style="width: 100%; text-align: center; margin-bottom: 25px; font-size: 18px;">
       <strong>Rejoignez-nous !</strong>
@@ -34,6 +38,11 @@
     </div>
 
     <div class="utils">
+      <p>
+        <button class="secondary" style="margin: 0; width: auto" on:click={() => showAcceptCookies$.set(true)}
+          ><i class="fa-solid fa-cookie" />&nbsp;&nbsp;Gérer les cookies</button
+        >
+      </p>
       <p>
         <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/README.md#a-propos-du-blog" target="_blank">
           A propos du Blog
@@ -106,6 +115,7 @@
     font-size: 14px;
     width: 100%;
     flex-direction: row;
+    align-items: center;
 
     p {
       flex: 1;

@@ -7,11 +7,13 @@
   import io from '$services/api/socket.service'
   import { liveStream$ } from '$services/store'
   import LivePing from '$components/others/LivePing.svelte'
-  import { scale } from 'svelte/transition'
+  import AskCookies from '$components/others/AskCookies.svelte'
+  import { showAcceptCookies$ } from '$services/store'
 
   export let data: LayoutData
 
   let showPing = data.show ? true : false
+  let showCookies = data.acceptCookies ? false : true
 
   io.on('liveStreamLaunched', (show: WebradioShow) => {
     data.show = show
@@ -23,10 +25,14 @@
     data.show = false
     liveStream$.set(false)
   })
+
+  showAcceptCookies$.subscribe((value) => {
+    showCookies = value
+  })
 </script>
 
 {#if data.show}
-      <WebradioPlayer show={data.show} questions={data.questions} />
+  <WebradioPlayer show={data.show} questions={data.questions} />
 {/if}
 
 <Header />
@@ -36,6 +42,10 @@
 </div>
 
 <Footer />
+
+{#if showCookies}
+  <AskCookies show={showCookies} />
+{/if}
 
 {#if showPing && data.show}
   <LivePing bind:webradioShow={data.show} bind:show={showPing} />

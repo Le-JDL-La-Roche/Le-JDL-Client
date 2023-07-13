@@ -60,8 +60,8 @@
   @media screen and (min-width: 850px) {
     div.modal-background {
       div.modal {
-        max-height: 300px;
-        margin: 0 auto 75px auto;
+        max-height: 350px;
+        margin: 0 auto 25px auto;
 
         &.size-s {
           width: 400px;
@@ -83,7 +83,7 @@
     @media screen and (min-width: 1150px) {
       div.modal-background {
         div.modal {
-          margin: 0 auto 150px auto;
+          margin: 0 auto 20px auto;
           max-height: 500px;
         }
       }
