@@ -65,11 +65,11 @@
       title = action.element.title
       date = action.element.date
       thumbnail = action.element.thumbnail
+      status = action.element.status
       if ('streamId' in action.element) {
         content = action.element.description
         streamId = action.element.streamId
         podcastId = action.element.podcastId || ''
-        status = action.element.status
         let d = new Date(+date * 1000).toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' }).split('/')
         showDate = {
           date: `${d[2]}-${d[1]}-${d[0]}`,
@@ -103,8 +103,8 @@
             status
           } as WebradioShow)
         : type === 'videos'
-        ? ({ title, description: content, thumbnail, videoId, category, type: videoType, author, date } as Video)
-        : ({ title, article: content, thumbnail, thumbnailSrc, category, author, date } as Article),
+        ? ({ title, description: content, thumbnail, videoId, category, type: videoType, author, date, status } as Video)
+        : ({ title, article: content, thumbnail, thumbnailSrc, category, author, date, status } as Article),
     type
   }
 
@@ -212,40 +212,47 @@
             <option value={1}>En attente de validation de publication par l'administration</option>
             <option value={2}>Publié au format podcast</option>
           </select>
-        {:else if type === 'videos'}
-          <select bind:value={category} {required}>
-            <option value={null} disabled selected>-- Rubrique --</option>
-            <option value={'news'}>Actualités</option>
-            <option value={'culture'}>Culture</option>
-            <option value={'sport'}>Sport</option>
-            <option value={'science'}>Sciences</option>
-            <option value={'tech'}>Tech</option>
-            <option value={'laroche'}>La Roche</option>
-          </select>
-          <select bind:value={videoType} {required}>
-            <option value={null} disabled selected>-- Type de vidéo --</option>
-            <option value={'instagram'}>Instagram</option>
-            <option value={'youtube'}>YouTube</option>
-          </select>
-          <input
-            type="text"
-            placeholder="ID de la vidéo (après ?v= sur YouTube, après /p/ sur Instagram)"
-            bind:value={videoId}
-            {required}
-          />
-          <input type="text" placeholder="Auteur" bind:value={author} {required} />
         {:else}
-          <input type="text" bind:value={thumbnailSrc} placeholder="Source de la miniature (site)" {required} />
-          <select bind:value={category} {required}>
-            <option value={null} disabled selected>-- Rubrique --</option>
-            <option value={'news'}>Actualités</option>
-            <option value={'culture'}>Culture</option>
-            <option value={'sport'}>Sport</option>
-            <option value={'science'}>Sciences</option>
-            <option value={'tech'}>Tech</option>
-            <option value={'laroche'}>La Roche</option>
+          <select bind:value={status} {required}>
+            <option value={null} disabled selected>-- Status de {type === 'videos' ? 'la video' : "l'article"} --</option>
+            <option value={-1}>Brouillon, en attente de l'autorisation de publication par l'administration</option>
+            <option value={2}>Publié</option>
           </select>
-          <input type="text" placeholder="Auteur" bind:value={author} {required} />
+          {#if type === 'videos'}
+            <select bind:value={category} {required}>
+              <option value={null} disabled selected>-- Rubrique --</option>
+              <option value={'news'}>Actualités</option>
+              <option value={'culture'}>Culture</option>
+              <option value={'sport'}>Sport</option>
+              <option value={'science'}>Sciences</option>
+              <option value={'tech'}>Tech</option>
+              <option value={'laroche'}>La Roche</option>
+            </select>
+            <select bind:value={videoType} {required}>
+              <option value={null} disabled selected>-- Type de vidéo --</option>
+              <option value={'instagram'}>Instagram</option>
+              <option value={'youtube'}>YouTube</option>
+            </select>
+            <input
+              type="text"
+              placeholder="ID de la vidéo (après ?v= sur YouTube, après /p/ sur Instagram)"
+              bind:value={videoId}
+              {required}
+            />
+            <input type="text" placeholder="Auteur" bind:value={author} {required} />
+          {:else}
+            <input type="text" bind:value={thumbnailSrc} placeholder="Source de la miniature (site)" {required} />
+            <select bind:value={category} {required}>
+              <option value={null} disabled selected>-- Rubrique --</option>
+              <option value={'news'}>Actualités</option>
+              <option value={'culture'}>Culture</option>
+              <option value={'sport'}>Sport</option>
+              <option value={'science'}>Sciences</option>
+              <option value={'tech'}>Tech</option>
+              <option value={'laroche'}>La Roche</option>
+            </select>
+            <input type="text" placeholder="Auteur" bind:value={author} {required} />
+          {/if}
         {/if}
       </div>
 

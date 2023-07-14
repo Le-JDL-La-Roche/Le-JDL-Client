@@ -7,8 +7,12 @@ import type { WebradioShow } from '$models/features/webradio-show.model'
 import type { Article } from '$models/features/article.model'
 
 export default class ApiArticlesService {
-  async getArticles() {
+  async getPublishedArticles() {
     return await http.get<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles`)
+  }
+
+  async getAllArticles() {
+    return await http.get<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles/all`)
   }
 
   async getArticle(id: number | string) {

@@ -7,8 +7,12 @@ import type { WebradioShow } from '$models/features/webradio-show.model'
 import type { Video } from '$models/features/video.model'
 
 export default class ApiVideosService {
-  async getVideos() {
+  async getPublishedVideos() {
     return await http.get<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos`)
+  }
+
+  async getAllVideos() {
+    return await http.get<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos/all`)
   }
 
   async getVideo(id: number | string) {

@@ -22,13 +22,14 @@
   const apiArticles = new ApiArticlesService()
 
   $: disabled =
-    data.type === 'emissions' && data.data?.find((show: WebradioShow | Video | Article) => 'status' in show && show.status === 0)
+    data.type === 'emissions' &&
+    data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && show.status === 0)
       ? true
       : false
   $: title = disabled ? 'Une émission est déjà en cours' : undefined
 
   async function startLivestream(show: WebradioShow | Video | Article) {
-    if ('status' in show) {
+    if ('streamId' in show) {
       ;(await apiWebradio.putShow({ status: 0 }, show.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
@@ -40,7 +41,7 @@
   }
 
   async function stopLivestream(show: WebradioShow | Video | Article) {
-    if ('status' in show) {
+    if ('streamId' in show) {
       ;(await apiWebradio.putShow({ status: 1 }, show.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
@@ -52,10 +53,28 @@
   }
 
   async function publishPodcast(show: WebradioShow | Video | Article) {
-    if ('status' in show) {
+    if ('streamId' in show) {
       ;(await apiWebradio.putShow({ status: 2 }, show.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
+        },
+        error: (err) => {}
+      })
+    }
+  }
+
+  async function publishElement(element: WebradioShow | Video | Article) {
+    if ('type' in element) {
+      ;(await apiVideos.putVideo({ status: 2 }, element.id || 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.videos || []
+        },
+        error: (err) => {}
+      })
+    } else if ('article' in element) {
+      ;(await apiArticles.putArticle({ status: 2 }, element.id || 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.articles || []
         },
         error: (err) => {}
       })
@@ -66,7 +85,7 @@
     if (!confirm(`Êtes-vous sûr de vouloir supprimer "${element.title}" ?`)) {
       return
     }
-    if ('status' in element) {
+    if ('streamId' in element) {
       ;(await apiWebradio.deleteShow(element.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
@@ -94,28 +113,27 @@
 <div class="element">
   <div class="left">
     <img src={`${api}/public/images/thumbnails/${element.thumbnail}`} alt={element.title} />
-    {#if 'article' in element}
-      <p class="info">
-        {utils.categoryToString(element.category)}&nbsp;&nbsp•&nbsp;&nbsp{utils.timestampToString(
-          +element.date
-        )}&nbsp;&nbsp;•&nbsp;&nbsp;{element.views || 0} vues
-      </p>
-    {:else if 'type' in element}
-      <p class="info">
-        {utils.categoryToString(element.category)}&nbsp;&nbsp•&nbsp;&nbsp{utils.timestampToString(+element.date)}
-      </p>
-    {:else if 'status' in element}
-      <p class="info">
-        {element.status === -1
-          ? 'Brouillon'
-          : element.status === 0
-          ? 'En direct'
-          : element.status === 1
-          ? 'En attente'
-          : 'Publié'}&nbsp;&nbsp•&nbsp;&nbsp{utils.timestampToString(+element.date)}
-      </p>
-    {/if}
-
+    <p class="info">
+      <span class="optional">
+        {#if 'podcastId' in element}
+          {element.status === -1
+            ? 'Brouillon'
+            : element.status === 0
+            ? 'En direct'
+            : element.status === 1
+            ? 'En attente'
+            : 'Publié'}&nbsp;&nbsp;•&nbsp;
+        {:else if 'category' in element}
+          {element.status === -1 ? 'Brouillon' : 'Publié'}&nbsp;&nbsp;• &nbsp;{utils.categoryToString(
+            element.category
+          )}&nbsp;&nbsp;•&nbsp;
+        {/if}
+      </span>
+      {utils.timestampToString(+element.date)}
+      {#if 'article' in element}
+        <span class="optional">&nbsp;•&nbsp;&nbsp;{element.views || 0} vues</span>
+      {/if}
+    </p>
     <p class="title">{element.title}</p>
 
     <p class="content">
@@ -136,6 +154,15 @@
         }}
       >
         <i class="fa-solid fa-pencil" />
+      </button>
+      <button
+        class="secondary"
+        on:click={() => {
+          showAddEditModal = true
+          action = { action: 'edit', element }
+        }}
+      >
+        <i class="fa-solid fa-file-circle-check" />
       </button>
       <button class="secondary" on:click={() => deleteElement(element)}><i class="fa-solid fa-trash" /></button>
       {#if 'streamId' in element}
@@ -158,7 +185,7 @@
         </a>
       {/if}
     </div>
-    {#if 'status' in element}
+    {#if 'streamId' in element}
       {#if element.status === -1}
         <button class="secondary red" on:click={() => startLivestream(element)} {disabled} {title}>
           <i class="fa-solid fa-video" />Démarrer
@@ -183,6 +210,10 @@
           </button>
         {/if}
       {/if}
+    {:else if 'status' in element && element.status === -1}
+      <button class="secondary green" on:click={() => publishElement(element)}>
+        <i class="fa-solid fa-check" />Publier
+      </button>
     {/if}
   </div>
 </div>
@@ -229,6 +260,10 @@
       font-size: 13px;
       color: var(--dark-gray-color);
       margin: 0 7px 3px 0;
+
+      span.optional {
+        display: none;
+      }
     }
 
     p.content {
@@ -299,6 +334,12 @@
         max-height: 30px;
         line-clamp: 1;
         -webkit-line-clamp: 1;
+      }
+
+      p.info {
+        span.optional {
+          display: inline;
+        }
       }
 
       p.content {

@@ -16,7 +16,7 @@
       ? "l'émission"
       : type === 'videos'
       ? 'la vidéo'
-      : "l'article"} <i>{element.title}</i>
+      : "l'article"} <i>{element.title}</i> ?
   </p>
   <div class="actions">
     <button class="primary">Générer</button>

@@ -44,7 +44,7 @@ export const load: PageLoad = async ({ params }) => {
       }
     })
   } else if (type === 'videos') {
-    ;(await apiVideos.getVideos()).subscribe({
+    ;(await apiVideos.getAllVideos()).subscribe({
       next: (res) => {
         data = res.body.data?.videos || []
       },
@@ -53,7 +53,7 @@ export const load: PageLoad = async ({ params }) => {
       }
     })
   } else {
-    ;(await apiArticles.getArticles()).subscribe({
+    ;(await apiArticles.getAllArticles()).subscribe({
       next: (res) => {
         data = res.body.data?.articles || []
       },

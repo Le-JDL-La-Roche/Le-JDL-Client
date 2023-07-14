@@ -314,7 +314,7 @@
 <style lang="scss">
   div.buttons {
     display: block;
-    border-radius: 5px 5px 0 0;
+    border-radius: 3px 3px 0 0;
     background-color: var(--mid-gray-color);
 
     div.section {
@@ -332,13 +332,13 @@
   }
 
   div.editor {
-    border-radius: 0 0 5px 5px;
+    border-radius: 0 0 3px 3px;
   }
 
   @media screen and (min-width: 850px) {
     div.buttons {
       display: flex;
-      border-radius: 5px 5px 0 0;
+      border-radius: 3px 3px 0 0;
       background-color: var(--mid-gray-color);
       gap: 15px;
     }
