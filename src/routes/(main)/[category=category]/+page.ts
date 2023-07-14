@@ -35,14 +35,14 @@ export const load: PageLoad = async ({ params }) => {
       }
     })
   } else {
-    ;(await apiVideos.getVideos()).subscribe({
+    ;;(await apiVideos.getPublishedVideos()).subscribe({
       next: (res) => {
         videos = res.body.data?.videos || []
         videos = videos.filter((video) => video.category === utils.categoriesFr[category].id)
       }
     })
     if (cookies.get('SHOW_ARTICLES') == 'true' || !cookies.get('SHOW_ARTICLES')) {
-      ;(await apiArticles.getArticles()).subscribe({
+      ;(await apiArticles.getPublishedArticles()).subscribe({
         next: (res) => {
           articles = res.body.data?.articles || []
           articles = articles.filter((article) => article.category === utils.categoriesFr[category].id)

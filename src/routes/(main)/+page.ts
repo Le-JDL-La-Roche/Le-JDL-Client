@@ -33,12 +33,12 @@ export const load: PageLoad = async () => {
       data.shows = res.body.data?.shows || []
     }
   })
-  ;(await apiVideos.getVideos()).subscribe({
+  ;(await apiVideos.getPublishedVideos()).subscribe({
     next: (res) => {
       data.videos = res.body.data?.videos || []
     }
   })
-  ;(await apiArticles.getArticles()).subscribe({
+  ;(await apiArticles.getPublishedArticles()).subscribe({
     next: (res) => {
       data.articles = res.body.data?.articles || []
     }

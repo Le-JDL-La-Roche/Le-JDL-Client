@@ -13,7 +13,7 @@
   let showAddEditModal = false
   let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
 
-  $: shows = data.data && 'status' in data.data[0] ? (data.data as WebradioShow[]) : undefined
+  $: shows = data.data && 'streamId' in data.data[0] ? (data.data as WebradioShow[]) : undefined
 </script>
 
 <svelte:head>
