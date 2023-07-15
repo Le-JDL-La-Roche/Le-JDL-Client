@@ -35,7 +35,7 @@ export const load: PageLoad = async ({ params }) => {
       }
     })
   } else {
-    ;;(await apiVideos.getPublishedVideos()).subscribe({
+    ;(await apiVideos.getPublishedVideos()).subscribe({
       next: (res) => {
         videos = res.body.data?.videos || []
         videos = videos.filter((video) => video.category === utils.categoriesFr[category].id)
