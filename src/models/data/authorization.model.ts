@@ -43,8 +43,8 @@ export interface GuestAuthorization {
   limitation?: [{value: string | null, checked: boolean}, {value: string | null, checked: boolean}]
 }
 
-interface Guest {
-  id: number
+export interface Guest {
+  id?: number
   name: string
   status: string
   authorization: boolean
