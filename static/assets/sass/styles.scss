@@ -109,7 +109,7 @@ button.secondary {
   }
 }
 
-input:not([type=checkbox]):not([type=radio]),
+input:not([type=checkbox]):not([type=radio]):not(.page),
 textarea,
 div.editor,
 select {

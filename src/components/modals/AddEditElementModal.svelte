@@ -12,11 +12,17 @@
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
   import io from '$services/api/socket.service'
   import utils from '$services/utils'
+  import type { Authorization, Guest } from '$models/data/authorization.model'
 
   export let data: PageData
   export let show: boolean
   export let type: 'emissions' | 'videos' | 'articles'
   export let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
+
+  export let showAddEditAuthorizationModal: boolean
+  export let authorizationModalElement: WebradioShow | Video | Article
+  export let authorizationModalType: 'emissions' | 'videos' | 'articles'
+  export let authorizationModalAction: { action: 'add' } | { action: 'edit'; authorization: Authorization }
 
   const apiWebradio = new ApiWebradioService()
   const apiVideos = new ApiVideosService()
@@ -122,7 +128,16 @@
           }
           show = false
           await utils.sleep(300)
-          showGenerationModal = true
+          if (
+            !(data.authorizations || []).find(
+              (a) => a.elementType === 'show' && a.elementId === (action.action === 'edit' ? action.element.id : 0)
+            )
+          ) {
+            showGenerationModal = true
+            authorizationModalElement = element.data as WebradioShow
+            authorizationModalType = 'emissions'
+            authorizationModalAction = { action: 'add' }
+          }
         },
         error: (err) => {
           error = err.body.message
@@ -135,7 +150,16 @@
           data.data = res.body.data?.videos || []
           show = false
           await utils.sleep(300)
-          showGenerationModal = true
+          if (
+            !(data.authorizations || []).find(
+              (a) => a.elementType === 'video' && a.elementId === (action.action === 'edit' ? action.element.id : 0)
+            )
+          ) {
+            showGenerationModal = true
+            authorizationModalElement = element.data as Video
+            authorizationModalType = 'videos'
+            authorizationModalAction = { action: 'add' }
+          }
         },
         error: (err) => {
           error = err.body.message
@@ -148,7 +172,16 @@
           data.data = res.body.data?.articles || []
           show = false
           await utils.sleep(300)
-          showGenerationModal = true
+          if (
+            !(data.authorizations || []).find(
+              (a) => a.elementType === 'article' && a.elementId === (action.action === 'edit' ? action.element.id : 0)
+            )
+          ) {
+            showGenerationModal = true
+            authorizationModalElement = element.data as Article
+            authorizationModalType = 'articles'
+            authorizationModalAction = { action: 'add' }
+          }
         },
         error: (err) => {
           error = err.body.message
@@ -269,7 +302,13 @@
   </form>
 </ModalTemplate>
 
-<AskGenerateAuthorizationModal bind:type bind:element={element.data} bind:show={showGenerationModal} />
+<AskGenerateAuthorizationModal
+  bind:show={showGenerationModal}
+  bind:showAddEditAuthorizationModal
+  bind:authorizationModalType
+  bind:authorizationModalElement
+  bind:authorizationModalAction
+/>
 
 <style lang="scss">
   @use '../../../static/assets/sass/modal.scss';

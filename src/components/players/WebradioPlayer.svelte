@@ -8,7 +8,7 @@
 
   let showWebradioModal = false
 
-  let play = true
+  let play = false
   /**
    * TODO Gérer les cookies (en fonction de l'autorisation) pour le volume
    */
