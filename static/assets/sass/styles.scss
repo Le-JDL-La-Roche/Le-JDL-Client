@@ -278,5 +278,20 @@ p.article h4 {
     }
 
   }
+}
 
+@media print {
+  body {
+    height: calc(2 * 29.685cm) !important;
+    min-height: calc(2 * 29.685cm) !important;
+    max-height: calc(2 * 29.6985m) !important;
+  }
+
+  div.content {
+    position: initial;
+  }
+
+  header, footer {
+    display: none;
+  }
 }

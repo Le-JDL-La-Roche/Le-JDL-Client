@@ -14,8 +14,12 @@
 
   const content = new ContentService()
 
-  if (type === 'emissions') authorization.content = authorization.content as WebradioAuthorization
-  else if (type === 'videos') authorization.content = authorization.content as VideoAuthorization
+  let allowDiv = ['']
+
+  if (type === 'emissions') {
+    allowDiv = ['', '']
+    authorization.content = authorization.content as WebradioAuthorization
+  } else if (type === 'videos') authorization.content = authorization.content as VideoAuthorization
   else if (type === 'articles') authorization.content = authorization.content as ArticleAuthorization
   else authorization.content = authorization.content as GuestAuthorization
 
@@ -64,7 +68,7 @@
       <h1>Autorisation de diffusion et de publication</h1>
     </header>
 
-    {#if type !== 'guest' && typeof authorization.content !== 'string' && 'synopsis' in authorization.content }
+    {#if type !== 'guest' && typeof authorization.content !== 'string' && 'synopsis' in authorization.content}
       <h2>{type === 'emissions' ? 'Emission de radio' : type === 'videos' ? 'Vidéo' : 'Article'}</h2>
 
       <h3>Présentation de {type === 'emissions' ? "l'émission" : type === 'videos' ? 'la vidéo' : "l'article"}</h3>
@@ -72,15 +76,13 @@
       <table>
         <tr>
           <td style="width: 3.5cm">Titre :</td>
-          <td
-            ><span contenteditable="true" on:paste={handlePaste}
-              >{'title' in authorization.content ? authorization.content.title : ''}</span
-            >
+          <td>
+            <span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.title} />
           </td>
         </tr>
         <tr>
           <td>{type === 'articles' ? 'Sujet' : 'Thème(s)'} :</td>
-          <td><span contenteditable="true" on:paste={handlePaste} /></td>
+          <td><span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.subject} /></td>
         </tr>
         {#if type === 'emissions' && 'estimatedDuration' in authorization.content}
           <tr>
@@ -95,7 +97,7 @@
           </tr>
           <tr>
             <td>Durée estimée :</td>
-            <td><span contenteditable="true" on:paste={handlePaste}>{authorization.content.estimatedDuration} mn</span></td>
+            <td><span contenteditable="true" on:paste={handlePaste} /></td>
           </tr>
         {:else if type === 'videos'}
           <tr>
@@ -142,8 +144,8 @@
           <tbody>
             {#each authorization.content.inGuests as guest}
               <tr>
-                <td class="name"><span contenteditable="true" class="w" on:paste={handlePaste}>{guest.name}</span></td>
-                <td class="status"><span contenteditable="true" class="w" on:paste={handlePaste}>{guest.status}</span></td>
+                <td class="name"><span contenteditable="true" class="w" on:paste={handlePaste} bind:innerText={guest.name}></span></td>
+                <td class="status"><span contenteditable="true" class="w" on:paste={handlePaste} bind:innerText={guest.status}></span></td>
                 <td class="allow"><input type="checkbox" name="allow" class="allow page" bind:checked={guest.authorization} /></td
                 >
               </tr>
@@ -176,8 +178,8 @@
           <tbody>
             {#each authorization.content.outGuests as guest}
               <tr>
-                <td class="name"><span contenteditable="true" class="w" on:paste={handlePaste}>{guest.name}</span></td>
-                <td class="status"><span contenteditable="true" class="w" on:paste={handlePaste}>{guest.status}</span></td>
+                <td class="name"><span contenteditable="true" class="w" on:paste={handlePaste} bind:innerText={guest.name}></span></td>
+                <td class="status"><span contenteditable="true" class="w" on:paste={handlePaste} bind:innerText={guest.status}></span></td>
                 <td class="allow"><input type="checkbox" name="allow" class="allow page" bind:checked={guest.authorization} /></td
                 >
               </tr>
@@ -188,13 +190,99 @@
 
       <h3>Synopsis</h3>
 
-      <span contenteditable="true">{@html content.replaceNewLineByBr(authorization.content.synopsis)}</span>
+      <span contenteditable="true" bind:innerText={authorization.content.synopsis}></span>
     {/if}
   </div>
 
-  <div class="page">
-    <p />
-  </div>
+  {#if type !== 'guest'}
+    <div class="page">
+      {#each allowDiv as a, i}
+        <div class="allow">
+          <h3>
+            Autorisation de {type === 'emissions' ? (i === 0 ? 'diffusion en direct' : 'publication en podcast') : 'publication'}
+          </h3>
+
+          <table class="allow">
+            <tr>
+              <td>
+                <h4>
+                  Responsable :&nbsp;&nbsp;<span
+                    style="display: inline-block; width: 3cm; min-width: 3.5cm; padding-top: 0"
+                    class="contenteditable m"
+                    >&nbsp;
+                  </span>
+                </h4>
+
+                <p>
+                  <span style="color: #007233">
+                    <input type="radio" name="allow" />&nbsp;&nbsp;{type === 'emissions'
+                      ? i === 0
+                        ? 'Diffusion en direct'
+                        : 'Publication en podcast'
+                      : 'Publication'} autorisée
+                  </span>
+                  <br />
+                  <span style="color: #6e0d00">
+                    <input type="radio" name="allow" />&nbsp;&nbsp;{type === 'emissions'
+                      ? i === 0
+                        ? 'Diffusion en direct'
+                        : 'Publication en podcast'
+                      : 'Publication'} en direct refusée
+                  </span>
+                  <br />
+                  <br />
+                  Motif/Commentaires :<br />
+                  <br />
+                  <br />
+                  <span class="contenteditable m">&nbsp;</span>
+                </p>
+
+                <p style="margin-top: 18px">
+                  Date et signature :<br />
+                  <br />
+                  <br />
+                  <br />
+                </p>
+              </td>
+              <td>
+                <h4>Direction</h4>
+
+                <p>
+                  <span style="color: #007233">
+                    <input type="radio" name="allow" />&nbsp;&nbsp;{type === 'emissions'
+                      ? i === 0
+                        ? 'Diffusion en direct'
+                        : 'Publication en podcast'
+                      : 'Publication'} en direct autorisée
+                  </span><br />
+                  <span style="color: #6e0d00">
+                    <input type="radio" name="allow" />&nbsp;&nbsp;{type === 'emissions'
+                      ? i === 0
+                        ? 'Diffusion en direct'
+                        : 'Publication en podcast'
+                      : 'Publication'} en direct refusée
+                  </span>
+                  <br />
+                  <br />
+                  Motif/Commentaires :<br />
+                  <br />
+                  <br />
+                  <span class="contenteditable m">&nbsp;</span>
+                </p>
+
+                <p style="margin-top: 18px">
+                  Date et signature :<br />
+                  <br />
+                  <br />
+                  <br />
+                </p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      {/each}
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -239,7 +327,8 @@
       font-size: 11pt;
     }
 
-    span[contenteditable='true'] {
+    span[contenteditable='true'],
+    span.contenteditable {
       padding: 0.1cm 0.1cm 0cm 0.1cm;
       border-bottom: 1px dashed #707070;
       display: inline-block;
@@ -260,7 +349,8 @@
       }
     }
 
-    td span[contenteditable='true']:not(.w):not(.m) {
+    td span[contenteditable='true']:not(.w):not(.m),
+    td span.contenteditable:not(.w):not(.m) {
       margin-left: 0.5cm;
       width: auto;
       min-width: 5cm;
@@ -353,10 +443,11 @@
     }
   }
 
-  section.allow {
+  div.allow {
     padding: 0.6cm;
     border: 1px solid rgb(71, 71, 71);
     border-radius: 0.15cm;
+    margin-bottom: 0.75cm;
 
     h3:nth-of-type(1) {
       margin-top: 0;
@@ -397,6 +488,30 @@
       background-color: var(--background-gray-color);
       border-radius: 5px;
       border: 1px solid var(--light-gray-color);
+    }
+  }
+
+  @media print {
+    div.add-modal {
+      display: block;
+      padding: 0;
+      border: none !important;
+      height: calc(2 * 29.685cm);
+    }
+
+    div.page {
+      margin: 0 auto;
+      box-shadow: none;
+      border: none !important;
+      height: calc(29.685cm - 2 * 1.7cm);
+    }
+
+    p.error {
+      display: none;
+    }
+
+    div.allow {
+      break-inside: avoid;
     }
   }
 </style>

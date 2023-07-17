@@ -7,7 +7,7 @@ export interface Authorization {
 
 export interface WebradioAuthorization {
   title: string
-  themes: string
+  subject: string
   date: string
   estimatedDuration: number
   inGuests: Guest[]
@@ -17,7 +17,7 @@ export interface WebradioAuthorization {
 
 export interface VideoAuthorization {
   title: string
-  themes: string
+  subject: string
   medium: string
   author: string
   duration: number

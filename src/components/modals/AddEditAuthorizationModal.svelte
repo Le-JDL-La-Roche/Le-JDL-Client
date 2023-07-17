@@ -41,7 +41,7 @@
         element = element as WebradioShow
         content = {
           title: element.title,
-          themes: '',
+          subject: '',
           date: element.date,
           estimatedDuration: 40,
           inGuests: [
@@ -55,7 +55,7 @@
         element = element as Video
         content = {
           title: element.title,
-          themes: '',
+          subject: '',
           medium: '',
           author: element.author,
           duration: 0,
@@ -94,12 +94,17 @@
 
   $: authorization = {
     elementId: elementId || 0,
-    elementType: type,
+    elementType: type === 'emissions' ? 'show' : type === 'videos' ? 'video' : type === 'articles' ? 'article' : 'guest',
     content: content
   } as Authorization
 
+  function print() {
+    document.execCommand('print', false)
+  }
+
   async function submit() {
     let exec
+    authorization.content = JSON.stringify(authorization.content)
     exec = action.action === 'add' ? apiAuthorizations.postAuthorization : apiAuthorizations.putAuthorization
     ;(await exec(authorization, action.action === 'edit' ? action.authorization.id || 0 : 0)).subscribe({
       next: (res) => {
@@ -131,7 +136,7 @@
     <div class="actions">
       <p class="error">{error}</p>
       <div class="flex">
-        <button class="secondary">Imprimer</button>
+        <button class="secondary" on:click={print} type="button">Imprimer</button>
         <button class="primary">{action.action === 'add' ? 'Ajouter' : 'Modifier'}</button>
       </div>
     </div>
@@ -165,20 +170,15 @@
       display: block;
     }
 
-    p.error {
-      display: none;
-    }
-
     div.actions {
       display: block;
     }
+  }
 
-    div.add-modal {
-      display: block;
-      padding: 20px;
-      background-color: var(--background-gray-color);
-      border-radius: 5px;
-      border: 1px solid var(--light-gray-color);
+  @media print {
+    div.actions, h3 {
+      display: none
     }
   }
+
 </style>
