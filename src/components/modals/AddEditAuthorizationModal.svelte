@@ -5,11 +5,10 @@
   import type { Article } from '$models/features/article.model'
   import type {
     Authorization,
-    Guest,
     WebradioAuthorization,
     VideoAuthorization,
     ArticleAuthorization,
-    GuestAuthorization
+    Guest
   } from '$models/data/authorization.model'
   import ApiAuthorizationsService from '$services/api/api-authorizations.service'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
@@ -17,15 +16,14 @@
 
   export let data: PageData
   export let show: boolean
-  export let element: WebradioShow | Video | Article | Guest
-  export let type: 'emissions' | 'videos' | 'articles' | 'guest'
+  export let element: WebradioShow | Video | Article
+  export let type: 'emissions' | 'videos' | 'articles'
   export let action: { action: 'add' } | { action: 'edit'; authorization: Authorization }
 
   const apiAuthorizations = new ApiAuthorizationsService()
 
-  $: required = false as boolean
   $: elementId = null as number | null
-  $: content = '' as WebradioAuthorization | VideoAuthorization | ArticleAuthorization | GuestAuthorization | JSON | string
+  $: content = '' as any
   $: error = '' as string
 
   $: if (show) {
@@ -35,7 +33,6 @@
   function update() {
     error = ''
     if (action.action === 'add') {
-      required = true
       elementId = element.id || 0
       if (type === 'emissions') {
         element = element as WebradioShow
@@ -43,7 +40,7 @@
           title: element.title,
           subject: '',
           date: element.date,
-          estimatedDuration: 40,
+          estimatedDuration: '40 mn',
           inGuests: [
             { name: '', status: '', authorization: false },
             { name: '', status: '', authorization: false }
@@ -71,24 +68,12 @@
           author: element.author,
           synopsis: ''
         } as ArticleAuthorization
-      } else if (type === 'guest') {
-        element = element as Guest
-        content = {
-          name: element.name || '',
-          eventType: "[l'émission de radio/l'enregistrement vidéo]",
-          date: '[date]',
-          place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
-          use: '[diffusés en direct et publiés après montage]',
-          media: '[le Blog, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
-        } as GuestAuthorization
       }
     } else if (action.action === 'edit') {
-      required = false
       elementId = action.authorization.elementId
       if (type === 'emissions') content = JSON.parse(action.authorization.content as string) as WebradioAuthorization
       else if (type === 'videos') content = JSON.parse(action.authorization.content as string) as VideoAuthorization
       else if (type === 'articles') content = JSON.parse(action.authorization.content as string) as ArticleAuthorization
-      else if (type === 'guest') content = JSON.parse(action.authorization.content as string) as GuestAuthorization
     }
   }
 
@@ -99,17 +84,18 @@
   } as Authorization
 
   function print() {
+    submit(true)
     document.execCommand('print', false)
   }
 
-  async function submit() {
+  async function submit(keepOpen: boolean = false) {
     let exec
     authorization.content = JSON.stringify(authorization.content)
     exec = action.action === 'add' ? apiAuthorizations.postAuthorization : apiAuthorizations.putAuthorization
     ;(await exec(authorization, action.action === 'edit' ? action.authorization.id || 0 : 0)).subscribe({
       next: (res) => {
         data.authorizations = res.body.data?.authorizations || []
-        show = false
+        show = keepOpen
       },
       error: (err) => {
         error = err.body.message
@@ -119,7 +105,7 @@
 </script>
 
 <ModalTemplate size={'l'} bind:show>
-  <form on:submit|preventDefault={submit}>
+  <form on:submit|preventDefault={() => submit()}>
     <h3>
       {action.action === 'add' ? 'Créer une' : 'Modifier la'} demande d'autorisation pour {type === 'emissions'
         ? "l'émission"
@@ -176,9 +162,9 @@
   }
 
   @media print {
-    div.actions, h3 {
-      display: none
+    div.actions,
+    h3 {
+      display: none;
     }
   }
-
 </style>

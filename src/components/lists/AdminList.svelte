@@ -164,7 +164,13 @@
       <button
         class="secondary"
         on:click={() => {
-          let a = (data.authorizations || []).find((a) => a.elementType === 'show' && a.elementId === element.id || 0)
+          let a = (data.authorizations || []).find(
+            (a) =>
+              (a.elementType ===
+                (authorizationModalType === 'emissions' ? 'show' : authorizationModalType === 'videos' ? 'video' : 'article') &&
+                a.elementId === element.id) ||
+              0
+          )
           authorizationModalElement = element
           if ('streamId' in element) authorizationModalType = 'emissions'
           else if ('type' in element) authorizationModalType = 'videos'
