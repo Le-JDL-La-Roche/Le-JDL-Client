@@ -5,16 +5,19 @@ import CookiesService from '$services/cookies.service'
 import ApiWebradioService from '$services/api/api-webradio.service'
 import ApiVideosService from '$services/api/api-videos.service'
 import ApiArticlesService from '$services/api/api-articles.service'
+import ApiAuthorizationsService from '$services/api/api-authorizations.service'
 import type { WebradioShow } from '$models/features/webradio-show.model'
 import type { Video } from '$models/features/video.model'
 import type { Article } from '$models/features/article.model'
 import { error } from '@sveltejs/kit'
+import type { Authorization } from '$models/data/authorization.model'
 
 const apiAuth = new ApiAuthService()
 const cookies = new CookiesService()
 const apiWebradio = new ApiWebradioService()
 const apiVideos = new ApiVideosService()
 const apiArticles = new ApiArticlesService()
+const apiAuthorizations = new ApiAuthorizationsService()
 
 export const load: PageLoad = async ({ params }) => {
   const type = params.type as 'emissions' | 'videos' | 'articles'
@@ -63,5 +66,16 @@ export const load: PageLoad = async ({ params }) => {
     })
   }
 
-  return { type, data }
+  let authorizations: Authorization[] = []
+
+  ;(await apiAuthorizations.getAuthorizations()).subscribe({
+    next: (res) => {
+      authorizations = res.body.data?.authorizations || []
+    },
+    error: (err) => {
+      throw error(err.status, err.body.message)
+    }
+  })
+
+  return { type, data, authorizations }
 }

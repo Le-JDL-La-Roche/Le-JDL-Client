@@ -109,7 +109,7 @@ button.secondary {
   }
 }
 
-input:not([type=checkbox]):not([type=radio]),
+input:not([type=checkbox]):not([type=radio]):not(.page),
 textarea,
 div.editor,
 select {
@@ -278,5 +278,20 @@ p.article h4 {
     }
 
   }
+}
 
+@media print {
+  body {
+    height: calc(2 * 29.685cm);
+    min-height: calc(2 * 29.685cm);
+    max-height: calc(2 * 29.6985cm);
+  }
+
+  div.content {
+    position: initial;
+  }
+
+  header, footer {
+    display: none;
+  }
 }

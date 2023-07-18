@@ -2,9 +2,11 @@
   import type { PageData } from './$types'
   import AdminList from '$components/lists/AdminList.svelte'
   import AddEditElementModal from '$components/modals/AddEditElementModal.svelte'
+  import AddEditAuthorizationModal from '$components/modals/AddEditAuthorizationModal.svelte'
   import type { Article } from '$models/features/article.model'
   import type { Video } from '$models/features/video.model'
   import type { WebradioShow } from '$models/features/webradio-show.model'
+  import type { Authorization, Guest } from '$models/data/authorization.model'
 
   export let data: PageData
 
@@ -13,7 +15,12 @@
   let showAddEditModal = false
   let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
 
-  $: shows = data.data && 'streamId' in data.data[0] ? (data.data as WebradioShow[]) : undefined
+  let showAddEditAuthorizationModal = false
+  let authorizationModalElement: WebradioShow | Video | Article
+  let authorizationModalType = type
+  let authorizationModalAction: { action: 'add' } | { action: 'edit'; authorization: Authorization }
+
+  $: shows = data && data.data && 'streamId' in data.data[0] ? (data.data as WebradioShow[]) : undefined
 </script>
 
 <svelte:head>
@@ -57,7 +64,16 @@
 </div>
 
 {#each data.data || [] as element}
-  <AdminList {element} bind:data bind:showAddEditModal bind:action />
+  <AdminList
+    {element}
+    bind:data
+    bind:showAddEditModal
+    bind:action
+    bind:showAddEditAuthorizationModal
+    bind:authorizationModalElement
+    bind:authorizationModalType
+    bind:authorizationModalAction
+  />
 {:else}
   {#if data.type === 'emissions'}
     Aucune émission ou podcast
@@ -68,7 +84,23 @@
   {/if}
 {/each}
 
-<AddEditElementModal {type} bind:show={showAddEditModal} {action} bind:data />
+<AddEditElementModal
+  bind:show={showAddEditModal}
+  bind:data
+  {action}
+  {type}
+  bind:showAddEditAuthorizationModal
+  bind:authorizationModalElement
+  bind:authorizationModalType
+  bind:authorizationModalAction
+/>
+<AddEditAuthorizationModal
+  bind:show={showAddEditAuthorizationModal}
+  bind:data
+  bind:element={authorizationModalElement}
+  bind:type={authorizationModalType}
+  bind:action={authorizationModalAction}
+/>
 
 <style lang="scss">
   div.main-action {

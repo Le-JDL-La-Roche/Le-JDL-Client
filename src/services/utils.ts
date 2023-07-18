@@ -121,6 +121,13 @@ class Utils {
     return `${day} ${this.monthToString(month)} ${year}`
   }
 
+  timestampToHour(timestamp: number): string {
+    const date = new Date(timestamp * 1000)
+    const hour = date.getHours()
+    const minutes = date.getMinutes()
+    return `${hour < 10 ? '0' + hour : hour}:${minutes < 10 ? '0' + minutes : minutes}`
+  }
+
   timestampToDate(timestamp: number): string {
     const date = new Date(timestamp * 1000)
     const day = date.getDate()

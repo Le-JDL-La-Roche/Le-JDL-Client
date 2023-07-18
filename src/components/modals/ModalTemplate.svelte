@@ -7,7 +7,7 @@
 
 {#if show}
   <div class="modal-background" transition:scale={{ start: 1.5, duration: 300 }}>
-    <div class={'modal size-' + size}>
+    <div class={'modal size-' + size} id="modal__">
       <section class="close">
         <button class="close secondary" on:click={() => (show = false)}><i class="fa-solid fa-times" /></button>
       </section>
@@ -87,6 +87,34 @@
           max-height: 500px;
         }
       }
+    }
+  }
+
+  @media print {
+    div.modal-background {
+      display: block !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: calc(2 * 29.685cm) !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overflow: hidden;
+    }
+    div.modal {
+      position: initial !important;
+      overflow: hidden !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      width: 100% !important;
+      height: calc(2 * 29.685cm) !important;
+      max-height: calc(2 * 29.685cm) !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+    }
+    button.close {
+      display: none !important;
     }
   }
 </style>

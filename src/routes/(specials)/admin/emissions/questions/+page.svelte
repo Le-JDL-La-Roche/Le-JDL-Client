@@ -95,13 +95,13 @@
 
   h1 {
     color: white;
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     margin-top: 0;
   }
 
   h2 {
     color: white;
-    margin: 7px;
+    margin: 7px 0;
     display: flex;
     flex-direction: row;
     gap: 30px;

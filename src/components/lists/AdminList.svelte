@@ -10,11 +10,17 @@
   import ApiArticlesService from '$services/api/api-articles.service'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
   import io from '$services/api/socket.service'
+  import type { Authorization } from '$models/data/authorization.model'
 
   export let element: WebradioShow | Video | Article
   export let data: PageData
   export let showAddEditModal: boolean
   export let action: { action: 'add' } | { action: 'edit'; element: WebradioShow | Video | Article }
+
+  export let showAddEditAuthorizationModal: boolean
+  export let authorizationModalElement: WebradioShow | Video | Article
+  export let authorizationModalType: 'emissions' | 'videos' | 'articles'
+  export let authorizationModalAction: { action: 'add' } | { action: 'edit'; authorization: Authorization }
 
   const content = new ContentService()
   const apiWebradio = new ApiWebradioService()
@@ -158,8 +164,20 @@
       <button
         class="secondary"
         on:click={() => {
-          showAddEditModal = true
-          action = { action: 'edit', element }
+          let a = (data.authorizations || []).find(
+            (a) =>
+              (a.elementType ===
+                (authorizationModalType === 'emissions' ? 'show' : authorizationModalType === 'videos' ? 'video' : 'article') &&
+                a.elementId === element.id) ||
+              0
+          )
+          authorizationModalElement = element
+          if ('streamId' in element) authorizationModalType = 'emissions'
+          else if ('type' in element) authorizationModalType = 'videos'
+          else if ('article' in element) authorizationModalType = 'articles'
+          if (a) authorizationModalAction = { action: 'edit', authorization: a }
+          else authorizationModalAction = { action: 'add' }
+          showAddEditAuthorizationModal = true
         }}
       >
         <i class="fa-solid fa-file-circle-check" />
