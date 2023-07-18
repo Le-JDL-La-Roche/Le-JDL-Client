@@ -7,7 +7,7 @@
 
 {#if show}
   <div class="modal-background" transition:scale={{ start: 1.5, duration: 300 }}>
-    <div class={'modal size-' + size}>
+    <div class={'modal size-' + size} id="modal__">
       <section class="close">
         <button class="close secondary" on:click={() => (show = false)}><i class="fa-solid fa-times" /></button>
       </section>

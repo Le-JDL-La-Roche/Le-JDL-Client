@@ -1,6 +1,6 @@
 export interface Authorization {
   id?: number
-  elementType: 'show' | 'video' | 'article' | 'guest'
+  elementType: 'show' | 'video' | 'article'
   elementId: number
   content: WebradioAuthorization | VideoAuthorization | ArticleAuthorization | string
 }

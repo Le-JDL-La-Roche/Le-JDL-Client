@@ -13,6 +13,7 @@
   import ApiAuthorizationsService from '$services/api/api-authorizations.service'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
   import PageAuthorization from '$components/others/PageAuthorization.svelte'
+  import PageGuestAuthorization from '$components/others/PageGuestAuthorization.svelte'
 
   export let data: PageData
   export let show: boolean
@@ -25,6 +26,7 @@
   $: elementId = null as number | null
   $: content = '' as any
   $: error = '' as string
+  $: guestId = false as number | false
 
   $: if (show) {
     update()
@@ -32,6 +34,7 @@
 
   function update() {
     error = ''
+    guestId = false
     if (action.action === 'add') {
       elementId = element.id || 0
       if (type === 'emissions') {
@@ -84,18 +87,17 @@
   } as Authorization
 
   function print() {
-    submit(true)
     document.execCommand('print', false)
   }
 
-  async function submit(keepOpen: boolean = false) {
+  async function submit() {
     let exec
     authorization.content = JSON.stringify(authorization.content)
     exec = action.action === 'add' ? apiAuthorizations.postAuthorization : apiAuthorizations.putAuthorization
     ;(await exec(authorization, action.action === 'edit' ? action.authorization.id || 0 : 0)).subscribe({
       next: (res) => {
         data.authorizations = res.body.data?.authorizations || []
-        show = keepOpen
+        show = false
       },
       error: (err) => {
         error = err.body.message
@@ -117,13 +119,32 @@
       {@html 'name' in element ? element.name : '<em>' + element.title + '</em>'}
     </h3>
 
-    <PageAuthorization bind:type bind:authorization />
+    <div class="pages">
+      {#if guestId === false}
+        <PageAuthorization bind:type bind:authorization bind:guestId />
+      {:else}
+        <PageGuestAuthorization bind:guestId bind:authorization />
+      {/if}
 
-    <div class="actions">
-      <p class="error">{error}</p>
-      <div class="flex">
-        <button class="secondary" on:click={print} type="button">Imprimer</button>
-        <button class="primary">{action.action === 'add' ? 'Ajouter' : 'Modifier'}</button>
+      <div class="actions">
+        <p class="error">{error}</p>
+        <div class="flex">
+          {#if guestId === false}
+            <button class="secondary" on:click={print} type="button">Imprimer</button>
+            <button class="primary">{action.action === 'add' ? 'Ajouter' : 'Modifier'}</button>
+          {:else}
+            <button
+              class="secondary"
+              on:click={() => {
+                document.querySelector('div#modal__')?.scrollTo(0, 0)
+                guestId = false
+              }}
+              type="button"
+              style="width: 100px"><i class="fa-solid fa-caret-left" />&nbsp;&nbsp;Retour</button
+            >
+            <button class="secondary" on:click={print} type="button">Imprimer</button>
+          {/if}
+        </div>
       </div>
     </div>
   </form>
