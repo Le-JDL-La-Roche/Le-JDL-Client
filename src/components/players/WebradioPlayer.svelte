@@ -2,19 +2,23 @@
   import type { WebradioShow } from '$models/features/webradio-show.model'
   import WebradioModal from '$components/modals/WebradioModal.svelte'
   import type { WebradioQuestion } from '$models/features/webradio-question.model'
+  import CookiesService from '$services/cookies.service'
 
   export let show: WebradioShow
   export let questions: WebradioQuestion[]
 
+  const cookies = new CookiesService()
+
   let showWebradioModal = false
 
   let play = false
-  /**
-   * TODO Gérer les cookies (en fonction de l'autorisation) pour le volume
-   */
   let volume = 50
   let mute = false
   let showQuestions = false
+
+  $: if (volume && cookies.get('COOKIES') === '1') {
+    cookies.add({ name: 'VOLUME', value: volume + '' })
+  }
 </script>
 
 <div class="container">

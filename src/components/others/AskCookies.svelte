@@ -21,6 +21,9 @@
     if (cookies.get('ORDER_BY')) {
       cookies.delete('ORDER_BY')
     }
+    if (cookies.get('VOLUME')) {
+      cookies.delete('VOLUME')
+    } 
     showAcceptCookies$.set(false)
     show = false
   }
