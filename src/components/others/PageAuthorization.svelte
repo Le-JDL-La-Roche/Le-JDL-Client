@@ -117,9 +117,9 @@
           </tr>
           <tr>
             <td>Durée estimée :</td>
-            <td
-              ><span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.estimatedDuration} /></td
-            >
+            <td>
+              <span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.estimatedDuration} />
+            </td>
           </tr>
         {:else if type === 'videos'}
           <tr>

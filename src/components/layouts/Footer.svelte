@@ -39,9 +39,9 @@
 
     <div class="utils">
       <p>
-        <button class="secondary" style="margin: 0; width: auto" on:click={() => showAcceptCookies$.set(true)}
-          ><i class="fa-solid fa-cookie" />&nbsp;&nbsp;Gérer les cookies</button
-        >
+        <button class="secondary" style="margin: 0; width: auto" on:click={() => showAcceptCookies$.set(true)}>
+          <i class="fa-solid fa-cookie" />&nbsp;&nbsp;Gérer les cookies
+        </button>
       </p>
       <p>
         <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/README.md#a-propos-du-blog" target="_blank">

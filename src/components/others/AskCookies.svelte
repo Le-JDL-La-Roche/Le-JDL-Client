@@ -12,7 +12,7 @@
     showAcceptCookies$.set(false)
     show = false
   }
-  
+
   function decline() {
     cookies.add({ name: 'COOKIES', value: '0' })
     if (cookies.get('SHOW_ARTICLES')) {
@@ -23,7 +23,7 @@
     }
     if (cookies.get('VOLUME')) {
       cookies.delete('VOLUME')
-    } 
+    }
     showAcceptCookies$.set(false)
     show = false
   }

@@ -38,8 +38,10 @@
   on:click={() => {
     action = { action: 'add' }
     showAddEditModal = true
-  }}><i class="fa-solid fa-plus" />&nbsp;&nbsp;Ajouter un journaliste</button
+  }}
 >
+  <i class="fa-solid fa-plus" />&nbsp;&nbsp;Ajouter un journaliste
+ </button>
 
 <div class="container">
   {#each data.data || [] as journalist}
