@@ -7,8 +7,7 @@
     Authorization,
     WebradioAuthorization,
     VideoAuthorization,
-    ArticleAuthorization,
-    Guest
+    ArticleAuthorization
   } from '$models/data/authorization.model'
   import ApiAuthorizationsService from '$services/api/api-authorizations.service'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
@@ -140,8 +139,10 @@
                 guestId = false
               }}
               type="button"
-              style="width: 100px"><i class="fa-solid fa-caret-left" />&nbsp;&nbsp;Retour</button
+              style="width: 100px"
             >
+              <i class="fa-solid fa-caret-left" />&nbsp;&nbsp;Retour
+            </button>
             <button class="secondary" on:click={print} type="button">Imprimer</button>
           {/if}
         </div>

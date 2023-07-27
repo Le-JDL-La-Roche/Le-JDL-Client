@@ -39,6 +39,7 @@
     "buffer": "^6.0.3",
     "chart.js": "^4.3.0",
     "chartjs-plugin-datalabels": "^2.2.0",
+    "hls.js": "^1.4.10",
     "os": "^0.1.2",
     "os-browserify": "^0.3.0",
     "socket.io-client": "^4.7.1"

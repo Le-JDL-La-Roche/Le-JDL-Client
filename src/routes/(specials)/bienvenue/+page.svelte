@@ -8,7 +8,7 @@
     <h2>Bienvenue !</h2>
 
     <a class="button" href="/">
-      <i class="fa-solid fa-globe" />&nbsp;&nbsp;Accéder au blog
+      <i class="fa-solid fa-globe" />&nbsp;&nbsp;Accéder au site
     </a>
     <a class="button" href="https://podcast.ausha.co/ecouter-la-roche">
       <i class="fa-solid fa-podcast" />&nbsp;&nbsp;Accéder aux podcasts (Ausha)

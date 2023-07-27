@@ -5,7 +5,6 @@
   import ApiWebradioService from '$services/api/api-webradio.service'
   import io from '$services/api/socket.service'
   import type { WebradioQuestion } from '$models/features/webradio-question.model'
-  import { onMount } from 'svelte'
   import utils from '$services/utils'
 
   export let show: boolean
@@ -120,9 +119,9 @@
 
       <form on:submit|preventDefault={sendQuestion}>
         <input type="text" placeholder="Posez votre question ici..." bind:value={question} enterkeyhint="send" />
-        <button type="submit" class="secondary" disabled={!(question + '').replace(/\s/g, '').length || !question}
-          ><i class="fa-solid fa-paper-plane" /></button
-        >
+        <button type="submit" class="secondary" disabled={!(question + '').replace(/\s/g, '').length || !question}>
+          <i class="fa-solid fa-paper-plane" />
+        </button>
       </form>
     </div>
   </div>

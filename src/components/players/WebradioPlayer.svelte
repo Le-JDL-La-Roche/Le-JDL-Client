@@ -3,6 +3,9 @@
   import WebradioModal from '$components/modals/WebradioModal.svelte'
   import type { WebradioQuestion } from '$models/features/webradio-question.model'
   import CookiesService from '$services/cookies.service'
+  import Hls from 'hls.js'
+  import { onMount } from 'svelte'
+  import http from '$services/http.module'
 
   export let show: WebradioShow
   export let questions: WebradioQuestion[]
@@ -11,13 +14,49 @@
 
   let showWebradioModal = false
 
+  let player: HTMLVideoElement
+
   let play = false
   let volume = 50
   let mute = false
   let showQuestions = false
 
-  $: if (volume && cookies.get('COOKIES') === '1') {
-    cookies.add({ name: 'VOLUME', value: volume + '' })
+  onMount(() => {
+    if (Hls.isSupported()) {
+      const hls = new Hls()
+      hls.loadSource(`https://radio.le-jdl-laroche.cf/hls/${show.streamId}.m3u8`)
+      hls.attachMedia(player)
+      player.muted = play && !mute
+      player.autoplay = true
+      player.volume = volume / 100
+    } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+      player.src = `https://radio.le-jdl-laroche.cf/hls/${show.streamId}.m3u8`
+      player.muted = play && !mute
+      player.autoplay = true
+      player.volume = volume / 100
+    }
+
+    if (cookies.get('VOLUME')) {
+      volume = +cookies.get('VOLUME')
+    }
+  })
+
+  $: if (play && !mute && player) {
+    player.muted = false
+  } else if (player) {
+    player.muted = true
+  }
+
+  $: if (volume && player) {
+    player.volume = volume / 100
+    if (cookies.get('COOKIES') === '1') {
+      cookies.add({ name: 'VOLUME', value: volume + '' })
+    }
+  } else if (player) {
+    player.volume = 0
+    if (cookies.get('COOKIES') === '1') {
+      cookies.add({ name: 'VOLUME', value: volume + '' })
+    }
   }
 </script>
 
@@ -74,6 +113,9 @@
   bind:showQuestions
   bind:questions
 />
+
+<!-- svelte-ignore a11y-media-has-caption -->
+<video bind:this={player} />
 
 <style lang="scss">
   div.container {
@@ -197,6 +239,10 @@
     span.title {
       display: none;
     }
+  }
+
+  video {
+    display: none;
   }
 
   @media screen and (min-width: 850px) {

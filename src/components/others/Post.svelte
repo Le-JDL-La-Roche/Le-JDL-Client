@@ -1,6 +1,5 @@
 <script lang="ts">
   import utils from '$services/utils'
-  import type { PageData } from '../../routes/(main)/[category=category]/[...path=path]/$types'
   import ContentService from '$services/content.service'
   import { api } from '$services/store'
   import InstagramVideo from '$components/players/InstagramVideo.svelte'

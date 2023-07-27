@@ -70,7 +70,7 @@
           date: '[date]',
           place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
           use: '[diffusés en direct et publiés après montage]',
-          media: '[le Blog, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
+          media: '[le site Web, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
         })
       } else if (+target.value < authorization.content.outGuests.length) {
         authorization.content.outGuests.pop()
@@ -117,9 +117,9 @@
           </tr>
           <tr>
             <td>Durée estimée :</td>
-            <td
-              ><span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.estimatedDuration} /></td
-            >
+            <td>
+              <span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.estimatedDuration} />
+            </td>
           </tr>
         {:else if type === 'videos'}
           <tr>

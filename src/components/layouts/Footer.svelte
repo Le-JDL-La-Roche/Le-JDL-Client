@@ -39,18 +39,18 @@
 
     <div class="utils">
       <p>
-        <button class="secondary" style="margin: 0; width: auto" on:click={() => showAcceptCookies$.set(true)}
-          ><i class="fa-solid fa-cookie" />&nbsp;&nbsp;Gérer les cookies</button
-        >
+        <button class="secondary" style="margin: 0; width: auto" on:click={() => showAcceptCookies$.set(true)}>
+          <i class="fa-solid fa-cookie" />&nbsp;&nbsp;Gérer les cookies
+        </button>
       </p>
       <p>
-        <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/README.md#a-propos-du-blog" target="_blank">
-          A propos du Blog
+        <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/README.md#a-propos-du-site-web" target="_blank">
+          A propos du site
         </a>
       </p>
       <p>
-        <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/CHANGESLOG.md#mises-à-jour-du-blog" target="_blank">
-          Mises à jour du Blog
+        <a href="https://github.com/Le-JDL-La-Roche/Le-JDL-Client/blob/main/CHANGESLOG.md#mises-à-jour-du-site" target="_blank">
+          Mises à jour du site
         </a>
       </p>
       <p>

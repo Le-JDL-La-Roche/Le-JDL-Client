@@ -56,4 +56,11 @@ export default class ApiWebradioService {
   async deleteQuestion(id: number | string) {
     return await http.delete<DataHttpResponse<{ questions: WebradioQuestion[] }>>(`${api}/webradio/questions/${id}`)
   }
+
+  async checkStream(streamId: string) {
+    const req: RequestInit = {
+      headers: { 'Content-Type': 'text/plain charset=UTF-8' }
+    }
+    return await http.get<any>(`https://radio.le-jdl-laroche.cf/hls/${streamId}.m3u8`, req)
+  }
 }

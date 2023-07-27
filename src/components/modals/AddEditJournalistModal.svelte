@@ -1,6 +1,5 @@
 <script lang="ts">
   import ModalTemplate from './ModalTemplate.svelte'
-  import CookiesService from '$services/cookies.service'
   import { invalidateAll } from '$app/navigation'
   import type { PageData } from '../../routes/(main)/admin/journalistes/$types'
   import type { Journalist } from '$models/data/journalist.model'
