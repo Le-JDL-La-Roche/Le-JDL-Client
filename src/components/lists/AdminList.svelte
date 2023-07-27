@@ -33,6 +33,15 @@
       ? true
       : false
   $: title = disabled ? 'Une émission est déjà en cours' : undefined
+  $: viewersCounter = 0
+
+  $: if ('streamId' in element && element.status === 0) {
+    io.emit('getViewers')
+  }
+
+  io.on('updateViewers', (viewers: number) => {
+    viewersCounter = viewers
+  })
 
   async function startLivestream(show: WebradioShow | Video | Article) {
     if ('streamId' in show) {
@@ -121,7 +130,7 @@
     <img src={`${api}/public/images/thumbnails/${element.thumbnail}`} alt={element.title} />
     <p class="info">
       <span class="optional">
-        {#if 'podcastId' in element}
+        {#if 'streamId' in element}
           {element.status === -1
             ? 'Brouillon'
             : element.status === 0
@@ -138,6 +147,8 @@
       {utils.timestampToString(+element.date)}
       {#if 'article' in element}
         <span class="optional">&nbsp;•&nbsp;&nbsp;{element.views || 0} vues</span>
+      {:else if 'streamId' in element && element.status === 0}
+        <span class="optional">&nbsp;•&nbsp;&nbsp;{viewersCounter + (viewersCounter < 2 ? ' auditeur' : ' auditeurs')}</span>
       {/if}
     </p>
     <p class="title">{element.title}</p>
