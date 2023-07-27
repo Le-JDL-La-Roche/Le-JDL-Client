@@ -12,15 +12,24 @@ const cookies = new CookiesService()
 const apiEnv = new ApiEnvService()
 
 export const load: LayoutLoad = async () => {
-  let show: WebradioShow | false = false
+  let show = false as WebradioShow | false
   ;(await apiWebradio.getCurrentShow()).subscribe({
     next: (res) => {
       if (res.body.message === 'Success' && res.body.data?.show) {
         show = res.body.data.show
-        liveStream$.set(true)
       }
     }
   })
+  if (show) {
+    ;(await apiWebradio.checkStream(show.streamId)).subscribe({
+      next: () => {
+        liveStream$.set(true)
+      },
+      error: () => {
+        liveStream$.set(false)
+      }
+    })
+  }
 
   let questions: WebradioQuestion[] = []
 
@@ -47,5 +56,5 @@ export const load: LayoutLoad = async () => {
   let acceptCookies = cookies.get('COOKIES') ? true : false
   showAcceptCookies$.set(!cookies.get('COOKIES'))
 
-  return { show: show as WebradioShow | false, questions, acceptCookies }
+  return { show, questions, acceptCookies }
 }

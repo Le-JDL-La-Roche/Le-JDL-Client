@@ -34,7 +34,10 @@ class Http {
   ): Promise<Observable<T>> {
     return fetch(url, this.setRequest(url, method, req, body))
       .then(async (response: Response) => {
-        return { response: response, body: (await response.json()) as unknown }
+        const contentType = response.headers.get('Content-Type')
+        const isJson = contentType?.includes('application/json')
+        const body = isJson ? await response.json() : await response.text()
+        return { response, body }
       })
       .then((response) => {
         return { response: response.response, body: response.body as T }
@@ -51,7 +54,6 @@ class Http {
     let body_: any
     let headers_: any = req?.headers
 
-    // check if header type is multipart/form-data. if so, do not url encode body
     if (body instanceof FormData) {
       body_ = body
       delete this.headers['Content-Type']

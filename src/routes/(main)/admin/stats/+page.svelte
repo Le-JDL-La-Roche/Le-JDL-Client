@@ -39,7 +39,7 @@
 </svelte:head>
 
 <h2>
-  <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp; Statistiques du Blog
+  <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp; Statistiques du site
 </h2>
 
 <select bind:value={visitsRange} class="range" on:change={() => visitsChart.updateRange(visitsRange)}>

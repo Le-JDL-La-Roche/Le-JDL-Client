@@ -42,7 +42,7 @@
       </div>
     </div>
     <p>
-      Le Blog du JDL utilise les cookies pour sauvegarder vos paramètres et mesurer l'audience. En aucun cas ces cookies ne
+      Le site du JDL utilise les cookies pour sauvegarder vos paramètres et mesurer l'audience. En aucun cas ces cookies ne
       peuvent vous identifier.<br />
       Si vous ne souhaitez pas sauvegarder vos paramètres, vous pouvez refuser les cookies.<br />
       Vous pouvez modifier votre choix à tout moment en cliquant sur le bouton correspondant en bas de la page.

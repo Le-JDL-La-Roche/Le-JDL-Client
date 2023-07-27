@@ -48,7 +48,7 @@
       <button class="primary"><i class="fa-solid fa-user" />&nbsp;&nbsp;Gestion des journalistes</button>
     </a>
     <a class="not-a" href="/admin/stats">
-      <button class="primary"><i class="fa-solid fa-circle-info" />&nbsp;&nbsp;Statistiques du Blog</button>
+      <button class="primary"><i class="fa-solid fa-circle-info" />&nbsp;&nbsp;Statistiques du site</button>
     </a>
   </div>
 {/if}

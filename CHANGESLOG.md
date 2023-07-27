@@ -1,4 +1,4 @@
-# Mises à jour du Blog
+# Mises à jour du site
 
 ### 1<sup>er</sup> septembre 2023 `v2.0.0`
 - Migration vers SvelteKit (Angular -> SvelteKit)
