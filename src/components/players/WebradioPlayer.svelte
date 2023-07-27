@@ -5,7 +5,7 @@
   import CookiesService from '$services/cookies.service'
   import Hls from 'hls.js'
   import { onMount } from 'svelte'
-  import http from '$services/http.module'
+  import io from '$services/api/socket.service'
 
   export let show: WebradioShow
   export let questions: WebradioQuestion[]
@@ -35,16 +35,21 @@
       player.autoplay = true
       player.volume = volume / 100
     }
-
+    
     if (cookies.get('VOLUME')) {
       volume = +cookies.get('VOLUME')
     }
+    
+    io.emit('addViewer')
   })
+  
 
   $: if (play && !mute && player) {
     player.muted = false
+    io.emit('addViewer')
   } else if (player) {
     player.muted = true
+    io.emit('removeViewer')
   }
 
   $: if (volume && player) {
@@ -59,6 +64,12 @@
     }
   }
 </script>
+
+<svelte:window
+  on:unload={() => {
+    if (play && !mute) play = false
+  }}
+/>
 
 <div class="container">
   <div class="content">
