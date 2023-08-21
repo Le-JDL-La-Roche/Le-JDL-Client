@@ -236,7 +236,7 @@
             type="text"
             placeholder="ID du podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
             bind:value={podcastId}
-            {required}
+            required={required && status === 2 }
           />
           <select bind:value={status} {required}>
             <option value={null} disabled selected>-- Status de l'émission --</option>
