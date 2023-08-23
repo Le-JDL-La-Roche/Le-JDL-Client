@@ -10,7 +10,7 @@ Cependant, il existe également des cookies *marketing*, qui proviennent d'un au
 
 ## Les cookies et Le JDL
 
-Le JDL utilise les cookies pour sauvegarder vos paramètres (par exemple, les options de triage des vidéos et articles) et pour mesurer anonymement l'audience du site. En tant que visiteurs, aucun cookie déposé par le site ne permet de vous identifier. De plus, aucun cookie n'est transmis au serveur : les cookies sont uniquement destinés à sauvegarder vos paramètres et à mesurer l'audience du site. Nous stockons les cookies sur votre appareil pendant 1 an au maximum.
+Le JDL utilise les cookies pour sauvegarder vos paramètres (par exemple, les options de triage des vidéos et articles) et pour mesurer anonymement l'audience du site. En tant que visiteur, aucun cookie déposé par le site ne permet de vous identifier. De plus, aucun cookie n'est transmis au serveur : les cookies sont uniquement destinés à sauvegarder vos paramètres et à mesurer l'audience du site. Nous stockons les cookies sur votre appareil pendant 1 an au maximum.
 
 Il vous est possible de refuser nos cookies depuis notre site. Cependant, cela peut entraîner des dysfonctionnements sur le site, comme la perte de vos paramètres. Par ailleurs, et comme l'autorise le RGPD, nous continuerons à mesurer l'audience du site de manière anonyme. Ainsi, malgré un refus, des cookies seront toujours déposés sur votre appareil ; seuls les cookies non essentiels seront supprimés.
 

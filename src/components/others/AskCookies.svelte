@@ -59,7 +59,7 @@
   }
 
   div.content {
-    box-shadow: 0 -5px 100px #000000a0;
+    box-shadow: 0 -3px 130px #000000a0;
     background: white;
     padding: 30px;
     margin-bottom: 15px;
