@@ -30,6 +30,11 @@
     clearInterval(checkInterval)
   }
 
+  io.on('waitStreamLaunched', (show: WebradioShow) => {
+    data.show = show
+    checkShow(data.show.streamId)
+  })
+
   io.on('liveStreamLaunched', (show: WebradioShow) => {
     data.show = show
     checkShow(data.show.streamId)

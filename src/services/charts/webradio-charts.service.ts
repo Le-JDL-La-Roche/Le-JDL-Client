@@ -34,7 +34,7 @@ export class WebradioChart extends Chart {
               return value !== 0
             },
             formatter: (value, ctx) => {
-              const labels = ['Brouillons', 'En direct', 'En attente', 'Publiés']
+              const labels = ['Brouillons', 'En attente/direct', 'En vérification', 'Publiés']
               return `${labels[ctx.dataIndex]} : ${value}`
             }
           }
@@ -44,7 +44,7 @@ export class WebradioChart extends Chart {
 
     this.showsData = [
       data.data?.shows.status.draft || 0,
-      data.data?.shows.status.live || 0,
+      data.data?.shows.status.live || 0, // includes wait stream
       data.data?.shows.status.waiting || 0,
       data.data?.shows.status.podcast || 0
     ]

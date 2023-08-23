@@ -27,15 +27,19 @@
   const apiVideos = new ApiVideosService()
   const apiArticles = new ApiArticlesService()
 
+  $: disabledShow =
+    data.type === 'emissions'
+      ? data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && (show.status === -1 || show.status === 0))
+      : null
   $: disabled =
     data.type === 'emissions' &&
-    data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && show.status === 0)
+    data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && (show.status === -1 || show.status === 0))
       ? true
       : false
   $: title = disabled ? 'Une émission est déjà en cours' : undefined
   $: viewersCounter = 0
 
-  $: if ('streamId' in element && element.status === 0) {
+  $: if ('streamId' in element && (element.status === -1 || element.status === 0)) {
     io.emit('getViewers')
   }
 
@@ -43,26 +47,41 @@
     viewersCounter = viewers
   })
 
-  async function startLivestream(show: WebradioShow | Video | Article) {
+  async function startWaitStream(show: WebradioShow | Video | Article) {
+    if (
+      'streamId' in show &&
+      confirm(`Êtes-vous sûr de vouloir commencer l'émission "${show.title}" ?\n(Le direct sera en attente de démarrage.)`)
+    ) {
+      ;(await apiWebradio.putShow({ status: -1 }, show.id || 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.shows || []
+          io.emit('launchWaitStream')
+        },
+        error: () => {}
+      })
+    }
+  }
+
+  async function startLiveStream(show: WebradioShow | Video | Article) {
     if ('streamId' in show) {
       ;(await apiWebradio.putShow({ status: 0 }, show.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
           io.emit('launchLiveStream')
         },
-        error: (err) => {}
+        error: () => {}
       })
     }
   }
 
-  async function stopLivestream(show: WebradioShow | Video | Article) {
+  async function stopLiveStream(show: WebradioShow | Video | Article) {
     if ('streamId' in show) {
       ;(await apiWebradio.putShow({ status: 1 }, show.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
           io.emit('stopLiveStream')
         },
-        error: (err) => {}
+        error: () => {}
       })
     }
   }
@@ -73,7 +92,7 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
         },
-        error: (err) => {}
+        error: () => {}
       })
     }
   }
@@ -84,14 +103,14 @@
         next: (res) => {
           data.data = res.body.data?.videos || []
         },
-        error: (err) => {}
+        error: () => {}
       })
     } else if ('article' in element) {
       ;(await apiArticles.putArticle({ status: 2 }, element.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.articles || []
         },
-        error: (err) => {}
+        error: () => {}
       })
     }
   }
@@ -131,15 +150,17 @@
     <p class="info">
       <span class="optional">
         {#if 'streamId' in element}
-          {element.status === -1
+          {element.status === -2
             ? 'Brouillon'
+            : element.status === -1
+            ? 'En attente'
             : element.status === 0
             ? 'En direct'
             : element.status === 1
-            ? 'En attente'
+            ? 'En vérification'
             : 'Publié'}&nbsp;&nbsp;•&nbsp;
         {:else if 'category' in element}
-          {element.status === -1 ? 'Brouillon' : 'Publié'}&nbsp;&nbsp;• &nbsp;{utils.categoryToString(
+          {element.status === -2 ? 'Brouillon' : 'Publié'}&nbsp;&nbsp;• &nbsp;{utils.categoryToString(
             element.category
           )}&nbsp;&nbsp;•&nbsp;
         {/if}
@@ -147,7 +168,7 @@
       {utils.timestampToString(+element.date)}
       {#if 'article' in element}
         <span class="optional">&nbsp;•&nbsp;&nbsp;{element.views || 0} vues</span>
-      {:else if 'streamId' in element && element.status === 0}
+      {:else if 'streamId' in element && (element.status === -1 || element.status === 0)}
         <span class="optional">&nbsp;•&nbsp;&nbsp;{viewersCounter + (viewersCounter < 2 ? ' auditeur' : ' auditeurs')}</span>
       {/if}
     </p>
@@ -215,12 +236,21 @@
       {/if}
     </div>
     {#if 'streamId' in element}
-      {#if element.status === -1}
-        <button class="secondary red" on:click={() => startLivestream(element)} {disabled} {title}>
+      {#if element.status === -2}
+        <button class="secondary grey" on:click={() => startWaitStream(element)} {disabled} {title}>
+          <i class="fa-solid fa-video" />Commencer
+        </button>
+      {:else if element.status === -1}
+        <button
+          class="secondary red"
+          on:click={() => startLiveStream(element)}
+          disabled={disabled && element.id !== disabledShow?.id}
+          title={disabled && element.id !== disabledShow?.id ? title : ''}
+        >
           <i class="fa-solid fa-video" />Démarrer
         </button>
       {:else if element.status === 0}
-        <button class="secondary red flash" on:click={() => stopLivestream(element)}>
+        <button class="secondary red flash" on:click={() => stopLiveStream(element)}>
           <i class="fa-solid fa-video-slash" />Arrêter
         </button>
       {:else if element.status === 1}
@@ -239,7 +269,7 @@
           </button>
         {/if}
       {/if}
-    {:else if 'status' in element && element.status === -1}
+    {:else if 'status' in element && element.status === -2}
       <button class="secondary green" on:click={() => publishElement(element)}>
         <i class="fa-solid fa-check" />Publier
       </button>
@@ -390,7 +420,8 @@
       flex-direction: column;
 
       button.red,
-      button.green {
+      button.green,
+      button.grey {
         height: 100%;
 
         i.fa-solid {
