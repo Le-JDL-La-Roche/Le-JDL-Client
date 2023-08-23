@@ -88,7 +88,7 @@
     </div>
 
     <p class="title">
-      <span class="live">En direct</span>
+      <span class="live">{show.status === -1 ? 'En attente du direct' : 'En direct'}</span>
       <span class="title">{show.title}</span>
     </p>
 
