@@ -8,13 +8,18 @@
 
   const content = new ContentService()
 
-  let event = true
+  let event = false
 
-  if (+agenda[0].date < Math.round(new Date().getTime() / 1000)) {
-    event = false
+  let i = 0
+  while (agenda[i] && +agenda[i].date > Math.round(new Date().getTime() / 1000)) {
+    console.log(agenda[i].date)
+    event = true
+    i++
   }
 
-  const cday = new Date(+agenda[0].date * 1000).toLocaleString('en-US', { weekday: 'short' }).toLowerCase() as
+  i -= 1
+
+  const cday = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { weekday: 'short' }).toLowerCase() as
     | 'mon'
     | 'tue'
     | 'wed'
@@ -22,8 +27,8 @@
     | 'fri'
     | 'sat'
     | 'sun'
-  const cno = new Date(+agenda[0].date * 1000).toLocaleString('en-US', { day: '2-digit' })
-  const cmonth = new Date(+agenda[0].date * 1000).toLocaleString('en-US', { month: 'short' }).toLowerCase() as
+  const cno = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { day: '2-digit' })
+  const cmonth = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { month: 'short' }).toLowerCase() as
     | 'jan'
     | 'feb'
     | 'mar'
@@ -61,18 +66,12 @@
     nov: 'Novemb.',
     dec: 'Décemb.'
   }
-
-  let dateAfter: HTMLDivElement
-
-  onMount(() => {
-    dateAfter.style.backgroundColor = agenda[0].color
-  })
 </script>
 
 {#if event}
   <div class="event">
     <div class="date">
-      <div class="after" bind:this={dateAfter} />
+      <div class="after" style={'background-color: ' + agenda[i].color} />
       <span
         class="day"
         class:mon={cday === 'mon'}
@@ -101,16 +100,16 @@
       >
     </div>
     <div class="event-content">
-      <p class="title">{agenda[0].title}</p>
-      <p class="content">{@html content.markdownToHtml(agenda[0].content)}</p>
+      <p class="title">{agenda[i].title}</p>
+      <p class="content">{@html content.markdownToHtml(agenda[i].content)}</p>
       <a class="more" href="/agenda">Plus d'infos ...</a>
     </div>
-    <img src={`${api}/public/images/thumbnails/${agenda[0].thumbnail}`} alt="Évènement" />
+    <img src={`${api}/public/images/thumbnails/${agenda[i].thumbnail}`} alt="Évènement" />
   </div>
 {:else}
-<div class="event" style="display: block">
-  <p style="text-align: center">Aucun évènement à venir</p>
-</div>
+  <div class="event" style="display: block">
+    <p style="text-align: center">Aucun évènement à venir</p>
+  </div>
 {/if}
 
 <a href="/agenda" class="not-a">
@@ -183,6 +182,14 @@
       &.nov,
       &.dec {
         font-size: 16px;
+      }
+
+      &.mar,
+      &.may,
+      &.apr,
+      &.jun,
+      &.aug {
+        font-size: 18px;
       }
     }
   }
