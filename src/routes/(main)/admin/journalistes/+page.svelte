@@ -25,11 +25,11 @@
 </script>
 
 <svelte:head>
-  <title>Journalistes • Le JDL - La Roche</title>
+  <title>Journalistes - Administration • Le JDL - La Roche</title>
 </svelte:head>
 
 <h2>
-  <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp; Gestion des journalistes
+  <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp; Gérer les journalistes
 </h2>
 
 <button

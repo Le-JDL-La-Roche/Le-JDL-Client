@@ -4,5 +4,5 @@ export interface Event {
     content: string
     date: string
     color: string
-    thumbnail: string
+    thumbnail: string | File
 }

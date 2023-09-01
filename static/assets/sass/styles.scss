@@ -111,7 +111,7 @@ button.secondary {
   }
 }
 
-input:not([type=checkbox]):not([type=radio]):not(.page),
+input:not([type=checkbox]):not([type=radio]):not([type=color]):not(.page),
 textarea,
 div.editor,
 select {
@@ -293,7 +293,8 @@ p.article h4 {
     position: initial;
   }
 
-  header, footer {
+  header,
+  footer {
     display: none;
   }
 }

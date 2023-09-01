@@ -72,6 +72,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Agenda • Le JDL - La Roche</title>
+</svelte:head>
+
 <h2>Agenda</h2>
 
 {#each futureEvents as event}
@@ -256,6 +260,7 @@
     display: none;
     margin-left: 30px;
     height: 100px;
+    border-radius: 5px;
   }
 
   div.hr {

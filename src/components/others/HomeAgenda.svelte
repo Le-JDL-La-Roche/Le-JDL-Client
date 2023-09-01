@@ -19,28 +19,34 @@
 
   i -= 1
 
-  const cday = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { weekday: 'short' }).toLowerCase() as
-    | 'mon'
-    | 'tue'
-    | 'wed'
-    | 'thu'
-    | 'fri'
-    | 'sat'
-    | 'sun'
-  const cno = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { day: '2-digit' })
-  const cmonth = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { month: 'short' }).toLowerCase() as
-    | 'jan'
-    | 'feb'
-    | 'mar'
-    | 'apr'
-    | 'may'
-    | 'jun'
-    | 'jul'
-    | 'aug'
-    | 'sep'
-    | 'oct'
-    | 'nov'
-    | 'dec'
+  let cday: 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat' | 'sun'
+  let cno: string
+  let cmonth: 'jan' | 'feb' | 'mar' | 'apr' | 'may' | 'jun' | 'jul' | 'aug' | 'sep' | 'oct' | 'nov' | 'dec'
+
+  if (event) {
+    cday = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { weekday: 'short' }).toLowerCase() as
+      | 'mon'
+      | 'tue'
+      | 'wed'
+      | 'thu'
+      | 'fri'
+      | 'sat'
+      | 'sun'
+    cno = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { day: '2-digit' })
+    cmonth = new Date(+agenda[i].date * 1000).toLocaleString('en-US', { month: 'short' }).toLowerCase() as
+      | 'jan'
+      | 'feb'
+      | 'mar'
+      | 'apr'
+      | 'may'
+      | 'jun'
+      | 'jul'
+      | 'aug'
+      | 'sep'
+      | 'oct'
+      | 'nov'
+      | 'dec'
+  }
 
   const day = {
     mon: 'Lundi',
