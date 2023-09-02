@@ -102,7 +102,9 @@
         <p class="section-title"><strong>Questions</strong></p>
       </div>
       <p style="font-size: 14px; margin-top: 0">
-        Vous pouvez poser des questions ici.<br />
+        {webradioShow.status === 0.5 || webradioShow.status === -1.5
+          ? 'Vous ne pouvez pas poser de questions durant les rediffusions.'
+          : 'Vous pouvez poser des questions ici.'}<br />
         <span style="color: #c83232">Vos questions sont publiques ; merci d'être respectueux des autres.</span>
       </p>
       <div class="questions-list" bind:this={questionsList}>
@@ -118,7 +120,7 @@
       </div>
 
       <form on:submit|preventDefault={sendQuestion}>
-        <input type="text" placeholder="Posez votre question ici..." bind:value={question} enterkeyhint="send" />
+        <input type="text" placeholder="Posez votre question ici..." bind:value={question} enterkeyhint="send" disabled={webradioShow.status === 0.5 || webradioShow.status === -1.5} />
         <button type="submit" class="secondary" disabled={!(question + '').replace(/\s/g, '').length || !question}>
           <i class="fa-solid fa-paper-plane" />
         </button>
@@ -242,13 +244,14 @@
       display: flex;
       flex-direction: row;
       margin-top: 20px;
+      flex-wrap: wrap;
 
       input {
-        margin: 0 15px 0 0;
+        margin: 0 15px 0 0 !important;
         flex: 1;
-        min-width: auto;
-        max-width: auto;
-        width: auto;
+        min-width: calc(100% - 72px) !important;
+        max-width: calc(100% - 72px) !important;
+        width: calc(100% - 72px) !important;
       }
 
       button {

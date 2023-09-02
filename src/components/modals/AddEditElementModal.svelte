@@ -37,7 +37,7 @@
   $: thumbnailSrc = '' as string
   $: streamId = '' as string
   $: podcastId = '' as string
-  $: status = null as -2 | -1 | 0 | 1 | 2 | null
+  $: status = null as -2 | -2.5 | -1 | -1.5 | 0 | 0.5 | 1 | 2 | null
   $: videoId = '' as string
   $: category = null as 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche' | null
   $: videoType = null as 'youtube' | 'instagram' | null
@@ -123,8 +123,12 @@
           data.data = res.body.data?.shows || []
           if ((element.data as WebradioShow).status === -1) {
             io.emit('launchWaitStream', element.data as WebradioShow)
+          } else if ((element.data as WebradioShow).status === -1.5) {
+            io.emit('launchWaitRestream', element.data as WebradioShow)
           } else if ((element.data as WebradioShow).status === 0) {
             io.emit('launchLiveStream', element.data as WebradioShow)
+          } else if ((element.data as WebradioShow).status === 0.5) {
+            io.emit('launchRestream', element.data as WebradioShow)
           } else {
             io.emit('stopLiveStream')
           }
@@ -243,8 +247,11 @@
           <select bind:value={status} {required}>
             <option value={null} disabled selected>-- Status de l'émission --</option>
             <option value={-2}>Brouillon, en attente de l'autorisation de diffusion par l'administration</option>
-            <option value={-1}>En attente du direct</option>
+            <option value={-1}>Salle d'attente du direct</option>
             <option value={0}>En direct</option>
+            <option value={-2.5}>En attente de rediffusion</option>
+            <option value={-1.5}>Salle d'attente de rediffusion</option>
+            <option value={0.5}>En rediffusion</option>
             <option value={1}>En attente de validation de publication par l'administration</option>
             <option value={2}>Publié au format podcast</option>
           </select>
