@@ -34,7 +34,7 @@ export class WebradioChart extends Chart {
               return value !== 0
             },
             formatter: (value, ctx) => {
-              const labels = ['Brouillons', 'En attente/direct', 'En vérification', 'Publiés']
+              const labels = ['Brouillons/Attente', 'Salle d\'attente/direct/rediff.', 'En vérification', 'Publiés']
               return `${labels[ctx.dataIndex]} : ${value}`
             }
           }
