@@ -35,7 +35,7 @@
 </script>
 
 <svelte:head>
-  <title>Statistiques • Le JDL - La Roche</title>
+  <title>Statistiques - Administration • Le JDL - La Roche</title>
 </svelte:head>
 
 <h2>

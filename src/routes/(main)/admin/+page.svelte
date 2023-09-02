@@ -36,7 +36,7 @@
     <h2 style="margin-top: 10px">Espace administration</h2>
     
     <a class="not-a" href="/admin/emissions">
-      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Emissions de radio et podcasts</button>
+      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Gérer les émissions de radio</button>
     </a>
     <a class="not-a" href="/admin/videos">
       <button class="primary"><i class="fa-solid fa-video" />&nbsp;&nbsp;Gérer les vidéos</button>
@@ -45,7 +45,10 @@
       <button class="primary"><i class="fa-solid fa-file" />&nbsp;&nbsp;Gérer les articles</button>
     </a>
     <a class="not-a" href="/admin/journalistes">
-      <button class="primary"><i class="fa-solid fa-user" />&nbsp;&nbsp;Gestion des journalistes</button>
+      <button class="primary"><i class="fa-solid fa-user" />&nbsp;&nbsp;Gérer les journalistes</button>
+    </a>
+    <a class="not-a" href="/admin/agenda">
+      <button class="primary"><i class="fa-solid fa-calendar" />&nbsp;&nbsp;Gérer l'agenda</button>
     </a>
     <a class="not-a" href="/admin/stats">
       <button class="primary"><i class="fa-solid fa-circle-info" />&nbsp;&nbsp;Statistiques du site</button>
