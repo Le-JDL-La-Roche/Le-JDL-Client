@@ -35,12 +35,27 @@
     checkShow(data.show.streamId)
   })
 
+  io.on('waitRestreamLaunched', (show: WebradioShow) => {
+    data.show = show
+    checkShow(data.show.streamId)
+  })
+
   io.on('liveStreamLaunched', (show: WebradioShow) => {
     data.show = show
     checkShow(data.show.streamId)
   })
 
+  io.on('liveRestreamLaunched', (show: WebradioShow) => {
+    data.show = show
+    checkShow(data.show.streamId)
+  })
+
   io.on('liveStreamStopped', () => {
+    data.show = false
+    liveStream$.set(false)
+  })
+
+  io.on('liveRestreamStopped', () => {
     data.show = false
     liveStream$.set(false)
   })

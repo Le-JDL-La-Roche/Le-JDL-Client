@@ -111,7 +111,7 @@ button.secondary {
   }
 }
 
-input:not([type=checkbox]):not([type=radio]):not([type=color]):not(.page),
+input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=range]):not(.page),
 textarea,
 div.editor,
 select {
@@ -133,7 +133,7 @@ input:not([type=checkbox]):not([type=radio]):focus,
 textarea:focus,
 div.editor:focus,
 select:active {
-  border-color: var(--secondary-red-color);
+  border-color: var(--secondary-red-color) !important;
 }
 
 select {
@@ -247,7 +247,7 @@ p.article h4 {
   div.editor,
   select {
     &:hover {
-      border-color: var(--primary-red-color);
+      border-color: var(--primary-red-color) !important;
     }
   }
 

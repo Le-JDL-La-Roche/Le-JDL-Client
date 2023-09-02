@@ -23,15 +23,15 @@
 
   onMount(() => {
     if (Hls.isSupported()) {
-      const hls = new Hls()
+      var hls = new Hls()
+      player.muted = play && !mute
       hls.loadSource(`https://radio.le-jdl-laroche.cf/hls/${show.streamId}.m3u8`)
       hls.attachMedia(player)
-      player.muted = play && !mute
       player.autoplay = true
       player.volume = volume / 100
     } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
-      player.src = `https://radio.le-jdl-laroche.cf/hls/${show.streamId}.m3u8`
       player.muted = play && !mute
+      player.src = `https://radio.le-jdl-laroche.cf/hls/${show.streamId}.m3u8`
       player.autoplay = true
       player.volume = volume / 100
     }
@@ -41,8 +41,16 @@
     }
     
     io.emit('addViewer')
-  })
+
+    io.on('liveStreamStopped', () => {
+      hls.destroy()
+    })
   
+    io.on('liveRestreamStopped', () => {
+      hls.destroy()
+    })
+  })
+
 
   $: if (play && !mute && player) {
     player.muted = false
@@ -88,11 +96,20 @@
     </div>
 
     <p class="title">
-      <span class="live">{show.status === -1 ? 'En attente du direct' : 'En direct'}</span>
+      <span class="live">{
+        show.status === -1 
+        ? 'En attente du direct' 
+        : show.status === -1.5
+        ? 'En attente de rediffusion'
+        : show.status === 0 
+        ? 'En direct'
+        : 'Rediffusion'
+        }</span>
       <span class="title">{show.title}</span>
     </p>
 
     <div class="actions">
+      {#if show.status === -1 || show.status === 0}
       <button
         class="action"
         on:click={() => {
@@ -102,6 +119,7 @@
       >
         <i class="fa-solid fa-message" />
       </button>
+      {/if}
       <button
         class="action"
         on:click={() => {
@@ -126,7 +144,7 @@
 />
 
 <!-- svelte-ignore a11y-media-has-caption -->
-<video bind:this={player} />
+<video bind:this={player} controls />
 
 <style lang="scss">
   div.container {
@@ -207,7 +225,7 @@
     min-width: 100px;
     min-width: 100px;
     width: 100px;
-    height: 6px;
+    height: 6px !important;
     margin: 6px 0 6px 0;
     vertical-align: text-bottom;
     border: none;

@@ -29,11 +29,11 @@
 
   $: disabledShow =
     data.type === 'emissions'
-      ? data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && (show.status === -1 || show.status === 0))
+      ? data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && (show.status === -1  || show.status === -1.5 || show.status === 0 || show.status === 0.5))
       : null
   $: disabled =
     data.type === 'emissions' &&
-    data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && (show.status === -1 || show.status === 0))
+    data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && (show.status === -1  || show.status === -1.5 || show.status === 0 || show.status === 0.5))
       ? true
       : false
   $: title = disabled ? 'Une émission est déjà en cours' : undefined
@@ -61,6 +61,21 @@
       })
     }
   }
+  
+  async function startWaitRestream(show: WebradioShow | Video | Article) {
+    if (
+      'streamId' in show &&
+      confirm(`Êtes-vous sûr de vouloir commencer la rediffusion de l'émission "${show.title}" ?\n(La rediffusion sera en attente de démarrage.)`)
+    ) {
+      ;(await apiWebradio.putShow({ status: -1.5 }, show.id || 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.shows || []
+          io.emit('launchWaitRestream')
+        },
+        error: () => {}
+      })
+    }
+  }
 
   async function startLiveStream(show: WebradioShow | Video | Article) {
     if ('streamId' in show) {
@@ -74,12 +89,36 @@
     }
   }
 
+  async function startLiveRestream(show: WebradioShow | Video | Article) {
+    if ('streamId' in show) {
+      ;(await apiWebradio.putShow({ status: 0.5 }, show.id || 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.shows || []
+          io.emit('launchLiveRestream')
+        },
+        error: () => {}
+      })
+    }
+  }
+
   async function stopLiveStream(show: WebradioShow | Video | Article) {
+    if ('streamId' in show) {
+      ;(await apiWebradio.putShow({ status: -2.5 }, show.id || 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.shows || []
+          io.emit('stopLiveStream')
+        },
+        error: () => {}
+      })
+    }
+  }
+
+  async function stopLiveRestream(show: WebradioShow | Video | Article) {
     if ('streamId' in show) {
       ;(await apiWebradio.putShow({ status: 1 }, show.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.shows || []
-          io.emit('stopLiveStream')
+          io.emit('stopLiveRestream')
         },
         error: () => {}
       })
@@ -152,10 +191,16 @@
         {#if 'streamId' in element}
           {element.status === -2
             ? 'Brouillon'
+            : element.status === -2.5
+            ? 'En attente (rediff.)'
             : element.status === -1
-            ? 'En attente'
+            ? 'Salle d\'attente'
+            : element.status === -1.5
+            ? 'Salle d\'attente (rediff.)'
             : element.status === 0
             ? 'En direct'
+            : element.status === 0.5
+            ? 'En direct (rediff.)'
             : element.status === 1
             ? 'En vérification'
             : 'Publié'}&nbsp;&nbsp;•&nbsp;
@@ -240,6 +285,10 @@
         <button class="secondary grey" on:click={() => startWaitStream(element)} {disabled} {title}>
           <i class="fa-solid fa-video" />Commencer
         </button>
+      {:else if element.status === -2.5}
+        <button class="secondary grey" on:click={() => startWaitRestream(element)} {disabled} {title}>
+          <i class="fa-solid fa-video" />Commencer (rediff.)
+        </button>
       {:else if element.status === -1}
         <button
           class="secondary red"
@@ -249,9 +298,22 @@
         >
           <i class="fa-solid fa-video" />Démarrer
         </button>
+      {:else if element.status === -1.5}
+        <button
+          class="secondary red"
+          on:click={() => startLiveRestream(element)}
+          disabled={disabled && element.id !== disabledShow?.id}
+          title={disabled && element.id !== disabledShow?.id ? title : ''}
+        >
+          <i class="fa-solid fa-video" />Démarrer (rediff.)
+        </button>
       {:else if element.status === 0}
         <button class="secondary red flash" on:click={() => stopLiveStream(element)}>
           <i class="fa-solid fa-video-slash" />Arrêter
+        </button>
+      {:else if element.status === 0.5}
+        <button class="secondary red flash" on:click={() => stopLiveRestream(element)}>
+          <i class="fa-solid fa-video-slash" />Arrêter (rediff.)
         </button>
       {:else if element.status === 1}
         {#if !element.podcastId}
