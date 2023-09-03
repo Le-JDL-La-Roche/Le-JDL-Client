@@ -20,7 +20,7 @@
 
 <div class="flex">
   <div>
-    <h2>Bienvenue sur le site du JDL !</h2>
+    <h2 style="margin-top: 10px">Bienvenue sur le site du JDL !</h2>
     <p class="desc">
       Bienvenue sur le site du Journal du Lycée La Rochefoucauld !<br />Nous sommes heureux de vous retrouver pour une troisième
       année, durant laquelle nous ferons notre maximum pour vous proposer un maximum de contenu. Cette année, au programme :
@@ -31,7 +31,7 @@
     </p>
   </div>
   <div class="agenda">
-    <h2>Agenda <span class:b>{b || ''}</span></h2>
+    <h2 style="margin-top: 10px">Agenda <span class:b>{b || ''}</span></h2>
     <HomeAgenda agenda={data.agenda} />
   </div>
 </div>
