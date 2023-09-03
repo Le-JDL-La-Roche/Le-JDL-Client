@@ -17,7 +17,7 @@
   $: title = '' as string
   $: content = '' as string
   $: date = '' as string
-  $: color = '' as string
+  $: color = '#000000' as string
   $: thumbnail = undefined as File | string | undefined
   $: eventDate = { date: '', time: '' } as { date: string; time: string }
 
@@ -34,6 +34,7 @@
       date = ''
       color = ''
       thumbnail = undefined
+      eventDate = { date: '', time: '' }
     } else {
       required = false
       title = action.element.title
