@@ -39,10 +39,10 @@
 <h2>Nos derniers podcasts radio</h2>
 <ImportantList shows={data.shows} />
 
-<h2>Nos dernières vidéos</h2>
+<h2 style="margin-top: 20px">Nos dernières vidéos</h2>
 <ImportantList videos={data.videos} />
 
-<h2>Notre dernier article</h2>
+<h2 style="margin-top: 20px">Notre dernier article</h2>
 <List articles={[data.articles[0]]} />
 
 <h2>La Rédaction</h2>
