@@ -12,7 +12,6 @@
 
   let i = 0
   while (agenda[i] && +agenda[i].date > Math.round(new Date().getTime() / 1000)) {
-    console.log(agenda[i].date)
     event = true
     i++
   }
