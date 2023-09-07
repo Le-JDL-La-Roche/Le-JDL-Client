@@ -66,7 +66,7 @@
           class="s"
           on:paste={handlePaste}
           bind:innerText={authorization.content.outGuests[guestId].media}
-        />. Le JDL s'engage à ne pas exploiter les données susceptible de porter atteinte à ma vie privée ou à ma réputation.<br
+        />. Le JDL s'engage à ne pas exploiter les données susceptibles de porter atteinte à ma vie privée ou à ma réputation.<br
         />
         <br />
         &nbsp;&nbsp;&nbsp;Je peux demander à tout moment la suppression de mes captations audiovisuelles en m'adressant par mail à
