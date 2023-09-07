@@ -12,7 +12,6 @@
 
   let i = 0
   while (agenda[i] && +agenda[i].date > Math.round(new Date().getTime() / 1000)) {
-    console.log(agenda[i].date)
     event = true
     i++
   }
@@ -107,14 +106,13 @@
     </div>
     <div class="event-content">
       <p class="title">{agenda[i].title}</p>
-      <p class="content">{@html content.markdownToHtml(agenda[i].content)}</p>
       <a class="more" href="/agenda">Plus d'infos ...</a>
     </div>
     <img src={`${api}/public/images/thumbnails/${agenda[i].thumbnail}`} alt="Évènement" />
   </div>
 {:else}
   <div class="event" style="display: block">
-    <p style="text-align: center">Aucun évènement à venir</p>
+    <p style="text-align: center; color: var(--dark-gray-color)">Aucun évènement à venir</p>
   </div>
 {/if}
 
@@ -209,16 +207,6 @@
       margin-top: 0;
       font-weight: bold;
       display: -webkit-box;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
-      max-height: 60px;
-      line-clamp: 2;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-    }
-
-    p.content {
-      display: none;
       -webkit-box-orient: vertical;
       text-overflow: ellipsis;
       max-height: 60px;

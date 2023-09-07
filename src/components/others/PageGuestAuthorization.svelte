@@ -4,8 +4,6 @@
   export let guestId: number
   export let authorization: Authorization
 
-  console.log(authorization)
-
   async function handlePaste(event: ClipboardEvent) {
     event.preventDefault()
     const text = event.clipboardData?.getData('text/plain')

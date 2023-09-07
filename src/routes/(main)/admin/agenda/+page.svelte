@@ -256,6 +256,10 @@
       margin-top: 0;
       font-weight: bold;
     }
+
+    p.content {
+      margin: 0;
+    }
   }
 
   img {
