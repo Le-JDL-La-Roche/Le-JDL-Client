@@ -13,8 +13,6 @@
     }
   }
 
-  console.log(authorization.content)
-
   let guestAuthorization =
     guestType === 'in' 
       ? (authorization.content as WebradioAuthorization | VideoAuthorization).inGuests[guestId]
@@ -80,7 +78,7 @@
           class="s"
           on:paste={handlePaste}
           bind:innerText={guestAuthorization.media}
-        />. Le JDL s'engage à ne pas exploiter les données susceptibles de porter atteinte à ma vie privée ou à ma réputation.<br
+        />. Le JDL s'engage à ne pas exploiter les données susceptible de porter atteinte à ma vie privée ou à ma réputation.<br
         />
         <br />
         &nbsp;&nbsp;&nbsp;Je peux demander à tout moment la suppression de mes captations audiovisuelles en m'adressant par mail à
