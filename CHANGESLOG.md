@@ -1,5 +1,8 @@
 # Mises à jour du site
 
+### 15 septembre 2023 `v2.0.1`
+- Espace administrateur
+
 ### 1<sup>er</sup> septembre 2023 `v2.0.0`
 - Migration vers SvelteKit (Angular -> SvelteKit)
 - Amélioration du système de direct Webradio

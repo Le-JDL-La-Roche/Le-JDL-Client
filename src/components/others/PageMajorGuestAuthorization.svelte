@@ -1,7 +1,8 @@
 <script lang="ts">
-  import type { Authorization, Guest } from '$models/data/authorization.model'
+  import type { Authorization, Guest, VideoAuthorization, WebradioAuthorization } from '$models/data/authorization.model'
 
   export let guestId: number
+  export let guestType: 'in' | 'out'
   export let authorization: Authorization
 
   async function handlePaste(event: ClipboardEvent) {
@@ -10,6 +11,21 @@
     if (text) {
       document.execCommand('insertText', false, text)
     }
+  }
+
+  console.log(authorization.content)
+
+  let guestAuthorization =
+    guestType === 'in' 
+      ? (authorization.content as WebradioAuthorization | VideoAuthorization).inGuests[guestId]
+      : (authorization.content as WebradioAuthorization | VideoAuthorization).outGuests[guestId]
+  
+  $: if (guestAuthorization) {
+    if (guestType === 'in') {
+      (authorization.content as WebradioAuthorization | VideoAuthorization).inGuests[guestId] = guestAuthorization
+    } else {
+      (authorization.content as WebradioAuthorization | VideoAuthorization).outGuests[guestId] = guestAuthorization
+    }      
   }
 </script>
 
@@ -36,20 +52,20 @@
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].eventType}
+          bind:innerText={guestAuthorization.eventType}
         />
         qui aura lieu le
         <span
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].date}
+          bind:innerText={guestAuthorization.date}
         />
         <span
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].place}
+          bind:innerText={guestAuthorization.place}
         />.<br />
         <br />
         &nbsp;&nbsp;&nbsp;Les images, vidéos ou enregistrements audio pourront être
@@ -57,14 +73,14 @@
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].use}
+          bind:innerText={guestAuthorization.use}
         />, sans limitation de durée, entièrement ou par extraits, notamment sur
         <span
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].media}
-        />. Le JDL s'engage à ne pas exploiter les données susceptible de porter atteinte à ma vie privée ou à ma réputation.<br
+          bind:innerText={guestAuthorization.media}
+        />. Le JDL s'engage à ne pas exploiter les données susceptibles de porter atteinte à ma vie privée ou à ma réputation.<br
         />
         <br />
         &nbsp;&nbsp;&nbsp;Je peux demander à tout moment la suppression de mes captations audiovisuelles en m'adressant par mail à

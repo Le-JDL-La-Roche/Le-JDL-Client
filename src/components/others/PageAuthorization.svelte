@@ -9,6 +9,7 @@
   export let type: 'emissions' | 'videos' | 'articles'
   export let authorization: Authorization
   export let guestId: number | false
+  export let guestType: 'in' | 'out' | false
 
   let allowDiv = ['']
 
@@ -50,7 +51,17 @@
     if (typeof authorization.content !== 'string' && 'inGuests' in authorization.content) {
       const target = event.target as HTMLInputElement
       if (+target.value > authorization.content.inGuests.length) {
-        authorization.content.inGuests.push({ name: '', status: '', authorization: false })
+        authorization.content.inGuests.push({
+          name: '',
+          status: '',
+          authorization: false,
+          authorizationType: false,
+          eventType: "[l'émission de radio/l'enregistrement vidéo]",
+          date: '[date]',
+          place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
+          use: '[diffusés en direct et publiés après montage]',
+          media: '[le site Web, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
+        })
       } else if (+target.value < authorization.content.inGuests.length) {
         authorization.content.inGuests.pop()
       }
@@ -66,6 +77,7 @@
           name: '',
           status: '',
           authorization: false,
+          authorizationType: false,
           eventType: "[l'émission de radio/l'enregistrement vidéo]",
           date: '[date]',
           place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
@@ -161,10 +173,11 @@
               <th>Nom</th>
               <th>Statut</th>
               <th class="image-right">Accord de droit<br />à l'image et au son</th>
+              <th class="image-right generate">Générer</th>
             </tr>
           </thead>
           <tbody>
-            {#each authorization.content.inGuests as guest}
+            {#each authorization.content.inGuests as guest, i}
               <tr>
                 <td class="name">
                   <span contenteditable="true" class="w" on:paste={handlePaste} bind:innerText={guest.name} />
@@ -174,6 +187,38 @@
                 </td>
                 <td class="allow">
                   <input type="checkbox" name="allow" class="allow page" bind:checked={guest.authorization} />
+                </td>
+                <td class="allow generate">
+                  <div class="generate" id={'authorization-generate-inguest-' + i}>
+                    <button
+                      class="secondary"
+                      on:click={() => {
+                        document.querySelector('div#modal__')?.scrollTo(0, 0)
+                        guest.authorizationType = 'M'
+                        guestType = 'in'
+                        guestId = i
+                      }}><i class="fa-solid fa-person" />&nbsp;&nbsp;Invité majeur</button
+                    >
+                    <button
+                      class="secondary"
+                      on:click={() => {
+                        document.querySelector('div#modal__')?.scrollTo(0, 0)
+                        guest.authorizationType = 'm'
+                        guestType = 'in'
+                        guestId = i
+                      }}><i class="fa-solid fa-child" />&nbsp;&nbsp;Invité mineur</button
+                    >
+                  </div>
+                  <button
+                    class="secondary"
+                    type="button"
+                    on:click={() => {
+                      let opt = document.getElementById('authorization-generate-inguest-' + i)
+                      if (opt) opt.style.display = opt.style.display !== 'block' ? 'block' : 'none'
+                    }}
+                  >
+                    <i class="fa-solid fa-ellipsis" />
+                  </button>
                 </td>
               </tr>
             {/each}
@@ -216,14 +261,36 @@
                   <input type="checkbox" name="allow" class="allow page" bind:checked={guest.authorization} />
                 </td>
                 <td class="allow generate">
+                  <div class="generate" id={'authorization-generate-outguest-' + i}>
+                    <button
+                      class="secondary"
+                      on:click={() => {
+                        document.querySelector('div#modal__')?.scrollTo(0, 0)
+                        guest.authorizationType = 'M'
+                        guestType = 'out'
+                        guestId = i
+                      }}><i class="fa-solid fa-person" />&nbsp;&nbsp;Invité majeur</button
+                    >
+                    <button
+                      class="secondary"
+                      on:click={() => {
+                        document.querySelector('div#modal__')?.scrollTo(0, 0)
+                        guest.authorizationType = 'm'
+                        guestType = 'out'
+                        guestId = i
+                      }}><i class="fa-solid fa-child" />&nbsp;&nbsp;Invité mineur</button
+                    >
+                  </div>
                   <button
                     class="secondary"
                     type="button"
                     on:click={() => {
-                      document.querySelector('div#modal__')?.scrollTo(0, 0)
-                      guestId = i
-                    }}><i class="fa-solid fa-arrow-right" /></button
+                      let opt = document.getElementById('authorization-generate-outguest-' + i)
+                      if (opt) opt.style.display = opt.style.display !== 'block' ? 'block' : 'none'
+                    }}
                   >
+                    <i class="fa-solid fa-ellipsis" />
+                  </button>
                 </td>
               </tr>
             {/each}
@@ -329,8 +396,33 @@
 <style lang="scss">
   @use '../../../static/assets/sass/page.scss';
 
-  td.generate button {
-    margin: 0;
+  td.generate {
+    position: relative;
+
+    button {
+      margin: 0;
+      padding: 3px 0;
+    }
+
+    div.generate {
+      position: absolute;
+      width: 120px;
+      padding: 7px;
+      background-color: var(--mid-gray-color);
+      top: 25px;
+      left: 3px;
+      border-radius: 0 5px 5px 5px;
+      display: none;
+      z-index: 1000;
+
+      button {
+        padding: 5px;
+      }
+
+      button:nth-of-type(1) {
+        margin-bottom: 3px;
+      }
+    }
   }
 
   @media print {

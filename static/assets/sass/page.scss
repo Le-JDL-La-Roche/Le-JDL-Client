@@ -117,9 +117,14 @@ div.page {
         }
 
         th:nth-of-type(2) {
-          min-width: 35%;
+          // min-width: 35%;
           width: 35%;
           max-width: 35%;
+        }
+
+        th:nth-of-type(3) {
+          max-width: 100px;
+          min-width: 100px;
         }
       }
     }
@@ -147,7 +152,7 @@ div.page {
     &.name,
     &.status,
     &.allow {
-      padding: 0.1cm;
+      padding: 0.08cm;
     }
 
     &.allow {

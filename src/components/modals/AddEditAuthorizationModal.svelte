@@ -12,7 +12,8 @@
   import ApiAuthorizationsService from '$services/api/api-authorizations.service'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
   import PageAuthorization from '$components/others/PageAuthorization.svelte'
-  import PageGuestAuthorization from '$components/others/PageGuestAuthorization.svelte'
+  import PageMajorGuestAuthorization from '$components/others/PageMajorGuestAuthorization.svelte'
+  import PageMinorGuestAuthorization from '$components/others/PageMinorGuestAuthorization.svelte'
 
   export let data: PageData
   export let show: boolean
@@ -26,6 +27,7 @@
   $: content = '' as any
   $: error = '' as string
   $: guestId = false as number | false
+  $: guestType = false as 'in' | 'out' | false
 
   $: if (show) {
     update()
@@ -34,6 +36,7 @@
   function update() {
     error = ''
     guestId = false
+    guestType = false
     if (action.action === 'add') {
       elementId = element.id || 0
       if (type === 'emissions') {
@@ -44,10 +47,42 @@
           date: element.date,
           estimatedDuration: '40 mn',
           inGuests: [
-            { name: '', status: '', authorization: false },
-            { name: '', status: '', authorization: false }
+            {
+              name: '',
+              status: '',
+              authorization: false,
+              authorizationType: false,
+              eventType: "[l'émission de radio/l'enregistrement vidéo]",
+              date: '[date]',
+              place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
+              use: '[diffusés en direct et publiés après montage]',
+              media: '[le site Web, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
+            },
+            {
+              name: '',
+              status: '',
+              authorization: false,
+              authorizationType: false,
+              eventType: "[l'émission de radio/l'enregistrement vidéo]",
+              date: '[date]',
+              place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
+              use: '[diffusés en direct et publiés après montage]',
+              media: '[le site Web, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
+            }
           ],
-          outGuests: [{ name: '', status: '', authorization: false }],
+          outGuests: [
+            {
+              name: '',
+              status: '',
+              authorization: false,
+              authorizationType: false,
+              eventType: "[l'émission de radio/l'enregistrement vidéo]",
+              date: '[date]',
+              place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
+              use: '[diffusés en direct et publiés après montage]',
+              media: '[le site Web, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
+            }
+          ],
           synopsis: element.description
         } as WebradioAuthorization
       } else if (type === 'videos') {
@@ -120,9 +155,15 @@
 
     <div class="pages">
       {#if guestId === false}
-        <PageAuthorization bind:type bind:authorization bind:guestId />
-      {:else}
-        <PageGuestAuthorization bind:guestId bind:authorization />
+        <PageAuthorization bind:type bind:authorization bind:guestId bind:guestType />
+      {:else if guestType === 'in' && typeof authorization.content !== 'string' && 'inGuests' in authorization.content && authorization.content.inGuests[guestId].authorizationType === 'M'}
+        <PageMajorGuestAuthorization bind:guestId bind:guestType bind:authorization />
+      {:else if guestType === 'in' && typeof authorization.content !== 'string' && 'inGuests' in authorization.content && authorization.content.inGuests[guestId].authorizationType === 'm'}
+        <PageMinorGuestAuthorization bind:guestId bind:guestType bind:authorization />
+      {:else if guestType === 'out' && typeof authorization.content !== 'string' && 'outGuests' in authorization.content && authorization.content.outGuests[guestId].authorizationType === 'M'}
+        <PageMajorGuestAuthorization bind:guestId bind:guestType bind:authorization />
+      {:else if guestType === 'out' && typeof authorization.content !== 'string' && 'outGuests' in authorization.content && authorization.content.outGuests[guestId].authorizationType === 'm'}
+        <PageMinorGuestAuthorization bind:guestId bind:guestType bind:authorization />
       {/if}
 
       <div class="actions">
@@ -137,6 +178,7 @@
               on:click={() => {
                 document.querySelector('div#modal__')?.scrollTo(0, 0)
                 guestId = false
+                guestType = false
               }}
               type="button"
               style="width: 100px"
