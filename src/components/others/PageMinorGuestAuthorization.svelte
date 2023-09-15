@@ -1,7 +1,8 @@
 <script lang="ts">
-  import type { Authorization, Guest } from '$models/data/authorization.model'
+  import type { Authorization, Guest, VideoAuthorization, WebradioAuthorization } from '$models/data/authorization.model'
 
   export let guestId: number
+  export let guestType: 'in' | 'out'
   export let authorization: Authorization
 
   async function handlePaste(event: ClipboardEvent) {
@@ -11,6 +12,11 @@
       document.execCommand('insertText', false, text)
     }
   }
+
+  $: guestAuthorization =
+    guestType === 'in' 
+      ? (authorization.content as WebradioAuthorization | VideoAuthorization).inGuests[guestId]
+      : (authorization.content as WebradioAuthorization | VideoAuthorization).outGuests[guestId]
 </script>
 
 <p class="error">Utilisez un ordinateur pour créer ou modifier une autorisation.</p>
@@ -31,25 +37,27 @@
         <br />
         &nbsp;&nbsp;&nbsp;Je, soussigné.e
         <span class="contenteditable" style="padding-left: 8cm !important; display: inline;">&nbsp;</span>, autorise Le Journal du
-        Lycée La Rochefoucauld (Le JDL) à réaliser des captations audiovisuelles durant
+        Lycée La Rochefoucauld (Le JDL) à réaliser des captations audiovisuelles de mon fils/ma fille
+        <span class="contenteditable" style="padding-left: 8cm !important; display: inline;">&nbsp;</span>
+        durant
         <span
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].eventType}
+          bind:innerText={guestAuthorization.eventType}
         />
         qui aura lieu le
         <span
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].date}
+          bind:innerText={guestAuthorization.date}
         />
         <span
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].place}
+          bind:innerText={guestAuthorization.place}
         />.<br />
         <br />
         &nbsp;&nbsp;&nbsp;Les images, vidéos ou enregistrements audio pourront être
@@ -57,17 +65,17 @@
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].use}
+          bind:innerText={guestAuthorization.use}
         />, sans limitation de durée, entièrement ou par extraits, notamment sur
         <span
           contenteditable="true"
           class="s"
           on:paste={handlePaste}
-          bind:innerText={authorization.content.outGuests[guestId].media}
-        />. Le JDL s'engage à ne pas exploiter les données susceptibles de porter atteinte à ma vie privée ou à ma réputation.<br
+          bind:innerText={guestAuthorization.media}
+        />. Le JDL s'engage à ne pas exploiter les données susceptibles de porter atteinte à la vie privée ou à la réputation de mon fils/ma fille.<br
         />
         <br />
-        &nbsp;&nbsp;&nbsp;Je peux demander à tout moment la suppression de mes captations audiovisuelles en m'adressant par mail à
+        &nbsp;&nbsp;&nbsp;Je peux demander à tout moment la suppression de ses captations audiovisuelles en m'adressant par mail à
         <u>lejdl@laroche.org</u>.
       </p>
 
@@ -75,7 +83,7 @@
 
       <p style="margin: 0">
         <input type="checkbox" name="allow" class="allow" style="display: inline; text-align: left; width: auto" />&nbsp;&nbsp;Je
-        souhaite ne pas apparaître visuellement lors de la diffusion/publication.<br />
+        ne souhaite pas que mon fils/ma fille apparaisse visuellement lors de la diffusion/publication.<br />
         <input
           type="checkbox"
           name="allow"
@@ -83,7 +91,7 @@
           style="display: inline; text-align: left; width: auto"
         />&nbsp;&nbsp;Autre :&nbsp;<span contenteditable="true" style="padding-left: 15.2cm !important; display: inline;" /><br />
         <br />
-        &nbsp;&nbsp;&nbsp;Date et signature :
+        &nbsp;&nbsp;&nbsp;Date et signature du responsable légal :
       </p>
 
       <div class="footer">
