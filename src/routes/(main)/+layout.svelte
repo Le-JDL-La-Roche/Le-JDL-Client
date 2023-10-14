@@ -82,7 +82,8 @@
   }
 </script>
 
-{#if showPlayer && data.show}
+{#if data.show}
+<!-- {#if showPlayer && data.show} -->
   <WebradioPlayer show={data.show} questions={data.questions} />
 {/if}
 
