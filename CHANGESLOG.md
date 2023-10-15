@@ -1,5 +1,9 @@
 # Mises à jour du site
 
+### 15 octobre 2023 `v2.0.3`
+- Ajout du lecteur vidéo YouTube sous les podcasts radio
+- Espaces administrateur
+
 ### 15 septembre 2023 `v2.0.1`
 - Espace administrateur
 
