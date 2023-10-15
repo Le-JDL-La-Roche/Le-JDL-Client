@@ -10,6 +10,7 @@ div.page {
   height: calc(29.7cm - 2 * 1.7cm);
   border: 1px solid var(--light-gray-color);
   box-shadow: 0 0 10px var(--light-gray-color);
+  text-align: justify;
 
   div.header {
     position: relative;
@@ -104,6 +105,7 @@ div.page {
       tr {
         &:nth-of-type(1) th {
           border-bottom: 1pt solid #505050;
+                    text-align: center;
         }
 
         &:nth-of-type(2n) {
@@ -206,29 +208,5 @@ input[type='checkbox'].allow {
     background-color: var(--background-gray-color);
     border-radius: 5px;
     border: 1px solid var(--light-gray-color);
-  }
-}
-
-@media print {
-  div.add-modal {
-    display: block;
-    padding: 0;
-    border: none !important;
-    height: calc(2 * 29.685cm);
-  }
-
-  div.page {
-    margin: 0 auto;
-    box-shadow: none;
-    border: none !important;
-    height: calc(29.685cm - 2 * 1.7cm);
-  }
-
-  p.error {
-    display: none;
-  }
-
-  div.allow {
-    break-inside: avoid;
   }
 }

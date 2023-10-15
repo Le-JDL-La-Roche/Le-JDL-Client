@@ -14,6 +14,8 @@
   import PageAuthorization from '$components/others/PageAuthorization.svelte'
   import PageMajorGuestAuthorization from '$components/others/PageMajorGuestAuthorization.svelte'
   import PageMinorGuestAuthorization from '$components/others/PageMinorGuestAuthorization.svelte'
+  import { printAuthorization$ } from '$services/store'
+  import utils from '$services/utils'
 
   export let data: PageData
   export let show: boolean
@@ -120,8 +122,11 @@
     content: content
   } as Authorization
 
-  function print() {
-    document.execCommand('print', false)
+  async function print() {
+    printAuthorization$.set({ guestId: guestId, guestType: guestType, authorization: authorization, type: type })
+    await utils.sleep(300)
+    window.print()
+    printAuthorization$.set(false)
   }
 
   async function submit() {
@@ -140,6 +145,10 @@
   }
 </script>
 
+<svelte:head>
+  <meta name="author" content="Le JDL - La Rochefoucauld">
+</svelte:head>
+
 <ModalTemplate size={'l'} bind:show>
   <form on:submit|preventDefault={() => submit()}>
     <h3>
@@ -156,13 +165,9 @@
     <div class="pages">
       {#if guestId === false}
         <PageAuthorization bind:type bind:authorization bind:guestId bind:guestType />
-      {:else if guestType === 'in' && typeof authorization.content !== 'string' && 'inGuests' in authorization.content && authorization.content.inGuests[guestId].authorizationType === 'M'}
+      {:else if (guestType === 'in' && typeof authorization.content !== 'string' && 'inGuests' in authorization.content && authorization.content.inGuests[guestId].authorizationType === 'M') || (guestType === 'out' && typeof authorization.content !== 'string' && 'outGuests' in authorization.content && authorization.content.outGuests[guestId].authorizationType === 'M')}
         <PageMajorGuestAuthorization bind:guestId bind:guestType bind:authorization />
-      {:else if guestType === 'in' && typeof authorization.content !== 'string' && 'inGuests' in authorization.content && authorization.content.inGuests[guestId].authorizationType === 'm'}
-        <PageMinorGuestAuthorization bind:guestId bind:guestType bind:authorization />
-      {:else if guestType === 'out' && typeof authorization.content !== 'string' && 'outGuests' in authorization.content && authorization.content.outGuests[guestId].authorizationType === 'M'}
-        <PageMajorGuestAuthorization bind:guestId bind:guestType bind:authorization />
-      {:else if guestType === 'out' && typeof authorization.content !== 'string' && 'outGuests' in authorization.content && authorization.content.outGuests[guestId].authorizationType === 'm'}
+      {:else if (guestType === 'in' && typeof authorization.content !== 'string' && 'inGuests' in authorization.content && authorization.content.inGuests[guestId].authorizationType === 'm') || (guestType === 'out' && typeof authorization.content !== 'string' && 'outGuests' in authorization.content && authorization.content.outGuests[guestId].authorizationType === 'm')}
         <PageMinorGuestAuthorization bind:guestId bind:guestType bind:authorization />
       {/if}
 
@@ -222,13 +227,6 @@
 
     div.actions {
       display: block;
-    }
-  }
-
-  @media print {
-    div.actions,
-    h3 {
-      display: none;
     }
   }
 </style>

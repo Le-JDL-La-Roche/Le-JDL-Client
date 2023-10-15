@@ -54,9 +54,26 @@
       </figure>
     {/if}
   {:else if 'podcastId' in data.data}
-    <figure style="text-align: center;">
+    {#if !data.data.id || data.data.id > 27}
+      <p style="font-size: 18px">Retrouvez l'émission en podcast ...</p>
+    {/if}
+    <figure class="podcast">
       <AushaPlayer podcastId={data.data.podcastId} />
     </figure>
+    {#if !data.data.id || data.data.id > 27}
+      <p style="font-size: 18px">... ou en vidéo !</p>
+      <figure class="video" class:preview>
+        <iframe
+          width="100%"
+          height="auto"
+          src={`https://www.youtube.com/embed/${data.data.streamId}`}
+          frameborder="0"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        />
+      </figure>
+    {/if}
   {/if}
 
   <p class="article">
@@ -127,6 +144,10 @@
       }
     }
 
+    figure.podcast {
+      text-align: center;
+    }
+
     p.article {
       width: auto;
       margin-left: 0;
@@ -151,8 +172,11 @@
       }
 
       figure.thumbnail,
-      figure.video {
+      figure.video,
+      figure.podcast {
         width: 700px;
+        margin-left: 0;
+        margin-right: 0;
 
         img,
         iframe {
@@ -168,6 +192,10 @@
         }
       }
 
+      figure.podcast {
+        text-align: left;
+      }
+
       p.article {
         width: 500px;
         margin-left: 75px;
@@ -181,7 +209,8 @@
         }
 
         figure.thumbnail,
-        figure.video {
+        figure.video,
+        figure.podcast {
           width: 900px;
 
           img,

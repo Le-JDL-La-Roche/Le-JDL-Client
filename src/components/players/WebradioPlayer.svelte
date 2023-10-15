@@ -6,6 +6,7 @@
   import Hls from 'hls.js'
   import { onMount } from 'svelte'
   import io from '$services/api/socket.service'
+  import utils from '$services/utils'
 
   export let show: WebradioShow
   export let questions: WebradioQuestion[]
@@ -14,7 +15,7 @@
 
   let showWebradioModal = false
 
-  let player: HTMLVideoElement
+  let player: HTMLAudioElement | HTMLVideoElement
 
   let play = false
   let volume = 50
@@ -22,38 +23,34 @@
   let showQuestions = false
 
   onMount(() => {
+    player.controls = true
+    player.volume = volume / 100
     if (Hls.isSupported()) {
       var hls = new Hls()
-      player.muted = play && !mute
       hls.loadSource(`https://radio.le-jdl-laroche.cf/hls/${show.streamId}.m3u8`)
       hls.attachMedia(player)
-      player.autoplay = true
-      player.volume = volume / 100
     } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
-      player.muted = play && !mute
       player.src = `https://radio.le-jdl-laroche.cf/hls/${show.streamId}.m3u8`
-      player.autoplay = true
-      player.volume = volume / 100
     }
-    
+
     if (cookies.get('VOLUME')) {
       volume = +cookies.get('VOLUME')
     }
-    
+
     io.emit('addViewer')
 
     io.on('liveStreamStopped', () => {
       hls.destroy()
     })
-  
+
     io.on('liveRestreamStopped', () => {
       hls.destroy()
     })
   })
 
-
   $: if (play && !mute && player) {
     player.muted = false
+    player.play()
     io.emit('addViewer')
   } else if (player) {
     player.muted = true
@@ -96,29 +93,40 @@
     </div>
 
     <p class="title">
-      <span class="live">{
-        show.status === -1 
-        ? 'En attente du direct' 
-        : show.status === -1.5
-        ? 'En attente de rediffusion'
-        : show.status === 0 
-        ? 'En direct'
-        : 'Rediffusion'
-        }</span>
+      <span class="live"
+        >{show.status === -1
+          ? 'En attente du direct'
+          : show.status === -1.5
+          ? 'En attente de rediffusion'
+          : show.status === 0
+          ? 'En direct'
+          : 'Rediffusion'}</span
+      >
       <span class="title">{show.title}</span>
     </p>
 
     <div class="actions">
+      <a class="not-a" href={'https://youtube.com/watch?v=' + show.streamId} target="_blank" on:click={() => (play = false)}>
+        <button class="action" style="position: relative">
+          <img
+            src="/assets/images/new.png"
+            alt="New"
+            width="30"
+            style="position: absolute; top: 4px; right: 16px; opacity: 93%;"
+          />
+          <i class="fa-brands fa-youtube" />
+        </button>
+      </a>
       {#if show.status === -1 || show.status === 0}
-      <button
-        class="action"
-        on:click={() => {
-          showWebradioModal = true
-          showQuestions = true
-        }}
-      >
-        <i class="fa-solid fa-message" />
-      </button>
+        <button
+          class="action"
+          on:click={() => {
+            showWebradioModal = true
+            showQuestions = true
+          }}
+        >
+          <i class="fa-solid fa-message" />
+        </button>
       {/if}
       <button
         class="action"
@@ -144,7 +152,7 @@
 />
 
 <!-- svelte-ignore a11y-media-has-caption -->
-<video bind:this={player} controls />
+<video muted autoplay bind:this={player} playsinline />
 
 <style lang="scss">
   div.container {
@@ -215,7 +223,7 @@
   }
 
   div.actions {
-    width: 80px;
+    width: 120px;
     display: flex;
     flex-direction: row;
   }
@@ -271,7 +279,11 @@
   }
 
   video {
-    display: none;
+    // display: none;
+    height: 0;
+    width: 0;
+    opacity: 0;
+    position: absolute;
   }
 
   @media screen and (min-width: 850px) {
