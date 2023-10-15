@@ -133,23 +133,23 @@
               <span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.estimatedDuration} />
             </td>
           </tr>
-        {:else if type === 'videos'}
+        {:else if type === 'videos' && 'medium' in authorization.content && 'duration' in authorization.content && 'author' in authorization.content}
           <tr>
             <td>Publication sur :</td>
-            <td><span contenteditable="true" on:paste={handlePaste} /></td>
+            <td><span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.medium} /></td>
           </tr>
           <tr>
             <td>Auteur :</td>
-            <td><span contenteditable="true" on:paste={handlePaste} /></td>
+            <td><span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.author} /></td>
           </tr>
           <tr>
             <td>Durée :</td>
-            <td><span contenteditable="true" on:paste={handlePaste} /></td>
+            <td><span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.duration} /></td>
           </tr>
-        {:else if type === 'articles'}
+        {:else if type === 'articles' && 'author' in authorization.content}
           <tr>
             <td>Auteur :</td>
-            <td><span contenteditable="true" on:paste={handlePaste} /></td>
+            <td><span contenteditable="true" on:paste={handlePaste} bind:innerText={authorization.content.author} /></td>
           </tr>
         {/if}
       </table>

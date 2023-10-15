@@ -20,7 +20,7 @@ export interface VideoAuthorization {
   subject: string
   medium: string
   author: string
-  duration: number
+  duration: string
   inGuests: Guest[]
   outGuests: Guest[]
   synopsis: string
