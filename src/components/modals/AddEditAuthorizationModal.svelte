@@ -94,7 +94,7 @@
           subject: '',
           medium: '',
           author: element.author,
-          duration: 0,
+          duration: '1 mn',
           inGuests: [],
           outGuests: [],
           synopsis: element.description
