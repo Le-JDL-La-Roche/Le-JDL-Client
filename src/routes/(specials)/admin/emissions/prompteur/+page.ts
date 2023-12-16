@@ -31,7 +31,7 @@ export const load: PageLoad = async () => {
       if (res.body.message === 'Success' && res.body.data?.show) {
         show = res.body.data.show
       } else {
-        goto('/admin/emissions')
+        show = null
       }
     },
     error: (err) => {

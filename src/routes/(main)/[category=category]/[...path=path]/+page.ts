@@ -18,7 +18,7 @@ export const load: PageLoad = async ({ params }) => {
   const [type, slug]: string[] = params.path.split('/')
 
   if (!utils.categories.includes(categoryParam)) {
-    throw error(404, 'Non trouvée')
+    error(404, 'Non trouvée');
   }
 
   const category = categoryParam as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche' | 'radio'
@@ -31,12 +31,12 @@ export const load: PageLoad = async ({ params }) => {
         data = res.body.data?.show
       },
       error: () => {
-        throw error(404, 'Non trouvée')
+        error(404, 'Non trouvée');
       }
     })
     if (data && 'streamId' in data) {
       if (!data.podcastId) {
-        throw error(404, 'Non trouvée')
+        error(404, 'Non trouvée');
       }
     }
   } else if (type === 'video') {
@@ -45,7 +45,7 @@ export const load: PageLoad = async ({ params }) => {
         data = res.body.data?.video
       },
       error: () => {
-        throw error(404, 'Non trouvée')
+        error(404, 'Non trouvée');
       }
     })
   } else {
@@ -54,18 +54,18 @@ export const load: PageLoad = async ({ params }) => {
         data = res.body.data?.article
       },
       error: () => {
-        throw error(404, 'Non trouvée')
+        error(404, 'Non trouvée');
       }
     })
   }
 
   if (!data) {
-    throw error(404, 'Non trouvée')
+    error(404, 'Non trouvée');
   }
 
   if ('category' in data) {
     if (data.category !== utils.categoriesFr[category].id) {
-      throw error(404, 'Non trouvée')
+      error(404, 'Non trouvée');
     }
   }
 

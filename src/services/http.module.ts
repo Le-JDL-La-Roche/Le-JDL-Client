@@ -134,7 +134,7 @@ class Http {
         window.location.pathname != '/admin' &&
         window.location.pathname.includes('/admin')
       ) {
-        throw redirect(300, '/admin')
+        redirect(300, '/admin');
       }
     } else if (response.body.code == 'DB_ERROR') {
       // TODO: Handle DB errors

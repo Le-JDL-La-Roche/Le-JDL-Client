@@ -12,7 +12,7 @@ export const load: PageLoad = async () => {
       data = res.body.data?.agenda!
     },
     error: (err) => {
-      throw error(err.status, err.body.message)
+      error(err.status, err.body.message);
     }
   })
 

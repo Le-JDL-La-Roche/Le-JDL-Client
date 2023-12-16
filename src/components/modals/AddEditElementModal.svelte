@@ -242,7 +242,7 @@
             type="text"
             placeholder="ID du podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
             bind:value={podcastId}
-            required={required && status === 2 }
+            required={required && status === 2}
           />
           <select bind:value={status} {required}>
             <option value={null} disabled selected>-- Status de l'émission --</option>
@@ -255,6 +255,9 @@
             <option value={1}>En attente de validation de publication par l'administration</option>
             <option value={2}>Publié au format podcast</option>
           </select>
+
+          <p class="section-title" style="margin-top: 30px"><strong>Modifier le prompteur</strong></p>
+          <button class="secondary" style="margin-top: 0" type="button"><i class="fa-solid fa-align-left" />&nbsp;&nbsp;Modifier le prompteur</button>
         {:else}
           <select bind:value={status} {required}>
             <option value={null} disabled selected>-- Status de {type === 'videos' ? 'la video' : "l'article"} --</option>

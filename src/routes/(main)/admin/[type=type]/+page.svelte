@@ -59,7 +59,7 @@
     {/if}
   </button>
   {#if data.type === 'emissions' && shows && shows.find((data) => (data.status === -1 || data.status === 0))}
-    <a class="not-a" href="/admin/emissions/questions"><button class="secondary"><i class="fa-solid fa-message" /></button></a>
+    <a class="not-a" href="/admin/emissions/prompteur"><button class="secondary"><i class="fa-solid fa-align-left" /></button></a>
   {/if}
 </div>
 
