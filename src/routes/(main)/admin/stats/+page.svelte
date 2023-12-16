@@ -68,7 +68,7 @@
   <canvas bind:this={videosCanvas} />
 </div>
 
-<h3>Videos ({data.data?.articles.total})</h3>
+<h3>Articles ({data.data?.articles.total})</h3>
 <div class="chart">
   <canvas bind:this={articlesCanvas} />
 </div>
