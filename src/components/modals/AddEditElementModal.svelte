@@ -13,6 +13,7 @@
   import io from '$services/api/socket.service'
   import utils from '$services/utils'
   import type { Authorization, Guest } from '$models/data/authorization.model'
+  import EditPrompterModalContent from '$components/others/EditPrompterModalContent.svelte'
 
   export let data: PageData
   export let show: boolean
@@ -30,6 +31,8 @@
 
   let showGenerationModal = false
 
+  $: showPrompterModal = false
+
   $: required = false as boolean
   $: title = '' as string
   $: content = '' as string
@@ -43,6 +46,11 @@
   $: videoType = null as 'youtube' | 'instagram' | null
   $: author = '' as string
   $: date = type !== 'emissions' ? Math.round(Date.now() / 1000) : Math.round(new Date().getTime() / 1000) + ''
+  $: prompter = [
+    { title: 'Introduction', content: '' },
+    { title: '', content: '' },
+    { title: 'Conclusion', content: '' }
+  ] as { title: string; content: string }[]
   $: error = '' as string
   $: showDate = { date: '', time: '' } as { date: string; time: string }
 
@@ -52,6 +60,7 @@
 
   function update() {
     error = ''
+    showPrompterModal = false
     if (action.action === 'add') {
       required = true
       title = ''
@@ -66,6 +75,12 @@
       videoType = null
       author = ''
       date = type !== 'emissions' ? Date.now() / 1000 : new Date().getTime() / 1000 + ''
+      prompter = [
+        { title: 'Introduction', content: '' },
+        { title: '', content: '' },
+        { title: 'Conclusion', content: '' }
+      ]
+      showDate = { date: '', time: '' }
     } else if (action.action === 'edit') {
       required = false
       title = action.element.title
@@ -76,6 +91,11 @@
         content = action.element.description
         streamId = action.element.streamId
         podcastId = action.element.podcastId || ''
+        prompter = JSON.parse(action.element.prompter as string) || [
+          { title: 'Introduction', content: '' },
+          { title: '', content: '' },
+          { title: 'Conclusion', content: '' }
+        ]
         let d = new Date(+date * 1000).toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' }).split('/')
         showDate = {
           date: `${d[2]}-${d[1]}-${d[0]}`,
@@ -106,7 +126,8 @@
             streamId,
             podcastId,
             date: Date.parse(showDate.date + ' ' + showDate.time) / 1000 + '',
-            status
+            status,
+            prompter
           } as WebradioShow)
         : type === 'videos'
         ? ({ title, description: content, thumbnail, videoId, category, type: videoType, author, date, status } as Video)
@@ -116,7 +137,8 @@
 
   async function submit() {
     let exec
-    if (type === 'emissions') {
+    if (type === 'emissions' && 'streamId' in element.data) {
+      element.data.prompter = JSON.stringify(element.data.prompter)
       exec = action.action === 'add' ? apiWebradio.postShow : apiWebradio.putShow
       ;(await exec(element.data as WebradioShow, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
         next: async (res) => {
@@ -217,96 +239,104 @@
       </h3>
     {/if}
 
-    <div class="add-modal">
-      <div class="add">
-        <p class="section-title"><strong>{action.action === 'add' ? 'Ajouter du' : 'Modifier le'} contenu</strong></p>
+    {#if !showPrompterModal}
+      <div class="add-modal">
+        <div class="add">
+          <p class="section-title"><strong>{action.action === 'add' ? 'Ajouter du' : 'Modifier le'} contenu</strong></p>
 
-        <!-- svelte-ignore a11y-autofocus -->
-        <input type="text" placeholder="Titre" bind:value={title} {required} autofocus />
-        <MarkdownEditor bind:value={content} />
-        <label for="thumbnail">Image de miniature (vignette), au format 16:9 :</label>
-        <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" on:change={handleThumbnailChange} {required} />
-        {#if type === 'emissions'}
-          <label for="date">Date de diffusion :</label>
-          <div class="flex-date">
-            <input type="date" id="date" bind:value={showDate.date} />
-            <input type="time" bind:value={showDate.time} />
-          </div>
-          <input
-            type="text"
-            placeholder="ID du direct sur YouTube (après le ?v=) et sur OBS (streamkey)"
-            bind:value={streamId}
-            {required}
-          />
-          <input
-            type="text"
-            placeholder="ID du podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
-            bind:value={podcastId}
-            required={required && status === 2}
-          />
-          <select bind:value={status} {required}>
-            <option value={null} disabled selected>-- Status de l'émission --</option>
-            <option value={-2}>Brouillon, en attente de l'autorisation de diffusion par l'administration</option>
-            <option value={-1}>Salle d'attente du direct</option>
-            <option value={0}>En direct</option>
-            <option value={-2.5}>En attente de rediffusion</option>
-            <option value={-1.5}>Salle d'attente de rediffusion</option>
-            <option value={0.5}>En rediffusion</option>
-            <option value={1}>En attente de validation de publication par l'administration</option>
-            <option value={2}>Publié au format podcast</option>
-          </select>
-
-          <p class="section-title" style="margin-top: 30px"><strong>Modifier le prompteur</strong></p>
-          <button class="secondary" style="margin-top: 0" type="button"><i class="fa-solid fa-align-left" />&nbsp;&nbsp;Modifier le prompteur</button>
-        {:else}
-          <select bind:value={status} {required}>
-            <option value={null} disabled selected>-- Status de {type === 'videos' ? 'la video' : "l'article"} --</option>
-            <option value={-2}>Brouillon, en attente de l'autorisation de publication par l'administration</option>
-            <option value={2}>Publié</option>
-          </select>
-          {#if type === 'videos'}
-            <select bind:value={category} {required}>
-              <option value={null} disabled selected>-- Rubrique --</option>
-              <option value={'news'}>Actualités</option>
-              <option value={'culture'}>Culture</option>
-              <option value={'sport'}>Sport</option>
-              <option value={'science'}>Sciences</option>
-              <option value={'tech'}>Tech</option>
-              <option value={'laroche'}>La Roche</option>
-            </select>
-            <select bind:value={videoType} {required}>
-              <option value={null} disabled selected>-- Type de vidéo --</option>
-              <option value={'instagram'}>Instagram</option>
-              <option value={'youtube'}>YouTube</option>
-            </select>
+          <!-- svelte-ignore a11y-autofocus -->
+          <input type="text" placeholder="Titre" bind:value={title} {required} autofocus />
+          <MarkdownEditor bind:value={content} />
+          <label for="thumbnail">Image de miniature (vignette), au format 16:9 :</label>
+          <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" on:change={handleThumbnailChange} {required} />
+          {#if type === 'emissions'}
+            <label for="date">Date de diffusion :</label>
+            <div class="flex-date">
+              <input type="date" id="date" bind:value={showDate.date} />
+              <input type="time" bind:value={showDate.time} />
+            </div>
             <input
               type="text"
-              placeholder="ID de la vidéo (après ?v= sur YouTube, après /p/ sur Instagram)"
-              bind:value={videoId}
+              placeholder="ID du direct sur YouTube (après le ?v=) et sur OBS (streamkey)"
+              bind:value={streamId}
               {required}
             />
-            <input type="text" placeholder="Auteur" bind:value={author} {required} />
-          {:else}
-            <input type="text" bind:value={thumbnailSrc} placeholder="Source de la miniature (site)" {required} />
-            <select bind:value={category} {required}>
-              <option value={null} disabled selected>-- Rubrique --</option>
-              <option value={'news'}>Actualités</option>
-              <option value={'culture'}>Culture</option>
-              <option value={'sport'}>Sport</option>
-              <option value={'science'}>Sciences</option>
-              <option value={'tech'}>Tech</option>
-              <option value={'laroche'}>La Roche</option>
+            <input
+              type="text"
+              placeholder="ID du podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
+              bind:value={podcastId}
+              required={required && status === 2}
+            />
+            <select bind:value={status} {required}>
+              <option value={null} disabled selected>-- Status de l'émission --</option>
+              <option value={-2}>Brouillon, en attente de l'autorisation de diffusion par l'administration</option>
+              <option value={-1}>Salle d'attente du direct</option>
+              <option value={0}>En direct</option>
+              <option value={-2.5}>En attente de rediffusion</option>
+              <option value={-1.5}>Salle d'attente de rediffusion</option>
+              <option value={0.5}>En rediffusion</option>
+              <option value={1}>En attente de validation de publication par l'administration</option>
+              <option value={2}>Publié au format podcast</option>
             </select>
-            <input type="text" placeholder="Auteur" bind:value={author} {required} />
-          {/if}
-        {/if}
-      </div>
 
-      <div class="preview">
-        <p class="section-title"><strong>Prévisualisation</strong></p>
-        <Post data={element} preview />
+            <p class="section-title" style="margin-top: 30px"><strong>Modifier le prompteur</strong></p>
+            <button class="secondary" style="margin-top: 0" type="button" on:click={() => (showPrompterModal = true)}
+              ><i class="fa-solid fa-align-left" />&nbsp;&nbsp;Modifier le prompteur</button
+            >
+          {:else}
+            <select bind:value={status} {required}>
+              <option value={null} disabled selected>-- Status de {type === 'videos' ? 'la video' : "l'article"} --</option>
+              <option value={-2}>Brouillon, en attente de l'autorisation de publication par l'administration</option>
+              <option value={2}>Publié</option>
+            </select>
+            {#if type === 'videos'}
+              <select bind:value={category} {required}>
+                <option value={null} disabled selected>-- Rubrique --</option>
+                <option value={'news'}>Actualités</option>
+                <option value={'culture'}>Culture</option>
+                <option value={'sport'}>Sport</option>
+                <option value={'science'}>Sciences</option>
+                <option value={'tech'}>Tech</option>
+                <option value={'laroche'}>La Roche</option>
+              </select>
+              <select bind:value={videoType} {required}>
+                <option value={null} disabled selected>-- Type de vidéo --</option>
+                <option value={'instagram'}>Instagram</option>
+                <option value={'youtube'}>YouTube</option>
+              </select>
+              <input
+                type="text"
+                placeholder="ID de la vidéo (après ?v= sur YouTube, après /p/ sur Instagram)"
+                bind:value={videoId}
+                {required}
+              />
+              <input type="text" placeholder="Auteur" bind:value={author} {required} />
+            {:else}
+              <input type="text" bind:value={thumbnailSrc} placeholder="Source de la miniature (site)" {required} />
+              <select bind:value={category} {required}>
+                <option value={null} disabled selected>-- Rubrique --</option>
+                <option value={'news'}>Actualités</option>
+                <option value={'culture'}>Culture</option>
+                <option value={'sport'}>Sport</option>
+                <option value={'science'}>Sciences</option>
+                <option value={'tech'}>Tech</option>
+                <option value={'laroche'}>La Roche</option>
+              </select>
+              <input type="text" placeholder="Auteur" bind:value={author} {required} />
+            {/if}
+          {/if}
+        </div>
+
+        <div class="preview">
+          <p class="section-title"><strong>Prévisualisation</strong></p>
+          <Post data={element} preview />
+        </div>
       </div>
-    </div>
+    {/if}
+
+    {#if showPrompterModal}
+      <EditPrompterModalContent bind:showPrompterModal bind:prompter />
+    {/if}
 
     <div class="actions">
       <p class="error">{error}</p>

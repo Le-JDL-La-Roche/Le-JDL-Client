@@ -5,6 +5,7 @@
   import { onMount } from 'svelte'
 
   export let value: string
+  export let lite: boolean = false
 
   let editor: HTMLDivElement
   let selection: Selection,
@@ -248,26 +249,34 @@
 
 <div class="container">
   <div class="buttons">
+    {#if !lite}
+      <div class="section">
+        <button
+          class="secondary"
+          type="button"
+          title="Chapô"
+          on:click={() => globalFormat('###', true)}
+          style="border-top-left-radius: 5px"
+        >
+          <i class="fa-solid fa-grip-lines" />
+        </button>
+      </div>
+
+      <div class="section">
+        <button class="secondary" type="button" title="Titre de partie" on:click={() => globalFormat('#')}>
+          <i class="fa-solid fa-a" />
+        </button>
+      </div>
+    {/if}
+
     <div class="section">
       <button
         class="secondary"
         type="button"
-        title="Chapô"
-        on:click={() => globalFormat('###', true)}
-        style="border-top-left-radius: 5px"
+        title="Gras"
+        on:click={() => format('**')}
+        style={lite ? 'border-top-left-radius: 5px' : ''}
       >
-        <i class="fa-solid fa-grip-lines" />
-      </button>
-    </div>
-
-    <div class="section">
-      <button class="secondary" type="button" title="Titre de partie" on:click={() => globalFormat('#')}>
-        <i class="fa-solid fa-a" />
-      </button>
-    </div>
-
-    <div class="section">
-      <button class="secondary" type="button" title="Gras" on:click={() => format('**')}>
         <i class="fa-solid fa-bold" />
       </button>
       <button class="secondary" type="button" title="Italique" on:click={() => format('*')}>
@@ -281,23 +290,25 @@
       </button>
     </div>
 
-    <div class="section">
-      <button class="secondary" type="button" title="Lien" on:click={() => insert('link')}>
-        <i class="fa-solid fa-link" />
-      </button>
-      <button class="secondary" type="button" title="Lien externe" on:click={() => insert('link_')}>
-        <i class="fa-solid fa-arrow-up-right-from-square" />
-      </button>
-      <button class="secondary" type="button" title="Citation" on:click={() => globalFormat('>', true, '<')}>
-        <i class="fa-solid fa-quote-left" />
-      </button>
-      <button class="secondary" type="button" title="Image" on:click={() => insert('image')}>
-        <i class="fa-solid fa-image" />
-      </button>
-      <button class="secondary" type="button" title="Vidéo YouTube" on:click={() => insert('youtube')}>
-        <i class="fa-brands fa-youtube" />
-      </button>
-    </div>
+    {#if !lite}
+      <div class="section">
+        <button class="secondary" type="button" title="Lien" on:click={() => insert('link')}>
+          <i class="fa-solid fa-link" />
+        </button>
+        <button class="secondary" type="button" title="Lien externe" on:click={() => insert('link_')}>
+          <i class="fa-solid fa-arrow-up-right-from-square" />
+        </button>
+        <button class="secondary" type="button" title="Citation" on:click={() => globalFormat('>', true, '<')}>
+          <i class="fa-solid fa-quote-left" />
+        </button>
+        <button class="secondary" type="button" title="Image" on:click={() => insert('image')}>
+          <i class="fa-solid fa-image" />
+        </button>
+        <button class="secondary" type="button" title="Vidéo YouTube" on:click={() => insert('youtube')}>
+          <i class="fa-brands fa-youtube" />
+        </button>
+      </div>
+    {/if}
   </div>
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
