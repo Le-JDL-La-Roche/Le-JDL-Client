@@ -77,7 +77,7 @@
   />
 {:else}
   {#if data.type === 'emissions'}
-    Aucune émission ou podcast
+    Aucune émission
   {:else if data.type === 'videos'}
     Aucune vidéos
   {:else}

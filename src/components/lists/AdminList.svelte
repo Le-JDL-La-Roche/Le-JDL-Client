@@ -268,7 +268,7 @@
       <button class="secondary" on:click={() => deleteElement(element)}><i class="fa-solid fa-trash" /></button>
       {#if 'streamId' in element}
         <a
-          href={`https://radio.le-jdl-laroche.cf:8080/download/${element.streamId}_vid_${utils.timestampToDate(
+          href={`https://radio.le-jdl-laroche.cf/download/${element.streamId}_vid_${utils.timestampToDate(
             +element.date
           )}.flv`}
           class="not-a"
