@@ -46,7 +46,7 @@
           on:paste={handlePaste}
           bind:innerText={guestAuthorization.eventType}
         />
-        qui aura lieu le
+        ayant lieu le
         <span
           contenteditable="true"
           class="s"

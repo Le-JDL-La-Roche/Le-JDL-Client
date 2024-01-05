@@ -52,13 +52,13 @@ class Http {
     this.sendInterceptor(url)
 
     let body_: any
-    let headers_: any = req?.headers
 
     if (body instanceof FormData) {
       body_ = body
       delete this.headers['Content-Type']
     } else {
       body_ = this.urlEncode(body)
+      this.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     }
 
     let req_: RequestInit = {

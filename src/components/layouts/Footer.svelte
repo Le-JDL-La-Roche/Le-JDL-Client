@@ -5,15 +5,18 @@
 <footer>
   <div class="content">
     <p style="width: 100%; text-align: center; margin-bottom: 25px; font-size: 18px;">
-      <strong>Rejoignez-nous !</strong>
-      <a class="social" href="https://podcast.ausha.co/ecouter-la-roche" target="_blank">
-        <i class="fa-solid fa-podcast" />
-      </a>
+      <strong>Suivez-nous !</strong>
       <a class="social" href="https://www.youtube.com/channel/UCs3H_WZJogy8GnmrMNXjyPA" target="_blank">
         <i class="fa-brands fa-youtube" />
       </a>
       <a class="social" href="https://instagram.com/lejdl.laroche" target="_blank">
         <i class="fa-brands fa-instagram" />
+      </a>
+      <a class="social" href="https://podcast.ausha.co/ecouter-la-roche" target="_blank">
+        <i class="fa-solid fa-podcast" />
+      </a>
+      <a class="social" href="https://linkedin.com/company/le-jdl-laroche" target="_blank">
+        <i class="fa-brands fa-linkedin" />
       </a>
     </p>
 

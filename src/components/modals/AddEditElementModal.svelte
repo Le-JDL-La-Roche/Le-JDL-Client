@@ -138,31 +138,26 @@
   async function submit() {
     let exec
     if (type === 'emissions' && 'streamId' in element.data) {
+      element.data = element.data as WebradioShow
       element.data.prompter = JSON.stringify(element.data.prompter)
       exec = action.action === 'add' ? apiWebradio.postShow : apiWebradio.putShow
-      ;(await exec(element.data as WebradioShow, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
+      ;(await exec(element.data, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
         next: async (res) => {
           data.data = res.body.data?.shows || []
-          if ((element.data as WebradioShow).status === -1) {
-            io.emit('launchWaitStream', element.data as WebradioShow)
-          } else if ((element.data as WebradioShow).status === -1.5) {
-            io.emit('launchWaitRestream', element.data as WebradioShow)
-          } else if ((element.data as WebradioShow).status === 0) {
-            io.emit('launchLiveStream', element.data as WebradioShow)
-          } else if ((element.data as WebradioShow).status === 0.5) {
-            io.emit('launchRestream', element.data as WebradioShow)
-          } else {
-            io.emit('stopLiveStream')
-          }
+          if (element.data.status === -1) io.emit('launchWaitStream', element.data)
+          else if (element.data.status === -1.5) io.emit('launchWaitRestream', element.data)
+          else if (element.data.status === 0) io.emit('launchLiveStream', element.data)
+          else if (element.data.status === 0.5) io.emit('launchRestream', element.data)
+          else if (element.data.status === -2.5) io.emit('stopLiveStream')
+          else io.emit('stopLiveRestream')
+
+          io.emit('updateShow', element.data)
+
           show = false
           await utils.sleep(300)
-          if (
-            !(data.authorizations || []).find(
-              (a) => a.elementType === 'show' && a.elementId === (action.action === 'edit' ? action.element.id : 0)
-            )
-          ) {
+          if (!data.authorizations?.find((a) => a.elementId === (action.action === 'edit' ? action.element.id : 0))) {
             showGenerationModal = true
-            authorizationModalElement = element.data as WebradioShow
+            authorizationModalElement = element.data
             authorizationModalType = 'emissions'
             authorizationModalAction = { action: 'add' }
           }
@@ -172,19 +167,17 @@
         }
       })
     } else if (type === 'videos') {
+      element.data = element.data as Video
       exec = action.action === 'add' ? apiVideos.postVideo : apiVideos.putVideo
-      ;(await exec(element.data as Video, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
+      ;(await exec(element.data, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
         next: async (res) => {
           data.data = res.body.data?.videos || []
+
           show = false
           await utils.sleep(300)
-          if (
-            !(data.authorizations || []).find(
-              (a) => a.elementType === 'video' && a.elementId === (action.action === 'edit' ? action.element.id : 0)
-            )
-          ) {
+          if (!data.authorizations?.find((a) => a.elementId === (action.action === 'edit' ? action.element.id : 0))) {
             showGenerationModal = true
-            authorizationModalElement = element.data as Video
+            authorizationModalElement = element.data
             authorizationModalType = 'videos'
             authorizationModalAction = { action: 'add' }
           }
@@ -194,19 +187,17 @@
         }
       })
     } else {
+      element.data = element.data as Article
       exec = action.action === 'add' ? apiArticles.postArticle : apiArticles.putArticle
-      ;(await exec(element.data as Article, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
+      ;(await exec(element.data, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
         next: async (res) => {
           data.data = res.body.data?.articles || []
+
           show = false
           await utils.sleep(300)
-          if (
-            !(data.authorizations || []).find(
-              (a) => a.elementType === 'article' && a.elementId === (action.action === 'edit' ? action.element.id : 0)
-            )
-          ) {
+          if (!data.authorizations?.find((a) => a.elementId === (action.action === 'edit' ? action.element.id : 0))) {
             showGenerationModal = true
-            authorizationModalElement = element.data as Article
+            authorizationModalElement = element.data
             authorizationModalType = 'articles'
             authorizationModalAction = { action: 'add' }
           }

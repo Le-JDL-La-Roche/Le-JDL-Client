@@ -3,7 +3,7 @@
   import type { PageData } from './$types'
   import ApiWebradioService from '$services/api/api-webradio.service'
   import io from '$services/api/socket.service'
-
+  import ContentService from '$services/content.service'
   import utils from '$services/utils'
   import { onMount } from 'svelte'
   import type { WebradioShow } from '$models/features/webradio-show.model'
@@ -11,95 +11,229 @@
   export let data: PageData
 
   const apiWebradio = new ApiWebradioService()
+  const content = new ContentService()
 
-  onMount(() => window.scrollTo(0, document.body.scrollHeight))
+  let fontSize: number
+  let speed: number
+  let mode = 0
+  let prompt = -1
+  let reverse = false
 
-  async function deleteQuestion(id: number) {
-    ;(await apiWebradio.deleteQuestion(id)).subscribe({
+  let windowWidth = window.innerWidth
+  let realSpeed: number
+
+  let countdown = 0
+  let countdownInterval: NodeJS.Timeout
+
+  let s = 0
+  let t = 1
+  let scroll: NodeJS.Timeout
+
+  onMount(() => {
+    fontSize = 64
+    speed = 50
+    mode = 0
+    reverse = false
+
+    io.emit('resetPrompterSettings')
+  })
+
+  io.on('showUpdated', async () => {
+    ;(await apiWebradio.getCurrentShow()).subscribe({
       next: (res) => {
-        data.questions = res.body.data?.questions || []
-        io.emit('question')
+        data.show = res.body.data?.show as WebradioShow
       }
     })
+  })
+
+  // Paramètres - Vitesse de défilement du prompteur, relative à la largeur de la fenêtre et à la taille du texte, en px/s
+  // Paramètres - Lecture/Pause du prompteur
+  // Paramètres - Partie suivante/précédente (i+1/i-1)
+  io.on('prompterSettingsUpdated', (settings) => {
+    fontSize = settings.fontSize
+    speed = settings.speed
+    mode = settings.mode
+    reverse = settings.reverse
+
+    if (mode !== 0) {
+      if (settings.addPrompt && data.show) {
+        if (settings.addPrompt === -1 && s > realSpeed) {
+          stopScroll()
+          const div = document.getElementById(`prompt-${prompt}`)!
+          div.style.display = 'block'
+          div.style.transition = `transform 0s linear`
+          div.style.transform = `translateY(calc(50vh + 20px))`
+          if (mode === 1) {
+            startScroll()
+          }
+        } else if (
+          (settings.addPrompt === 1 && prompt < JSON.parse(data.show.prompter + '').length - 1) ||
+          (settings.addPrompt === -1 && prompt > 0)
+        ) {
+          stopScroll()
+          prompt += settings.addPrompt
+          const div = document.getElementById(`prompt-${prompt}`)!
+          div.style.display = 'block'
+          div.style.transition = `transform 0s linear`
+          div.style.transform = `translateY(calc(50vh + 20px))`
+          if (mode === 1) {
+            startScroll()
+          }
+        } else {
+          stopScroll()
+          prompt = -1
+        }
+      }
+    }
+
+    if (settings.addLine && data.show) {
+      const div = document.getElementById(`prompt-${prompt}`)!
+      if (
+        div &&
+        s + ((settings.addLine * 4) / 3) * fontSize * 1.8 > -4/3 * fontSize * 1.8 &&
+        s + ((settings.addLine * 4) / 3) * fontSize * 1.8 < div.offsetHeight + window.innerHeight / 4
+      ) {
+        s += ((settings.addLine * 4) / 3) * fontSize * 1.8
+        let tr = div.style.transform
+        div.style.transition = `transform ${t/4}s linear`
+        div.style.transform = `translateY(calc(50vh + 20px - ${s}px))`
+        div.style.transition = tr
+      }
+    }
+
+    if (mode === 1) {
+      startScroll()
+    } else if (mode === 2) {
+      pauseScroll()
+    }
+  })
+
+  // OBS - Quand la scène passe sur le jingle => Décompte de 10 sec -> Prompteur à l'introduction (partie i=0)
+  // OBS - Quand la scène passe sur l'inter-jingle => Décompte de 3 secondes -> Prompteur à la partie suivante (partie i+1)
+  io.on('sceneUpdated', (scene: string) => {
+    if (mode === 0) {
+      if (scene === '🎬 Jingle') {
+        stopScroll()
+        prompt = 0
+        const div = document.getElementById(`prompt-${prompt}`)!
+        div.style.transition = `transform 0s linear`
+        div.style.transform = `translateY(calc(50vh + 20px))`
+        if (countdownInterval) clearInterval(countdownInterval)
+        countdown = 10
+        countdownInterval = setInterval(() => {
+          countdown--
+          if (countdown === 0) {
+            clearInterval(countdownInterval)
+            startScroll()
+          }
+        }, 975)
+      } else if (scene === '🎬 Inter-jingle' && data.show && prompt < JSON.parse(data.show.prompter + '').length - 1) {
+        prompt++
+        stopScroll()
+        const div = document.getElementById(`prompt-${prompt}`)!
+        div.style.transition = `transform 0s linear`
+        div.style.transform = `translateY(calc(50vh + 20px))`
+        if (countdownInterval) clearInterval(countdownInterval)
+        countdown = 3
+        countdownInterval = setInterval(() => {
+          countdown--
+          if (countdown === 0) {
+            clearInterval(countdownInterval)
+            startScroll()
+            console.log('start')
+          }
+        }, 1000)
+      } else if (scene === '🛑 Fin') {
+        prompt = -1
+        const div = document.getElementById(`prompt-0`)
+        if (div) div.style.display = `none`
+        else console.log('oops')
+        stopScroll()
+      }
+    }
+  })
+
+  // Calculer en permanence le nombre de ligne de chaque prompt, stocker dans un tableau
+  $: if (fontSize) {
+    if (data.show) {
+      for (let i = 0; i < JSON.parse(data.show.prompter + '').length; i++) {
+        const div = document.getElementById(`prompt-${i}`)!
+        div.style.fontSize = `${fontSize}pt`
+      }
+    }
   }
 
-  io.on('waitStreamLaunched', (show: WebradioShow) => {
-    data.show = show
-  })
+  // Calculer en permanence la vitesse de défilement du prompteur, en px/s
+  $: if (speed && windowWidth && fontSize) {
+    realSpeed = Math.round((1500 * fontSize) / windowWidth + 4.5 * speed - 150)
+  }
 
-  io.on('liveStreamLaunched', (show: WebradioShow) => {
-    data.show = show
-  })
+  function startScroll() {
+    if (scroll) clearInterval(scroll)
+    if (data.show) {
+      for (let i = 0; i < JSON.parse(data.show.prompter + '').length; i++) {
+        const div = document.getElementById(`prompt-${i}`)
+        if (div && prompt !== i) div.style.display = `none`
+      }
+    }
+    scroll = setInterval(() => {
+      const div = document.getElementById(`prompt-${prompt}`)
+      if (prompt !== -1 && div) {
+        div.style.display = `block`
+        div.style.transition = `transform ${t / 4}s linear`
+        if (s > div.offsetHeight + window.innerHeight / 4) {
+          pauseScroll()
+        } else {
+          s += realSpeed / 4
+          div.style.transform = `translateY(calc(50vh + 20px - ${s}px))`
+        }
+      }
+      s++
+    }, t * 250)
+  }
 
-  io.on('liveStreamStopped', (show: WebradioShow) => {
-    if (data.show) data.show.status = 1
-  })
+  function pauseScroll() {
+    clearInterval(scroll)
+  }
 
-  io.on('updateQuestions', async (questions: any) => {
-    data.questions = questions
-    await utils.sleep(50)
-    window.scrollTo(0, document.body.scrollHeight)
-  })
+  function stopScroll() {
+    clearInterval(scroll)
+    if (data.show) {
+      for (let i = 0; i < JSON.parse(data.show.prompter + '').length; i++) {
+        const div = document.getElementById(`prompt-${i}`)
+        console.log(div)
+        if (div) div.style.display = `none`
+        else console.log('oops')
+      }
+    }
+    s = 0
+  }
 </script>
 
 <svelte:head>
   <title>Prompteur • Le JDL - La Roche</title>
 </svelte:head>
 
+<svelte:window on:resize={() => (windowWidth = window.innerWidth)} />
+
 {#if data.show}
-  <!-- <div class="main">
-    <div class="header">
-      <div class="content">
-        <h2>
-          <a href="/admin/emissions" class="not-a">
-            <button class="secondary">
-              <i class="fa-solid fa-caret-left" />&nbsp;&nbsp;Retour
-            </button>
-          </a>
-          Questions en direct
-        </h2>
-        <h1>{data.show.title}</h1>
-      </div>
-    </div>
-    <div class="content" style="padding-top: 30px; padding-bottom: 30px">
-      {#each data.questions as question}
-        <div class="question">
-          <div class="left">
-            <p class="info">
-              {new Date(+question.date * 1000).getHours().toString().padStart(2, '0')}:{new Date(+question.date * 1000)
-                .getMinutes()
-                .toString()
-                .padStart(2, '0')}
-            </p>
-            <p class="question-text">{question.question}</p>
-          </div>
-          <div class="actions">
-            <button class="secondary" on:click={() => deleteQuestion(question.id || 0)}><i class="fa-solid fa-trash" /></button>
-          </div>
-        </div>
-      {/each}
-    </div>
-  </div> -->
-  <div class="main">
-    <div class="header">
-      <a href="/admin/emissions" class="not-a">
-        <button class="secondary"><i class="fa-solid fa-caret-left" /></button>
-      </a>
-      <div class="block">
-        <h3>Status</h3>
-        <h2>{data.show.status === 0 ? 'En direct' : data.show.status === -1 ? 'En attente' : 'Terminé'}</h2>
-      </div>
-      <div class="block">
-        <h3>Scène</h3>
-        <h2>...</h2>
-      </div>
-    </div>
+  <div class="main" style={`transform: scaleY(${reverse ? '-1' : '1'})`}>
+    <a href="/admin/emissions" class="not-a" on:click={stopScroll}>
+      <button class="secondary"><i class="fa-solid fa-caret-left" /></button>
+    </a>
     <div class="prompter">
       <i class="fa-solid fa-chevron-right mark" />
-      <p class="prompt">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facilis repellat culpa cum eveniet exercitationem eius provident
-        asperiores, quae architecto, sed non debitis odit veniam sit est explicabo minus? Beatae, ipsa.
-      </p>
+      {#if countdown}
+        <p class="countdown">
+          <span style="font-weight: bold">{countdown}</span><br />
+          <span class="title">{JSON.parse(data.show.prompter + '')[prompt].title}</span>
+        </p>
+      {/if}
+      {#each JSON.parse(data.show.prompter + '') as prompter, i}
+        <p class="prompt" id={`prompt-${i}`}>
+          {@html content.markdownToHtml(prompter.content)}
+        </p>
+      {/each}
     </div>
   </div>
 {:else}
@@ -119,23 +253,16 @@
     min-height: 100vh;
   }
 
-  div.header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 70px;
-    border-bottom: 2px solid white;
-  }
-
   button.secondary {
     width: auto;
     margin: 0;
     background: black;
     color: white;
-    font-size: 36px;
-    padding: 30px 30px;
+    font-size: 24px;
+    padding: 15px 20px;
     border-radius: 0;
+    position: absolute;
+    z-index: 100;
 
     &:hover {
       background: #151515;
@@ -163,11 +290,11 @@
   div.prompter {
     padding: 0 70px 0 90px;
     position: relative;
-    height: calc(100vh - 105px);
-    overflow: hidden;
+    height: 100vh;
+    overflow-y: hidden;
 
     i.mark {
-      position: absolute;
+      position: fixed;
       left: 25px;
       font-size: 50px;
       top: calc(50% - 20px);
@@ -176,36 +303,30 @@
   }
 
   p.prompt {
-    font-size: 62px;
     color: white;
     font-family: Arial, Helvetica, sans-serif !important;
     margin: 0;
-    line-height: 2;
+    line-height: 1.8;
     word-spacing: 5px;
+    display: none;
   }
 
-  p.info {
-    font-size: 14px;
-    color: var(--dark-gray-color);
-    margin: 0 7px 3px 0;
-  }
-
-  p.question-text {
+  p.countdown {
+    color: white;
+    font-family: Arial, Helvetica, sans-serif !important;
     margin: 0;
-  }
+    line-height: 1.2;
+    word-spacing: 5px;
+    font-size: 100px;
+    text-align: center;
+    position: fixed;
+    top: calc(50% - 150px);
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 
-  @media screen and (min-width: 850px) {
-    div.question {
-      flex-direction: row;
-    }
-
-    div.left {
-      flex: 1;
-    }
-
-    div.actions {
-      text-align: right;
-      flex-direction: column;
+    span.title {
+      font-size: 64px;
     }
   }
 </style>
