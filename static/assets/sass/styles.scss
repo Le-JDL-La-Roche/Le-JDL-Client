@@ -17,15 +17,18 @@
   --background-light-color: #fcfcfc;
 }
 
-* {
-  font-family: 'Bahnschrift', 'Arial', 'Helvetica', sans-serif;
-}
-
 body {
+  font-family: 'Bahnschrift', 'Arial', 'Helvetica', sans-serif;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
   min-height: 100vh;
+}
+
+p,
+a,
+button, input, input::placeholder, select, option {
+  font-family: 'Bahnschrift', 'Arial', 'Helvetica', sans-serif;
 }
 
 div.content {
@@ -280,4 +283,11 @@ p.article h4 {
     }
 
   }
+}
+
+.show-add-button {
+  margin: 15px calc(50% - 20px) !important;
+  height: 40px !important;
+  padding: 7px 10px !important;
+  opacity: 1 !important;
 }

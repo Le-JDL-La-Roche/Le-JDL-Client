@@ -56,6 +56,7 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
           io.emit('launchWaitStream')
+          io.emit('updateShow')
         },
         error: () => {}
       })
@@ -71,6 +72,7 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
           io.emit('launchWaitRestream')
+          io.emit('updateShow')
         },
         error: () => {}
       })
@@ -83,6 +85,7 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
           io.emit('launchLiveStream')
+          io.emit('updateShow')
         },
         error: () => {}
       })
@@ -95,6 +98,7 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
           io.emit('launchLiveRestream')
+          io.emit('updateShow')
         },
         error: () => {}
       })
@@ -107,6 +111,7 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
           io.emit('stopLiveStream')
+          io.emit('updateShow')
         },
         error: () => {}
       })
@@ -119,6 +124,7 @@
         next: (res) => {
           data.data = res.body.data?.shows || []
           io.emit('stopLiveRestream')
+          io.emit('updateShow')
         },
         error: () => {}
       })
@@ -262,7 +268,7 @@
       <button class="secondary" on:click={() => deleteElement(element)}><i class="fa-solid fa-trash" /></button>
       {#if 'streamId' in element}
         <a
-          href={`https://radio.le-jdl-laroche.cf:8080/download/${element.streamId}_vid_${utils.timestampToDate(
+          href={`https://radio.le-jdl-laroche.cf/download/${element.streamId}_vid_${utils.timestampToDate(
             +element.date
           )}.flv`}
           class="not-a"

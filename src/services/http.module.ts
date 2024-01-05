@@ -52,13 +52,13 @@ class Http {
     this.sendInterceptor(url)
 
     let body_: any
-    let headers_: any = req?.headers
 
     if (body instanceof FormData) {
       body_ = body
       delete this.headers['Content-Type']
     } else {
       body_ = this.urlEncode(body)
+      this.headers['Content-Type'] = 'application/x-www-form-urlencoded'
     }
 
     let req_: RequestInit = {
@@ -134,7 +134,7 @@ class Http {
         window.location.pathname != '/admin' &&
         window.location.pathname.includes('/admin')
       ) {
-        throw redirect(300, '/admin')
+        redirect(300, '/admin');
       }
     } else if (response.body.code == 'DB_ERROR') {
       // TODO: Handle DB errors

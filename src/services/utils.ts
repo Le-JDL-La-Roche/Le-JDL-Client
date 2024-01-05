@@ -58,7 +58,7 @@ class Utils {
       color: '#c31718'
     },
     radio: {
-      name: 'Podcasts radio',
+      name: 'Émissions',
       slug: 'radio',
       id: 'radio',
       icon: 'fa-podcast',

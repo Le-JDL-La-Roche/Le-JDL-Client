@@ -42,5 +42,5 @@ export interface Guest {
   date: string
   place: 'au Lycée La Rochefoucauld (75007 PARIS)' | 'en visioconférence' | string
   use: 'diffusés en direct et publiés après montage' | string
-  media: 'le site Web, le compte Instagram, la chaîne YouTube, les plateformes de streaming' | string
+  media: 'le site Web, le compte Instagram, la chaîne YouTube, le compte LinkedIn et les plateformes de streaming' | string
 }

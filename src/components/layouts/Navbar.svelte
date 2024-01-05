@@ -30,7 +30,7 @@
       <NavbarLink href="/sciences" bind:mobileNavOpen>Sciences</NavbarLink>
       <NavbarLink href="/tech" bind:mobileNavOpen>Tech</NavbarLink>
       <NavbarLink href="/laroche" bind:mobileNavOpen>La Roche</NavbarLink>
-      <NavbarLink href="/radio" bind:mobileNavOpen customClass="podcasts">Podcasts radio</NavbarLink>
+      <NavbarLink href="/radio" bind:mobileNavOpen customClass="podcasts">Émissions</NavbarLink>
     </div>
   </div>
 </nav>

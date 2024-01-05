@@ -52,7 +52,7 @@
           on:paste={handlePaste}
           bind:innerText={guestAuthorization.eventType}
         />
-        qui aura lieu le
+        ayant lieu le
         <span
           contenteditable="true"
           class="s"
@@ -88,8 +88,8 @@
       <h3>Réserves</h3>
 
       <p style="margin: 0">
-        <input type="checkbox" name="allow" class="allow" style="display: inline; text-align: left; width: auto" />&nbsp;&nbsp;Je
-        souhaite ne pas apparaître visuellement lors de la diffusion/publication.<br />
+        <input type="checkbox" name="allow" class="allow" style="display: inline; text-align: left; width: auto" />&nbsp;&nbsp;Je ne
+        souhaite pas apparaître visuellement lors de la diffusion/publication.<br />
         <input
           type="checkbox"
           name="allow"

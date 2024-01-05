@@ -1,4 +1,9 @@
-# Mises à jour du site
+# Mises à jour du site Web
+
+### 1<sup>er</sup> janvier 2024 `v2.1.2`
+- Optimisation des métadonnées
+- Espace administrateur
+- Corrections de bugs
 
 ### 15 octobre 2023 `v2.0.3`
 - Ajout du lecteur vidéo YouTube sous les podcasts radio
@@ -15,6 +20,7 @@
 - Agenda
 - Gestion des cookies
 - Déplacement des pages *A propos* et *Mises à jour* sur GitHub
+- Mise en place de Socket.io
 - Espace administrateur
 - Amélioration du design
 - *Open source*

@@ -60,7 +60,7 @@
           date: '[date]',
           place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
           use: '[diffusés en direct et publiés après montage]',
-          media: '[le site Web, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
+          media: '[le site Web, le compte Instagram, la chaîne YouTube, le compte LinkedIn et les plateformes de streaming]'
         })
       } else if (+target.value < authorization.content.inGuests.length) {
         authorization.content.inGuests.pop()
@@ -82,7 +82,7 @@
           date: '[date]',
           place: '[au Lycée La Rochefoucauld (75007 PARIS)]',
           use: '[diffusés en direct et publiés après montage]',
-          media: '[le site Web, le compte Instagram, la chaîne YouTube, les plateformes de streaming]'
+          media: '[le site Web, le compte Instagram, la chaîne YouTube, le compte LinkedIn et les plateformes de streaming]'
         })
       } else if (+target.value < authorization.content.outGuests.length) {
         authorization.content.outGuests.pop()

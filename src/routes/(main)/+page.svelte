@@ -16,13 +16,21 @@
 
 <svelte:head>
   <title>Le JDL - La Roche</title>
+
+  <meta name="title" content="Le JDL - La Roche">
+  <meta name="twitter:title" content="Le JDL - La Roche">
+  <meta property="og:title" content="Le JDL - La Roche">
+  
+  <meta name="description" content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article.">
+  <meta name="twitter:description" content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article.">
+  <meta property="og:description" content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article.">
 </svelte:head>
 
 <div class="flex">
   <div>
     <h2 style="margin-top: 10px">Bienvenue sur le site du JDL !</h2>
     <p class="desc">
-      Bienvenue sur le site du Journal du Lycée La Rochefoucauld !<br />Nous sommes heureux de vous retrouver pour une troisième
+      Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld !<br />Nous sommes heureux de vous retrouver pour une troisième
       année, durant laquelle nous ferons notre maximum pour vous proposer un maximum de contenu. Cette année, au programme :
       émissions de radio, vidéos, articles, et bien plus encore !<br />N'hésitez pas à rejoindre la rédaction ! C'est une
       expérience très enrichissante et formatrice, qui vous permettra de participer à de nouveaux projets.<br />Vous pouvez

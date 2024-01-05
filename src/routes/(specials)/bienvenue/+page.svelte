@@ -1,6 +1,18 @@
 <script lang="ts">
 </script>
 
+<svelte:head>
+  <title>Le JDL - La Roche</title>
+
+  <meta name="title" content="Le JDL - La Roche">
+  <meta name="twitter:title" content="Le JDL - La Roche">
+  <meta property="og:title" content="Le JDL - La Roche">
+  
+  <meta name="description" content="Accéder aux différents réseaux du JDL.">
+  <meta name="twitter:description" content="Accéder aux différents réseaux du JDL.">
+  <meta property="og:description" content="Accéder aux différents réseaux du JDL.">
+</svelte:head>
+
 <div class="main">
   <div class="content">
     <img src="/assets/images/v2/logo_blanc.png" alt="Logo du JDL" />
@@ -8,16 +20,19 @@
     <h2>Bienvenue !</h2>
 
     <a class="button" href="/">
-      <i class="fa-solid fa-globe" />&nbsp;&nbsp;Accéder au site
-    </a>
-    <a class="button" href="https://podcast.ausha.co/ecouter-la-roche">
-      <i class="fa-solid fa-podcast" />&nbsp;&nbsp;Accéder aux podcasts (Ausha)
+      <i class="fa-solid fa-globe" />&nbsp;&nbsp;Accéder au site Web
     </a>
     <a class="button" href="https://instagram.com/lejdl.laroche">
       <i class="fa-brands fa-instagram" />&nbsp;&nbsp;Accéder au compte Instagram
     </a>
     <a class="button" href="https://www.youtube.com/channel/UCs3H_WZJogy8GnmrMNXjyPA">
       <i class="fa-brands fa-youtube" />&nbsp;&nbsp;Accéder à la chaîne YouTube
+    </a>
+    <a class="button" href="https://podcast.ausha.co/ecouter-la-roche">
+      <i class="fa-solid fa-podcast" />&nbsp;&nbsp;Accéder aux podcasts (Ausha)
+    </a>
+    <a class="button" href="https://linkedin.com/company/le-jdl-laroche">
+      <i class="fa-brands fa-linkedin" />&nbsp;&nbsp;Accéder à la page LinkedIn
     </a>
   </div>
 </div>

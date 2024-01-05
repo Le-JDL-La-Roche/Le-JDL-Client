@@ -59,7 +59,8 @@
     {/if}
   </button>
   {#if data.type === 'emissions' && shows && shows.find((data) => (data.status === -1 || data.status === 0))}
-    <a class="not-a" href="/admin/emissions/questions"><button class="secondary"><i class="fa-solid fa-message" /></button></a>
+    <a class="not-a" href="/admin/emissions/prompteur"><button class="secondary"><i class="fa-solid fa-align-left" /></button></a>
+    <a class="not-a" href="/admin/emissions/presentateur"><button class="secondary"><i class="fa-solid fa-gear" /></button></a>
   {/if}
 </div>
 
@@ -76,7 +77,7 @@
   />
 {:else}
   {#if data.type === 'emissions'}
-    Aucune émission ou podcast
+    Aucune émission
   {:else if data.type === 'videos'}
     Aucune vidéos
   {:else}
@@ -109,7 +110,7 @@
     gap: 15px;
 
     button.primary {
-      flex: 1 1 87%;
+      flex: 1 1 74%;
       margin: 0 0 30px 0;
     }
 

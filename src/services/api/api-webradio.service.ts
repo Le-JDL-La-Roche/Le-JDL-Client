@@ -35,7 +35,7 @@ export default class ApiWebradioService {
       if (typeof value === 'number') {
         body.set(key, value.toString())
       } else {
-        body.set(key, value)
+        body.set(key, value as any)
       }
     }
     return await http.put<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/${id}`, body)

@@ -6,6 +6,7 @@
   import io from '$services/api/socket.service'
   import type { WebradioQuestion } from '$models/features/webradio-question.model'
   import utils from '$services/utils'
+  import { onMount } from 'svelte'
 
   export let show: boolean
   export let webradioShow: WebradioShow
@@ -16,12 +17,21 @@
   export let showQuestions: boolean
   export let questions: WebradioQuestion[]
 
+  let liveHeight = '0px'
+
   const content = new ContentService()
   const apiWebradio = new ApiWebradioService()
 
   let question: string
 
   let questionsList: HTMLDivElement
+
+  onMount(() => {
+    const iframe = document.querySelector('iframe.live-embed')
+    if (iframe) {
+      liveHeight = (iframe.clientWidth * 9) / 16 + 'px'
+    }
+  })
 
   $: if (show === true && questionsList) {
     questionsList.scrollTop = questionsList.scrollHeight
@@ -48,6 +58,15 @@
   })
 </script>
 
+<svelte:window
+  on:resize={() => {
+    const iframe = document.querySelector('iframe.live-embed')
+    if (iframe) {
+      liveHeight = (iframe.clientWidth * 9) / 16 + 'px'
+    }
+  }}
+/>
+
 <ModalTemplate size={'l'} bind:show>
   <h3>{webradioShow.title}</h3>
 
@@ -56,13 +75,8 @@
       <div class="show-content">
         <p class="section-title"><strong>Emission</strong></p>
         <div class="in-show-content">
-          <div class="youtube" style="margin: 10px 0 0 10px;">
-            <img
-              src="/assets/images/new.png"
-              alt="New"
-              width="30"
-              style="position: absolute; top: -10px; left: -10px; opacity: 93%;"
-            />Cette émission est également disponible en vidéo sur
+          <div class="youtube" style="margin: 10px 0 0 0;">
+            Cette émission est également disponible en direct sur
             <a href={'https://youtube.com/watch?v=' + webradioShow.streamId} target="_blank" on:click={() => (play = false)}
               >YouTube</a
             > !
@@ -120,7 +134,13 @@
       </div>
 
       <form on:submit|preventDefault={sendQuestion}>
-        <input type="text" placeholder="Posez votre question ici..." bind:value={question} enterkeyhint="send" disabled={webradioShow.status === 0.5 || webradioShow.status === -1.5} />
+        <input
+          type="text"
+          placeholder="Posez votre question ici..."
+          bind:value={question}
+          enterkeyhint="send"
+          disabled={webradioShow.status === 0.5 || webradioShow.status === -1.5}
+        />
         <button type="submit" class="secondary" disabled={!(question + '').replace(/\s/g, '').length || !question}>
           <i class="fa-solid fa-paper-plane" />
         </button>
@@ -175,6 +195,11 @@
     left: 0;
     position: relative;
     transition: left 0.3s;
+
+    iframe.live-embed {
+      width: 100%;
+      border-radius: 5px;
+    }
 
     div.show-content {
       flex: 1;

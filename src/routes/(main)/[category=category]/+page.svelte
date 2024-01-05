@@ -10,6 +10,14 @@
 
 <svelte:head>
   <title>{data.category.name} • Le JDL - La Roche</title>
+
+  <meta name="title" content={data.category.name} />
+  <meta name="twitter:title" content={data.category.name} />
+  <meta property="og:title" content={data.category.name} />
+
+  <meta name="description" content={`Accédez aux vidéos et articles de la rubrique ${data.category.name}.`} />
+  <meta name="twitter:description" content={`Accédez aux vidéos et articles de la rubrique ${data.category.name}.`} />
+  <meta property="og:description" content={`Accédez aux vidéos et articles de la rubrique ${data.category.name}.`} />
 </svelte:head>
 
 {#if data.category.id !== 'radio'}

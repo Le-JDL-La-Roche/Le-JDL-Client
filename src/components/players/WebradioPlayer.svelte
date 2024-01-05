@@ -108,12 +108,6 @@
     <div class="actions">
       <a class="not-a" href={'https://youtube.com/watch?v=' + show.streamId} target="_blank" on:click={() => (play = false)}>
         <button class="action" style="position: relative">
-          <img
-            src="/assets/images/new.png"
-            alt="New"
-            width="30"
-            style="position: absolute; top: 4px; right: 16px; opacity: 93%;"
-          />
           <i class="fa-brands fa-youtube" />
         </button>
       </a>
@@ -201,10 +195,9 @@
     &.action {
       display: block;
       width: 35px !important;
-      flex: 35px;
       font-size: 16px;
       padding: 23px 0 22px;
-      margin: 0;
+      margin: 0 0 0 5px;
     }
   }
 

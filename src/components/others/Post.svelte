@@ -55,13 +55,7 @@
     {/if}
   {:else if 'podcastId' in data.data}
     {#if !data.data.id || data.data.id > 27}
-      <p style="font-size: 18px">Retrouvez l'émission en podcast ...</p>
-    {/if}
-    <figure class="podcast">
-      <AushaPlayer podcastId={data.data.podcastId} />
-    </figure>
-    {#if !data.data.id || data.data.id > 27}
-      <p style="font-size: 18px">... ou en vidéo !</p>
+      <p style="font-size: 18px">Retrouvez l'émission en vidéo ...</p>
       <figure class="video" class:preview>
         <iframe
           width="100%"
@@ -74,6 +68,12 @@
         />
       </figure>
     {/if}
+    {#if !data.data.id || data.data.id > 27}
+      <p style="font-size: 18px">ou en podcast !</p>
+    {/if}
+    <figure class="podcast">
+      <AushaPlayer podcastId={data.data.podcastId} />
+    </figure>
   {/if}
 
   <p class="article">

@@ -43,7 +43,7 @@ export const load: PageLoad = async ({ params }) => {
         data = res.body.data?.shows || []
       },
       error: (err) => {
-        throw error(err.status, err.body.message)
+        error(err.status, err.body.message);
       }
     })
   } else if (type === 'videos') {
@@ -52,7 +52,7 @@ export const load: PageLoad = async ({ params }) => {
         data = res.body.data?.videos || []
       },
       error: (err) => {
-        throw error(err.status, err.body.message)
+        error(err.status, err.body.message);
       }
     })
   } else {
@@ -61,7 +61,7 @@ export const load: PageLoad = async ({ params }) => {
         data = res.body.data?.articles || []
       },
       error: (err) => {
-        throw error(err.status, err.body.message)
+        error(err.status, err.body.message);
       }
     })
   }
@@ -73,7 +73,7 @@ export const load: PageLoad = async ({ params }) => {
       authorizations = res.body.data?.authorizations || []
     },
     error: (err) => {
-      throw error(err.status, err.body.message)
+      error(err.status, err.body.message);
     }
   })
 
