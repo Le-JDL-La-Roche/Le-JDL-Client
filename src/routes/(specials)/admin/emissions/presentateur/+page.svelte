@@ -14,7 +14,7 @@
   const cookies = new CookiesService()
 
   let fontSize = 64
-  let speed = 50
+  let speed = 35
   let mode = 0
   let addLine = 0
   let addPrompt = 0
@@ -27,15 +27,6 @@
 
   onMount(() => window.scrollTo(0, document.body.scrollHeight))
 
-  async function deleteQuestion(id: number) {
-    ;(await apiWebradio.deleteQuestion(id)).subscribe({
-      next: (res) => {
-        data.questions = res.body.data?.questions || []
-        io.emit('question')
-      }
-    })
-  }
-
   io.on('showUpdated', async () => {
     ;(await apiWebradio.getCurrentShow()).subscribe({
       next: (res) => {
@@ -46,7 +37,7 @@
 
   io.on('prompterSettingsReset', () => {
     fontSize = 64
-    speed = 50
+    speed = 35
     mode = 0
     reverse = false
   })
@@ -79,6 +70,65 @@
     })
     addPrompt = 0
     addLine = 0
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (document.activeElement?.id !== 'messages' && document.activeElement?.id !== 'questions-itw') {
+      if (e.code === 'Enter') {
+        e.preventDefault()
+        mode = 0
+      }
+
+      if (e.code === 'Space') {
+        e.preventDefault()
+        mode = mode !== 2 ? 2 : 1
+      }
+
+      if (e.code === 'ArrowUp') {
+        e.preventDefault()
+        addLine = -1
+      }
+
+      if (e.code === 'ArrowDown') {
+        e.preventDefault()
+        addLine = 1
+      }
+
+      if (e.code === 'ArrowLeft') {
+        e.preventDefault()
+        speed = speed > 25 ? speed - 1 : speed
+      }
+
+      if (e.code === 'ArrowRight') {
+        e.preventDefault()
+        speed = speed < 75 ? speed + 1 : speed
+      }
+    }
+  })
+
+  window.addEventListener('keyup', (e) => {
+    if (document.activeElement?.id !== 'messages' && document.activeElement?.id !== 'questions-itw') {
+      if (
+        e.code === 'Enter' ||
+        e.code === 'Space' ||
+        e.code === 'ArrowUp' ||
+        e.code === 'ArrowDown' ||
+        e.code === 'ArrowLeft' ||
+        e.code === 'ArrowRight'
+      ) {
+        e.preventDefault()
+        updatePrompterSettings()
+      }
+    }
+  })
+
+  async function deleteQuestion(id: number) {
+    ;(await apiWebradio.deleteQuestion(id)).subscribe({
+      next: (res) => {
+        data.questions = res.body.data?.questions || []
+        io.emit('question')
+      }
+    })
   }
 
   async function sendMessage() {
@@ -117,7 +167,7 @@
       <div class="prompter-settings">
         <h4 style="margin: 30px auto 25px 40px">Paramètres du prompteur</h4>
         <div class="top-settings">
-          <label for="size">
+          <label for="size" title="Taille du texte">
             Taille :&nbsp;&nbsp;<input
               type="number"
               id="size"
@@ -127,7 +177,7 @@
               on:change={updatePrompterSettings}
             />
           </label>
-          <label for="speed">
+          <label for="speed" title="Vitesse du prompteur [Flèche gauche/droite]">
             Vitesse :&nbsp;&nbsp;<input
               type="number"
               id="speed"
@@ -142,7 +192,8 @@
             on:click={() => {
               reverse = !reverse
               updatePrompterSettings()
-            }}>Renverser</button
+            }}
+            title="Renverser le prompteur">Renverser</button
           >
         </div>
         <div class="main-settings">
@@ -161,6 +212,7 @@
                     mode = 0
                     updatePrompterSettings()
                   }}
+                  title="Mode automatique [Entrer]"
                 >
                   <i class="fa-solid fa-arrows-rotate" />
                 </button>
@@ -173,6 +225,7 @@
                     mode = mode !== 2 ? 2 : 1
                     updatePrompterSettings()
                   }}
+                  title="Pause/Marche - Mode manuel [Espace]"
                 >
                   <i class="fa-solid" class:fa-pause={mode !== 2} class:fa-play={mode === 2} />
                 </button>
@@ -184,30 +237,42 @@
                   on:click={() => {
                     addPrompt = -1
                     updatePrompterSettings()
-                  }}><i class="fa-solid fa-angles-up" /></button
+                  }}
+                  title="Partie précédente"
                 >
+                  <i class="fa-solid fa-angles-up" />
+                </button>
                 <button
                   class="secondary scroll"
                   on:click={() => {
                     addLine = -1
                     updatePrompterSettings()
-                  }}><i class="fa-solid fa-angle-up" /></button
-                ><br />
+                  }}
+                  title="Ligne précédente [Flèche haut]"
+                >
+                  <i class="fa-solid fa-angle-up" />
+                </button><br />
                 <button
                   class="secondary scroll"
                   disabled={mode === 0}
                   on:click={() => {
                     addPrompt = 1
                     updatePrompterSettings()
-                  }}><i class="fa-solid fa-angles-down" /></button
+                  }}
+                  title="Partie suivante"
                 >
+                  <i class="fa-solid fa-angles-down" />
+                </button>
                 <button
                   class="secondary scroll"
                   on:click={() => {
                     addLine = 1
                     updatePrompterSettings()
-                  }}><i class="fa-solid fa-angle-down" /></button
+                  }}
+                  title="Ligne suivante [Flèche bas]"
                 >
+                  <i class="fa-solid fa-angle-down" />
+                </button>
               </td>
             </tr>
           </table>
@@ -220,27 +285,33 @@
             {/each}
           </div>
           <form on:submit|preventDefault={sendMessage}>
-            <input type="text" placeholder="Envoyer un message à la régie" bind:value={inputValue} />
+            <input type="text" placeholder="Envoyer un message à la régie" bind:value={inputValue} id="messages" />
           </form>
         </div>
       </div>
       <div class="questions">
-        <h4 style="margin-left: 60px; margin-bottom: 30px">Questions</h4>
-        <div class="inner">
-          {#each data.questions as question}
-            <div class="question">
-              <button class="secondary" on:click={() => deleteQuestion(question.id || 0)}>
-                <i class="fa-solid fa-trash" />
-              </button>
-              <p class="info">
-                {new Date(+question.date * 1000).getHours().toString().padStart(2, '0')}:{new Date(+question.date * 1000)
-                  .getMinutes()
-                  .toString()
-                  .padStart(2, '0')}
-              </p>
-              <p class="question-text">{question.question}</p>
-            </div>
-          {/each}
+        <div class="presenter-questions" style="border-bottom: 2px solid white">
+          <h4 style="margin-left: 60px; margin-bottom: 30px">Questions d'interviews</h4>
+          <textarea name="questions-itw" id="questions-itw" cols="30" rows="10"></textarea>
+        </div>
+        <div class="out-questions">
+          <h4 style="margin: 30px auto 30px 60px;">Questions des auditeurs</h4>
+          <div class="inner">
+            {#each data.questions as question}
+              <div class="question">
+                <button class="secondary" on:click={() => deleteQuestion(question.id || 0)}>
+                  <i class="fa-solid fa-trash" />
+                </button>
+                <p class="info">
+                  {new Date(+question.date * 1000).getHours().toString().padStart(2, '0')}:{new Date(+question.date * 1000)
+                    .getMinutes()
+                    .toString()
+                    .padStart(2, '0')}
+                </p>
+                <p class="question-text">{question.question}</p>
+              </div>
+            {/each}
+          </div>
         </div>
       </div>
     </div>
@@ -342,10 +413,25 @@
       flex: 0.8;
       font-family: Arial, Helvetica, sans-serif !important;
 
+      textarea {
+        min-width: calc(40vw - 61px);
+        max-width: calc(40vw - 61px);
+        min-height: calc(50vh - 190px);
+        max-height: calc(50vh - 190px);
+        background: #000;
+        color: white;
+        border: none;
+        padding: 0 30px 30px 30px !important;
+        font-size: 16px;
+        font-family: Arial, Helvetica, sans-serif !important;
+        margin-bottom: 0;
+        line-height: 1.5;
+      }
+
       div.inner {
         overflow-y: scroll;
         padding: 0 40px;
-        height: calc(100vh - 150px);
+        height: calc(50vh - 75px);
 
         div.question {
           background: #0a0a0a;
@@ -409,6 +495,7 @@
       justify-content: center;
       align-items: center;
       gap: 30px;
+      min-height: 40vh;
 
       table {
         border-collapse: collapse;
@@ -453,11 +540,11 @@
       border-top: 2px solid white;
       margin-top: 30px;
       position: relative;
-      height: calc(100vh - 390px);
+      height: calc(60vh - 200px);
 
       div.inner {
         padding-right: 40px;
-        height: calc(100vh - 519px);
+        height: calc(60vh - 320px);
         overflow-y: scroll;
 
         p {

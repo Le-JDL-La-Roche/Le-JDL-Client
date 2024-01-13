@@ -1,5 +1,8 @@
 # Mises à jour du site Web
 
+### 13 janvier 2024 `v2.1.3`
+- Corrections de bugs
+
 ### 1<sup>er</sup> janvier 2024 `v2.1.2`
 - Optimisation des métadonnées
 - Espace administrateur
