@@ -31,7 +31,7 @@
 
   onMount(() => {
     fontSize = 64
-    speed = 50
+    speed = 35
     mode = 0
     reverse = false
 
@@ -223,7 +223,7 @@
     </a>
     <div class="prompter">
       <i class="fa-solid fa-chevron-right mark" />
-      {#if countdown}
+      {#if countdown && mode === 0}
         <p class="countdown">
           <span style="font-weight: bold">{countdown}</span><br />
           <span class="title">{JSON.parse(data.show.prompter + '')[prompt].title}</span>
