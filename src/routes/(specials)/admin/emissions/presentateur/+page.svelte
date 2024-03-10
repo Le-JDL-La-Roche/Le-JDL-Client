@@ -292,25 +292,17 @@
       <div class="questions">
         <div class="presenter-questions" style="border-bottom: 2px solid white">
           <h4 style="margin-left: 60px; margin-bottom: 30px">Questions d'interviews</h4>
-          <textarea name="questions-itw" id="questions-itw" cols="30" rows="10"></textarea>
+          <textarea name="questions-itw" id="questions-itw" cols="30" rows="10" />
         </div>
         <div class="out-questions">
           <h4 style="margin: 30px auto 30px 60px;">Questions des auditeurs</h4>
           <div class="inner">
-            {#each data.questions as question}
-              <div class="question">
-                <button class="secondary" on:click={() => deleteQuestion(question.id || 0)}>
-                  <i class="fa-solid fa-trash" />
-                </button>
-                <p class="info">
-                  {new Date(+question.date * 1000).getHours().toString().padStart(2, '0')}:{new Date(+question.date * 1000)
-                    .getMinutes()
-                    .toString()
-                    .padStart(2, '0')}
-                </p>
-                <p class="question-text">{question.question}</p>
-              </div>
-            {/each}
+            <iframe
+              src="https://gaming.youtube.com/live_chat?v={data.show.streamId}&embed_domain={window.location.hostname}"
+              frameborder="0"
+              title="Live chat"
+              style="height: 100%; width: 100%"
+            />
           </div>
         </div>
       </div>
