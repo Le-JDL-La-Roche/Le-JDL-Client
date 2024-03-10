@@ -1,5 +1,8 @@
 # Mises à jour du site Web
 
+### 10 mars 2024 `v2.2.0`
+- Tchat YouTube en direct (remplace le tchat intégré)
+
 ### 13 janvier 2024 `v2.1.3`
 - Corrections de bugs
 
