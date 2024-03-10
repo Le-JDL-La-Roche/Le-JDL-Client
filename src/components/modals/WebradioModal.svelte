@@ -7,6 +7,7 @@
   import type { WebradioQuestion } from '$models/features/webradio-question.model'
   import utils from '$services/utils'
   import { onMount } from 'svelte'
+  import YouTubePlayer from '$components/players/YouTubePlayer.svelte'
 
   export let show: boolean
   export let webradioShow: WebradioShow
@@ -15,57 +16,20 @@
   export let volume: number
   export let mute: boolean
   export let showQuestions: boolean
-  export let questions: WebradioQuestion[]
-
-  let liveHeight = '0px'
 
   const content = new ContentService()
-  const apiWebradio = new ApiWebradioService()
 
-  let question: string
+  let player: any
+  let ytPlay: boolean = false
 
-  let questionsList: HTMLDivElement
-
-  onMount(() => {
-    const iframe = document.querySelector('iframe.live-embed')
-    if (iframe) {
-      liveHeight = (iframe.clientWidth * 9) / 16 + 'px'
-    }
-  })
-
-  $: if (show === true && questionsList) {
-    questionsList.scrollTop = questionsList.scrollHeight
+  $: if (ytPlay === true) {
+    play = false
   }
 
-  async function sendQuestion() {
-    if ((question + '').replace(/\s/g, '').length && question) {
-      ;(await apiWebradio.postQuestion(question)).subscribe({
-        next: () => {
-          question = ''
-          io.emit('question')
-        },
-        error: (err) => {
-          console.error(err)
-        }
-      })
-    }
+  $: if (play === true) {
+    player.pauseVideo()
   }
-
-  io.on('updateQuestions', async (questions_: WebradioQuestion[]) => {
-    questions = questions_
-    await utils.sleep(50)
-    questionsList.scrollTop = questionsList.scrollHeight
-  })
 </script>
-
-<svelte:window
-  on:resize={() => {
-    const iframe = document.querySelector('iframe.live-embed')
-    if (iframe) {
-      liveHeight = (iframe.clientWidth * 9) / 16 + 'px'
-    }
-  }}
-/>
 
 <ModalTemplate size={'l'} bind:show>
   <h3>{webradioShow.title}</h3>
@@ -75,13 +39,7 @@
       <div class="show-content">
         <p class="section-title"><strong>Emission</strong></p>
         <div class="in-show-content">
-          <div class="youtube" style="margin: 10px 0 0 0;">
-            Cette émission est également disponible en direct sur
-            <a href={'https://youtube.com/watch?v=' + webradioShow.streamId} target="_blank" on:click={() => (play = false)}
-              >YouTube</a
-            > !
-          </div>
-
+          <YouTubePlayer bind:player bind:initialVideoId={webradioShow.streamId} bind:play={ytPlay} />
           <p class="description">
             {@html content.markdownToHtml(webradioShow.description)}
           </p>
@@ -115,36 +73,15 @@
         <button class="secondary" on:click={() => (showQuestions = false)}><i class="fa-solid fa-caret-left" /></button>
         <p class="section-title"><strong>Questions</strong></p>
       </div>
-      <p style="font-size: 14px; margin-top: 0">
-        {webradioShow.status === 0.5 || webradioShow.status === -1.5
-          ? 'Vous ne pouvez pas poser de questions durant les rediffusions.'
-          : 'Vous pouvez poser des questions ici.'}<br />
-        <span style="color: #c83232">Vos questions sont publiques ; merci d'être respectueux des autres.</span>
-      </p>
-      <div class="questions-list" bind:this={questionsList}>
-        {#each questions as question}
-          <p class="info">
-            {new Date(+question.date * 1000).getHours().toString().padStart(2, '0')}:{new Date(+question.date * 1000)
-              .getMinutes()
-              .toString()
-              .padStart(2, '0')}
-          </p>
-          <p class="question-text">{question.question}</p>
-        {/each}
-      </div>
-
-      <form on:submit|preventDefault={sendQuestion}>
-        <input
-          type="text"
-          placeholder="Posez votre question ici..."
-          bind:value={question}
-          enterkeyhint="send"
-          disabled={webradioShow.status === 0.5 || webradioShow.status === -1.5}
-        />
-        <button type="submit" class="secondary" disabled={!(question + '').replace(/\s/g, '').length || !question}>
-          <i class="fa-solid fa-paper-plane" />
-        </button>
-      </form>
+      <!-- <p style="font-size: 14px; margin-top: 0">
+        {#if webradioShow.status === 0.5 || webradioShow.status === -1.5}
+          Vous ne pouvez pas poser de questions durant les rediffusions.
+        {:else}
+          Vous pouvez poser des questions depuis <a href="https://youtube.com/watch?v={webradioShow.streamId}">YouTube</a>.
+        {/if}
+      </p> -->
+      
+      <iframe src="https://www.youtube.com/live_chat?v={webradioShow.streamId}&embed_domain={window.location.hostname}" frameborder="0" title="Live chat" style="height: 100%"></iframe>
     </div>
   </div>
 </ModalTemplate>
@@ -195,11 +132,6 @@
     left: 0;
     position: relative;
     transition: left 0.3s;
-
-    iframe.live-embed {
-      width: 100%;
-      border-radius: 5px;
-    }
 
     div.show-content {
       flex: 1;
