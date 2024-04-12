@@ -3,8 +3,20 @@
   import ImportantList from '$components/lists/ImportantList.svelte'
   import List from '$components/lists/List.svelte'
   import HomeAgenda from '$components/others/HomeAgenda.svelte'
+  import ContentService from '$services/content.service'
+  import { onMount } from 'svelte'
 
   export let data: PageData
+
+  const content = new ContentService()
+
+  let style: HTMLStyleElement
+
+  onMount(() => {
+    if (data.info.find((e) => e.enabled)) {
+      style.innerHTML = content.addPrefixToStyle(data.info.find((e) => e.enabled)?.css || '', '.info-isolation')
+    }
+  })
 
   let b = 0
   data.agenda.forEach((event) => {
@@ -17,23 +29,39 @@
 <svelte:head>
   <title>Le JDL - La Roche</title>
 
-  <meta name="title" content="Le JDL - La Roche">
-  <meta name="twitter:title" content="Le JDL - La Roche">
-  <meta property="og:title" content="Le JDL - La Roche">
-  
-  <meta name="description" content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article.">
-  <meta name="twitter:description" content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article.">
-  <meta property="og:description" content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article.">
+  <meta name="title" content="Le JDL - La Roche" />
+  <meta name="twitter:title" content="Le JDL - La Roche" />
+  <meta property="og:title" content="Le JDL - La Roche" />
+
+  <meta
+    name="description"
+    content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article."
+  />
+  <meta
+    name="twitter:description"
+    content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article."
+  />
+  <meta
+    property="og:description"
+    content="Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld ! Vous trouverez sur ce site nos émissions, nos vidéos et nos article."
+  />
 </svelte:head>
 
+{#if data.info.find((e) => e.enabled)}
+  <div class="info-isolation">
+    {@html content.markdownToHtml((data.info.find((e) => e.enabled) || { html: '' }).html, false)}
+    <style bind:this={style}>
+    </style>
+  </div>
+{/if}
 <div class="flex">
   <div>
     <h2 style="margin-top: 10px">Bienvenue sur le site du JDL !</h2>
     <p class="desc">
-      Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld !<br />Nous sommes heureux de vous retrouver pour une troisième
-      année, durant laquelle nous ferons notre maximum pour vous proposer un maximum de contenu. Cette année, au programme :
-      émissions de radio, vidéos, articles, et bien plus encore !<br />N'hésitez pas à rejoindre la rédaction ! C'est une
-      expérience très enrichissante et formatrice, qui vous permettra de participer à de nouveaux projets.<br />Vous pouvez
+      Bienvenue sur le site Web du Journal du Lycée La Rochefoucauld !<br />Nous sommes heureux de vous retrouver pour une
+      troisième année, durant laquelle nous ferons notre maximum pour vous proposer un maximum de contenu. Cette année, au
+      programme : émissions de radio, vidéos, articles, et bien plus encore !<br />N'hésitez pas à rejoindre la rédaction ! C'est
+      une expérience très enrichissante et formatrice, qui vous permettra de participer à de nouveaux projets.<br />Vous pouvez
       également nous suivre sur les <a href="/bienvenue">réseaux sociaux</a>, et nous contacter par
       <a href="mailto:lejdl@laroche.org">mail</a>.<br />
     </p>
@@ -116,7 +144,7 @@
       gap: 30px;
 
       div.agenda {
-       min-width: 400px;
+        min-width: 400px;
       }
     }
 

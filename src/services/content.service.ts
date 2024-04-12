@@ -10,13 +10,13 @@ export default class ContentService {
     return c != 'null' ? c : ''
   }
 
-  markdownToHtml(string: string): string {
+  markdownToHtml(string: string, br: boolean = true): string {
     return (
       string
         .replaceAll(/^###( |&nbsp;|\xa0)(.+)( |&nbsp;|\xa0)###/gm, '')
         .replaceAll(/\r/gm, '')
         .replaceAll(/^\n+|\n+$/g, '')
-        .replaceAll('\n', '<br>\n')
+        .replaceAll(br ? '\n' : '<br>', '<br>\n')
         .replaceAll(/^\s+|\s+$/g, '')
         .replaceAll(/^#( |&nbsp;|\xa0)(.+)/gm, '<h4>$2</h4>')
         .replaceAll(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -51,5 +51,20 @@ export default class ContentService {
         // replace <br>\n repeating 3 times or more by one single <br>\n only
         .replaceAll(/(<br>\n){3,}/g, '<br>\n<br>\n')
     )
+  }
+
+  addPrefixToStyle(rawStyle: string, prefix: string) {
+    return rawStyle
+      .split('}')
+      .map((segment) => {
+        const [selectors, rules] = segment.split('{')
+        if (!rules) return segment
+        const prefixedSelectors = selectors
+          .split(',')
+          .map((selector) => `${prefix} ${selector.trim()}`)
+          .join(', ')
+        return `${prefixedSelectors} {${rules}}`
+      })
+      .join('\n')
   }
 }

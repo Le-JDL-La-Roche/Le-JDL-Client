@@ -95,7 +95,7 @@
 
     <!-- svelte-ignore a11y-autofocus -->
     <input type="text" bind:value={title} placeholder="Titre" {required} autofocus />
-    <MarkdownEditor bind:value={content} />
+    <MarkdownEditor bind:value={content} lite={1} />
     <label for="date">Date de l'évènement :</label>
     <div class="flex-date">
       <input type="date" id="date" bind:value={eventDate.date} />

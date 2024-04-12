@@ -50,6 +50,9 @@
     <a class="not-a" href="/admin/agenda">
       <button class="primary"><i class="fa-solid fa-calendar" />&nbsp;&nbsp;Gérer l'agenda</button>
     </a>
+    <a class="not-a" href="/admin/infos">
+      <button class="primary"><i class="fa-solid fa-exclamation-triangle" />&nbsp;&nbsp;Gérer les informations</button>
+    </a>
     <a class="not-a" href="/admin/stats">
       <button class="primary"><i class="fa-solid fa-circle-info" />&nbsp;&nbsp;Statistiques du site</button>
     </a>
