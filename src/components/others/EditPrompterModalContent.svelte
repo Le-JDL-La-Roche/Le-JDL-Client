@@ -35,7 +35,7 @@
 
     <div class="prompt" style="margin-top: 5px">
       <p>{prompter[0].title}</p>
-      <MarkdownEditor bind:value={prompter[0].content} lite={true} />
+      <MarkdownEditor bind:value={prompter[0].content} lite={2} />
     </div>
 
     <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -67,7 +67,7 @@
           <i class="fa-solid fa-trash" />
         </button>
         <input type="text" placeholder="Titre" bind:value={prompt.title} class="prompt-title" />
-        <MarkdownEditor bind:value={prompt.content} lite={true} />
+        <MarkdownEditor bind:value={prompt.content} lite={2} />
       </div>
 
       {#if i < prompter.length - 2}
@@ -91,7 +91,7 @@
 
     <div class="prompt">
       <p>{prompter[prompter.length - 1].title}</p>
-      <MarkdownEditor bind:value={prompter[prompter.length - 1].content} lite={true} />
+      <MarkdownEditor bind:value={prompter[prompter.length - 1].content} lite={2} />
     </div>
   </div>
 </div>

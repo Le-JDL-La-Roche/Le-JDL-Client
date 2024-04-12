@@ -1,5 +1,10 @@
 # Mises à jour du site Web
 
+### 12 avril 2024 `v2.3.0`
+- Informations à la Une
+- Espaces administrateur
+- Sitemap
+
 ### 10 mars 2024 `v2.2.0`
 - Tchat YouTube en direct (remplace le tchat intégré)
 

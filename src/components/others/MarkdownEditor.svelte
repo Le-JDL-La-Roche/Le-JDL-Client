@@ -5,7 +5,24 @@
   import { onMount } from 'svelte'
 
   export let value: string
-  export let lite: boolean = false
+  /**
+   * Lite mode is a mode where only the basic formatting options are available.
+   *
+   * `0` *default* — Full mode
+   *
+   * `1` Remove header styles
+   *
+   * `2` Remove all header and image/link/quotes/... styles
+   *
+   * `3` Remove all styles (including bold, italic, underline, ...)
+   */
+  export let lite: 0 | 1 | 2 | 3 = 0
+  /**
+   * If the editor is in code mode, the text will be displayed in a monospace font.
+   * 
+   * `false` *default*
+   */
+  export let code = false
 
   let editor: HTMLDivElement
   let selection: Selection,
@@ -249,7 +266,7 @@
 
 <div class="container">
   <div class="buttons">
-    {#if !lite}
+    {#if lite < 1}
       <div class="section">
         <button
           class="secondary"
@@ -269,28 +286,30 @@
       </div>
     {/if}
 
-    <div class="section">
-      <button
-        class="secondary"
-        type="button"
-        title="Gras"
-        on:click={() => format('**')}
-        style={lite ? 'border-top-left-radius: 5px' : ''}
-      >
-        <i class="fa-solid fa-bold" />
-      </button>
-      <button class="secondary" type="button" title="Italique" on:click={() => format('*')}>
-        <i class="fa-solid fa-italic" />
-      </button>
-      <button class="secondary" type="button" title="Souligné" on:click={() => format('__')}>
-        <i class="fa-solid fa-underline" />
-      </button>
-      <button class="secondary" type="button" title="Barré" on:click={() => format('~~')}>
-        <i class="fa-solid fa-strikethrough" />
-      </button>
-    </div>
+    {#if lite < 3}
+      <div class="section">
+        <button
+          class="secondary"
+          type="button"
+          title="Gras"
+          on:click={() => format('**')}
+          style={lite ? 'border-top-left-radius: 5px' : ''}
+        >
+          <i class="fa-solid fa-bold" />
+        </button>
+        <button class="secondary" type="button" title="Italique" on:click={() => format('*')}>
+          <i class="fa-solid fa-italic" />
+        </button>
+        <button class="secondary" type="button" title="Souligné" on:click={() => format('__')}>
+          <i class="fa-solid fa-underline" />
+        </button>
+        <button class="secondary" type="button" title="Barré" on:click={() => format('~~')}>
+          <i class="fa-solid fa-strikethrough" />
+        </button>
+      </div>
+    {/if}
 
-    {#if !lite}
+    {#if lite < 2}
       <div class="section">
         <button class="secondary" type="button" title="Lien" on:click={() => insert('link')}>
           <i class="fa-solid fa-link" />
@@ -313,6 +332,7 @@
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="editor"
+    style={code ? 'font-family: monospace' : ''}
     contenteditable="true"
     on:change={preview}
     on:keyup={preview}

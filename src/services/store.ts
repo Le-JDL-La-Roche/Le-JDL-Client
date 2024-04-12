@@ -18,4 +18,4 @@ export let printAuthorization$ = writable<
       authorization: Authorization
     }
 >(false)
-export const api = dev ? 'http://192.168.1.27:5000' : 'https://api.le-jdl-laroche.cf'
+export const api = dev ? 'http://172.16.38.18:5000' : 'https://api.le-jdl-laroche.cf'

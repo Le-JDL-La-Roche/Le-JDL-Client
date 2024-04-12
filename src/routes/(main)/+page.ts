@@ -9,12 +9,15 @@ import type { Article } from '$models/features/article.model'
 import type { Journalist } from '$models/data/journalist.model'
 import type { Event } from '$models/features/agenda.model'
 import ApiAgendaService from '$services/api/api-agenda.service'
+import type { Info } from '$models/features/info.model'
+import ApiInfoService from '$services/api/api-info.service'
 
 const apiWebradio = new ApiWebradioService()
 const apiVideos = new ApiVideosService()
 const apiArticles = new ApiArticlesService()
 const apiEnv = new ApiEnvService()
 const apiAgenda = new ApiAgendaService()
+const apiInfo = new ApiInfoService()
 
 export const load: PageLoad = async () => {
   let data: {
@@ -22,15 +25,17 @@ export const load: PageLoad = async () => {
     currentShow: WebradioShow | null
     videos: Video[]
     articles: Article[]
-    journalists: Journalist[],
+    journalists: Journalist[]
     agenda: Event[]
+    info: Info[]
   } = {
     shows: [],
     currentShow: null,
     videos: [],
     articles: [],
     journalists: [],
-    agenda: []
+    agenda: [],
+    info: []
   }
 
   ;(await apiWebradio.getPublishedShows()).subscribe({
@@ -60,6 +65,11 @@ export const load: PageLoad = async () => {
   ;(await apiAgenda.getAgenda()).subscribe({
     next: (res) => {
       data.agenda = res.body.data?.agenda || []
+    }
+  })
+  ;(await apiInfo.getInfo()).subscribe({
+    next: (res) => {
+      data.info = res.body.data?.info || []
     }
   })
 
