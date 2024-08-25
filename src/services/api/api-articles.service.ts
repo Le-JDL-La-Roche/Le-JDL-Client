@@ -21,7 +21,7 @@ export default class ApiArticlesService {
     for (const [key, value] of Object.entries(article)) {
       body.set(key, value)
     }
-    return await http.post<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles`, body)
+    return await http.post<DataHttpResponse<{ articles: Article[]; id: number }>>(`${api}/articles`, body)
   }
 
   async putArticle(article: Partial<Article>, id: number | string) {
@@ -33,10 +33,11 @@ export default class ApiArticlesService {
         body.set(key, value)
       }
     }
-    return await http.put<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles/${id}`, body)
+    return await http.put<DataHttpResponse<{ articles: Article[]; id: number }>>(`${api}/articles/${id}`, body)
   }
 
   async deleteArticle(id: number | string) {
     return await http.delete<DataHttpResponse<{ articles: Article[] }>>(`${api}/articles/${id}`)
   }
 }
+

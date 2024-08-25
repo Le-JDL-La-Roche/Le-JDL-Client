@@ -72,26 +72,39 @@
     {/if}
 
     <div class="flex-input">
-      <!-- svelte-ignore a11y-autofocus -->
-      <input type="text" bind:value={fName} placeholder="Prénom" {required} autofocus />
-      <input type="text" bind:value={lName} placeholder="Nom" {required} />
+      <div style="flex: 1">
+        <label for="firstname">Prénom</label>
+        <!-- svelte-ignore a11y-autofocus -->
+        <input type="text" bind:value={fName} {required} autofocus id="firstname" />
+      </div>
+      <div style="flex: 1">
+        <label for="lastname">Nom</label>
+        <input type="text" bind:value={lName} {required} id="lastname" />
+      </div>
     </div>
-    
+
     <div class="flex-input">
-      <select bind:value={classLvl}>
-        <option value={''} selected disabled>-- Niveau --</option>
-        <option value={'Troisième'}>Troisième</option>
-        <option value={'Seconde'}>Seconde</option>
-        <option value={'Première'}>Première</option>
-        <option value={'Terminale'}>Terminale</option>
-      </select>
-      <select bind:value={className}>
-        <option value={''} selected disabled>-- Nom de classe --</option>
-        <option value={'A'}>A</option>
-        <option value={'B'}>B</option>
-        <option value={'C'}>C</option>
-        <option value={'D'}>D</option>
-      </select>
+      <div style="flex: 1">
+        <label for="class-lvl">Niveau</label>
+        <select bind:value={classLvl} id="class-lvl">
+          <option value={''} selected disabled>-- Sélectionner --</option>
+          <option value={'Troisième'}>Troisième</option>
+          <option value={'Seconde'}>Seconde</option>
+          <option value={'Première'}>Première</option>
+          <option value={'Terminale'}>Terminale</option>
+        </select>
+      </div>
+
+      <div style="flex: 1">
+        <label for="class-name">Nom de classe</label>
+        <select bind:value={className} id="class-name">
+          <option value={''} selected disabled>-- Sélectionner --</option>
+          <option value={'A'}>A</option>
+          <option value={'B'}>B</option>
+          <option value={'C'}>C</option>
+          <option value={'D'}>D</option>
+        </select>
+      </div>
     </div>
 
     <div class="actions">
@@ -109,6 +122,5 @@
     flex: 1;
     flex-direction: row;
     gap: 15px;
-    width: calc(50% - 7.5px);
   }
 </style>

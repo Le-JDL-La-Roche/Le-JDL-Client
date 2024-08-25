@@ -52,7 +52,7 @@
     { title: 'Conclusion', content: '' }
   ] as { title: string; content: string }[]
   $: error = '' as string
-  $: showDate = { date: '', time: '' } as { date: string; time: string }
+  // $: showDate = { date: '', time: '' } as { date: string; time: string }
 
   $: if (show) {
     update()
@@ -69,18 +69,19 @@
       thumbnailSrc = ''
       streamId = ''
       podcastId = ''
-      status = null
+      status = -2
       videoId = ''
       category = null
       videoType = null
       author = ''
-      date = type !== 'emissions' ? Date.now() / 1000 : new Date().getTime() / 1000 + ''
+      // date = type !== 'emissions' ? Date.now() / 1000 : new Date().getTime() / 1000 + ''
+      date = Date.now() / 1000
       prompter = [
         { title: 'Introduction', content: '' },
         { title: '', content: '' },
         { title: 'Conclusion', content: '' }
       ]
-      showDate = { date: '', time: '' }
+      // showDate = { date: '', time: '' }
     } else if (action.action === 'edit') {
       required = false
       title = action.element.title
@@ -96,11 +97,11 @@
           { title: '', content: '' },
           { title: 'Conclusion', content: '' }
         ]
-        let d = new Date(+date * 1000).toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' }).split('/')
-        showDate = {
-          date: `${d[2]}-${d[1]}-${d[0]}`,
-          time: new Date(+date * 1000).toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris' })
-        }
+        // let d = new Date(+date * 1000).toLocaleDateString('fr-FR', { timeZone: 'Europe/Paris' }).split('/')
+        // showDate = {
+        //   date: `${d[2]}-${d[1]}-${d[0]}`,
+        //   time: new Date(+date * 1000).toLocaleTimeString('fr-FR', { timeZone: 'Europe/Paris' })
+        // }
       } else if ('videoId' in action.element) {
         content = action.element.description
         videoId = action.element.videoId
@@ -119,16 +120,7 @@
   $: element = {
     data:
       type === 'emissions'
-        ? ({
-            title,
-            description: content,
-            thumbnail,
-            streamId,
-            podcastId,
-            date: Date.parse(showDate.date + ' ' + showDate.time) / 1000 + '',
-            status,
-            prompter
-          } as WebradioShow)
+        ? ({ title, description: content, thumbnail, streamId, podcastId, date, status, prompter } as WebradioShow)
         : type === 'videos'
         ? ({ title, description: content, thumbnail, videoId, category, type: videoType, author, date, status } as Video)
         : ({ title, article: content, thumbnail, thumbnailSrc, category, author, date, status } as Article),
@@ -144,18 +136,22 @@
       ;(await exec(element.data, action.action === 'edit' ? action.element.id || 0 : 0)).subscribe({
         next: async (res) => {
           data.data = res.body.data?.shows || []
-          if (element.data.status === -1) io.emit('launchWaitStream', element.data)
-          else if (element.data.status === -1.5) io.emit('launchWaitRestream', element.data)
-          else if (element.data.status === 0) io.emit('launchLiveStream', element.data)
-          else if (element.data.status === 0.5) io.emit('launchRestream', element.data)
-          else if (element.data.status === -2.5) io.emit('stopLiveStream')
-          else io.emit('stopLiveRestream')
+          element.data.id = res.body.data?.id
+          // if (element.data.status === -1) io.emit('launchWaitStream', element.data)
+          // else if (element.data.status === -1.5) io.emit('launchWaitRestream', element.data)
+          // else if (element.data.status === 0) io.emit('launchLiveStream', element.data)
+          // else if (element.data.status === 0.5) io.emit('launchRestream', element.data)
+          // else if (element.data.status === -2.5) io.emit('stopLiveStream')
+          // else io.emit('stopLiveRestream')
 
-          io.emit('updateShow', element.data)
+          // io.emit('updateShow', element.data)
 
           show = false
           await utils.sleep(300)
-          if (!data.authorizations?.find((a) => a.elementId === (action.action === 'edit' ? action.element.id : 0))) {
+          if (
+            action.action === 'add' ||
+            !data.authorizations?.find((a) => a.elementId === action.element.id && a.elementType === 'show')
+          ) {
             showGenerationModal = true
             authorizationModalElement = element.data
             authorizationModalType = 'emissions'
@@ -175,7 +171,10 @@
 
           show = false
           await utils.sleep(300)
-          if (!data.authorizations?.find((a) => a.elementId === (action.action === 'edit' ? action.element.id : 0))) {
+          if (
+            action.action === 'add' ||
+            !data.authorizations?.find((a) => a.elementId === action.element.id && a.elementType === 'video')
+          ) {
             showGenerationModal = true
             authorizationModalElement = element.data
             authorizationModalType = 'videos'
@@ -195,7 +194,10 @@
 
           show = false
           await utils.sleep(300)
-          if (!data.authorizations?.find((a) => a.elementId === (action.action === 'edit' ? action.element.id : 0))) {
+          if (
+            action.action === 'add' ||
+            !data.authorizations?.find((a) => a.elementId === action.element.id && a.elementType === 'article')
+          ) {
             showGenerationModal = true
             authorizationModalElement = element.data
             authorizationModalType = 'articles'
@@ -235,30 +237,30 @@
         <div class="add">
           <p class="section-title"><strong>{action.action === 'add' ? 'Ajouter du' : 'Modifier le'} contenu</strong></p>
 
+          <label for="title">Titre</label>
           <!-- svelte-ignore a11y-autofocus -->
-          <input type="text" placeholder="Titre" bind:value={title} {required} autofocus />
+          <input type="text" bind:value={title} {required} autofocus id="title" />
+
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          <label>{type === 'articles' ? 'Contenu' : 'Description'}</label>
           <MarkdownEditor bind:value={content} />
-          <label for="thumbnail">Image de miniature (vignette), au format 16:9 :</label>
+          <label for="thumbnail">Image de miniature (vignette), au format 16:9</label>
           <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" on:change={handleThumbnailChange} {required} />
           {#if type === 'emissions'}
-            <label for="date">Date de diffusion :</label>
+            <!-- <label for="date">Date de diffusion :</label>
             <div class="flex-date">
               <input type="date" id="date" bind:value={showDate.date} />
               <input type="time" bind:value={showDate.time} />
-            </div>
-            <input
-              type="text"
-              placeholder="ID du direct sur YouTube (après le ?v=) et sur OBS (streamkey)"
-              bind:value={streamId}
-              {required}
-            />
-            <input
+            </div> -->
+            <label for="stream-id">ID du direct YouTube et OBS</label>
+            <input type="text" placeholder="ID après /watch?v= sur YouTube" bind:value={streamId} {required} id="stream-id" />
+            <!-- <input
               type="text"
               placeholder="ID du podcast sur Ausha (facultatif pour le direct, obligatoire pour publier le podcast)"
               bind:value={podcastId}
               required={required && status === 2}
-            />
-            <select bind:value={status} {required}>
+            /> -->
+            <!-- <select bind:value={status} {required}>
               <option value={null} disabled selected>-- Status de l'émission --</option>
               <option value={-2}>Brouillon, en attente de l'autorisation de diffusion par l'administration</option>
               <option value={-1}>Salle d'attente du direct</option>
@@ -268,21 +270,22 @@
               <option value={0.5}>En rediffusion</option>
               <option value={1}>En attente de validation de publication par l'administration</option>
               <option value={2}>Publié au format podcast</option>
-            </select>
+            </select> -->
 
             <p class="section-title" style="margin-top: 30px"><strong>Modifier le prompteur</strong></p>
-            <button class="secondary" style="margin-top: 0" type="button" on:click={() => (showPrompterModal = true)}
-              ><i class="fa-solid fa-align-left" />&nbsp;&nbsp;Modifier le prompteur</button
-            >
+            <button class="secondary" style="margin-top: 0" type="button" on:click={() => (showPrompterModal = true)}>
+              <i class="fa-solid fa-align-left" />&nbsp;&nbsp;Modifier le prompteur
+            </button>
           {:else}
-            <select bind:value={status} {required}>
+            <!-- <select bind:value={status} {required}>
               <option value={null} disabled selected>-- Status de {type === 'videos' ? 'la video' : "l'article"} --</option>
               <option value={-2}>Brouillon, en attente de l'autorisation de publication par l'administration</option>
               <option value={2}>Publié</option>
-            </select>
+            </select> -->
             {#if type === 'videos'}
-              <select bind:value={category} {required}>
-                <option value={null} disabled selected>-- Rubrique --</option>
+              <label for="category">Rubrique</label>
+              <select bind:value={category} {required} id="category">
+                <option value={null} disabled selected>-- Sélectionner --</option>
                 <option value={'news'}>Actualités</option>
                 <option value={'culture'}>Culture</option>
                 <option value={'sport'}>Sport</option>
@@ -290,22 +293,32 @@
                 <option value={'tech'}>Tech</option>
                 <option value={'laroche'}>La Roche</option>
               </select>
-              <select bind:value={videoType} {required}>
-                <option value={null} disabled selected>-- Type de vidéo --</option>
+
+              <label for="video-type">Type de vidéo</label>
+              <select bind:value={videoType} {required} id="video-type">
+                <option value={null} disabled selected>-- Sélectionner --</option>
                 <option value={'instagram'}>Instagram</option>
                 <option value={'youtube'}>YouTube</option>
               </select>
+
+              <label for="video-id2">ID de la vidéo</label>
               <input
                 type="text"
-                placeholder="ID de la vidéo (après ?v= sur YouTube, après /p/ sur Instagram)"
+                placeholder="ID près /watch?v= sur YouTube, après /p/ sur Instagram"
                 bind:value={videoId}
                 {required}
+                id="video-id2"
               />
-              <input type="text" placeholder="Auteur" bind:value={author} {required} />
+
+              <label for="author">Auteur</label>
+              <input type="text" bind:value={author} {required} id="author" />
             {:else}
-              <input type="text" bind:value={thumbnailSrc} placeholder="Source de la miniature (site)" {required} />
-              <select bind:value={category} {required}>
-                <option value={null} disabled selected>-- Rubrique --</option>
+              <label for="thumbnail-src">Source de la miniature</label>
+              <input type="text" bind:value={thumbnailSrc} placeholder="Ex : AFP" {required} id="thumbnail-src" />
+
+              <label for="category2">Rubrique</label>
+              <select bind:value={category} {required} id="category2">
+                <option value={null} disabled selected>-- Sélectionner --</option>
                 <option value={'news'}>Actualités</option>
                 <option value={'culture'}>Culture</option>
                 <option value={'sport'}>Sport</option>
@@ -313,7 +326,9 @@
                 <option value={'tech'}>Tech</option>
                 <option value={'laroche'}>La Roche</option>
               </select>
-              <input type="text" placeholder="Auteur" bind:value={author} {required} />
+
+              <label for="author2">Auteur</label>
+              <input type="text" bind:value={author} {required} id="author2" />
             {/if}
           {/if}
         </div>
@@ -329,19 +344,21 @@
       <EditPrompterModalContent bind:showPrompterModal bind:prompter />
     {/if}
 
-    <div class="actions">
-      <p class="error">{error}</p>
-      <button class="primary">{action.action === 'add' ? 'Ajouter' : 'Modifier'}</button>
-    </div>
+    {#if !showPrompterModal}
+      <div class="actions">
+        <p class="error">{error}</p>
+        <button class="primary">{action.action === 'add' ? 'Ajouter' : 'Modifier'}</button>
+      </div>
+    {/if}
   </form>
 </ModalTemplate>
 
 <AskGenerateAuthorizationModal
   bind:show={showGenerationModal}
   bind:showAddEditAuthorizationModal
-  bind:authorizationModalType
-  bind:authorizationModalElement
-  bind:authorizationModalAction
+  bind:type={authorizationModalType}
+  bind:element={authorizationModalElement}
+  bind:action={authorizationModalAction}
 />
 
 <style lang="scss">

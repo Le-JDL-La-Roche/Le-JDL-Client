@@ -167,7 +167,7 @@
       <div class="prompter-settings">
         <h4 style="margin: 30px auto 25px 40px">Paramètres du prompteur</h4>
         <div class="top-settings">
-          <label for="size" title="Taille du texte">
+          <label for="size" title="Taille du texte" class="opt">
             Taille :&nbsp;&nbsp;<input
               type="number"
               id="size"
@@ -177,7 +177,7 @@
               on:change={updatePrompterSettings}
             />
           </label>
-          <label for="speed" title="Vitesse du prompteur [Flèche gauche/droite]">
+          <label for="speed" title="Vitesse du prompteur [Flèche gauche/droite]" class="opt">
             Vitesse :&nbsp;&nbsp;<input
               type="number"
               id="speed"

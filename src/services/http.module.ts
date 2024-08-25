@@ -118,6 +118,10 @@ class Http {
   }
 
   private sendInterceptor(url: string): void {
+    
+    if (url.includes('/auth-man') && cookies.get('JWT_MAN')) {
+      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT_MAN') } }
+    }
     if (!url.includes('/auth') && !url.includes('/register')) {
       this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT') } }
     }
@@ -134,7 +138,7 @@ class Http {
         window.location.pathname != '/admin' &&
         window.location.pathname.includes('/admin')
       ) {
-        redirect(300, '/admin');
+        redirect(300, '/admin')
       }
     } else if (response.body.code == 'DB_ERROR') {
       // TODO: Handle DB errors
@@ -143,3 +147,4 @@ class Http {
 }
 
 export default new Http()
+

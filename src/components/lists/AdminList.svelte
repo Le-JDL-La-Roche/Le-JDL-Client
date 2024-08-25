@@ -11,6 +11,8 @@
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
   import io from '$services/api/socket.service'
   import type { Authorization } from '$models/data/authorization.model'
+  import WebradioModal from '$components/modals/WebradioModal.svelte'
+  import AuthorizationRefusalModal from '$components/modals/AuthorizationRefusalModal.svelte'
 
   export let element: WebradioShow | Video | Article
   export let data: PageData
@@ -27,17 +29,30 @@
   const apiVideos = new ApiVideosService()
   const apiArticles = new ApiArticlesService()
 
-  $: disabledShow =
-    data.type === 'emissions'
-      ? data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && (show.status === -1  || show.status === -1.5 || show.status === 0 || show.status === 0.5))
-      : null
-  $: disabled =
-    data.type === 'emissions' &&
-    data.data?.find((show: WebradioShow | Video | Article) => 'streamId' in show && (show.status === -1  || show.status === -1.5 || show.status === 0 || show.status === 0.5))
-      ? true
-      : false
-  $: title = disabled ? 'Une émission est déjà en cours' : undefined
+  let showAuthorizationRefusalModal = false
+
+  // $: disabledShow =
+  //   data.type === 'emissions'
+  //     ? data.data?.find(
+  //         (show: WebradioShow | Video | Article) =>
+  //           'streamId' in show && (show.status === -1 || show.status === -1.5 || show.status === 0 || show.status === 0.5)
+  //       )
+  //     : null
+  $: type = 'streamId' in element ? 'show' : 'type' in element ? 'video' : 'article'
+  $: authorizations = data.authorizations
+    ?.filter((a) => a.elementType === type && a.elementId === element.id)
+    .sort((a, b) => {
+      const priority = [2, -1, -2, 1]
+      return priority.indexOf(a.status) - priority.indexOf(b.status)
+    })
+  $: authorization = authorizations?.[0]
+  $: disabledAskAuthorization = authorization ? false : true
+  $: disabledPublish = authorization && authorization.status === 2 ? false : true
+  $: title = disabledAskAuthorization ? 'Aucune autorisation créée' : disabledPublish ? "En attente de l'autorisation" : undefined
   $: viewersCounter = 0
+  $: disabledAuthorizationButton = (authorization &&
+    typeof authorization.content === 'string' &&
+    JSON.parse(authorization.content)?.title) as boolean
 
   $: if ('streamId' in element && (element.status === -1 || element.status === 0)) {
     io.emit('getViewers')
@@ -47,6 +62,7 @@
     viewersCounter = viewers
   })
 
+  /*
   async function startWaitStream(show: WebradioShow | Video | Article) {
     if (
       'streamId' in show &&
@@ -62,11 +78,13 @@
       })
     }
   }
-  
+
   async function startWaitRestream(show: WebradioShow | Video | Article) {
     if (
       'streamId' in show &&
-      confirm(`Êtes-vous sûr de vouloir commencer la rediffusion de l'émission "${show.title}" ?\n(La rediffusion sera en attente de démarrage.)`)
+      confirm(
+        `Êtes-vous sûr de vouloir commencer la rediffusion de l'émission "${show.title}" ?\n(La rediffusion sera en attente de démarrage.)`
+      )
     ) {
       ;(await apiWebradio.putShow({ status: -1.5 }, show.id || 0)).subscribe({
         next: (res) => {
@@ -140,18 +158,37 @@
         error: () => {}
       })
     }
+  } */
+
+  async function generateAuthorization(_: any, show = true) {
+    authorizationModalElement = element
+    if ('streamId' in element) authorizationModalType = 'emissions'
+    else if ('type' in element) authorizationModalType = 'videos'
+    else if ('article' in element) authorizationModalType = 'articles'
+    if (authorization) authorizationModalAction = { action: 'edit', authorization }
+    else authorizationModalAction = { action: 'add' }
+    showAddEditAuthorizationModal = show
   }
 
-  async function publishElement(element: WebradioShow | Video | Article) {
-    if ('type' in element) {
-      ;(await apiVideos.putVideo({ status: 2 }, element.id || 0)).subscribe({
+  async function askAuthorization(element: WebradioShow | Video | Article) {}
+
+  async function publishElement() {
+    if ('streamId' in element) {
+      ;(await apiWebradio.putShow({ status: 2 }, element.id || 0)).subscribe({
+        next: (res) => {
+          data.data = res.body.data?.shows || []
+        },
+        error: () => {}
+      })
+    } else if ('type' in element) {
+      ;(await apiVideos.putVideo({ status: 2, date: Math.round(Date.now() / 1000) + '' }, element.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.videos || []
         },
         error: () => {}
       })
     } else if ('article' in element) {
-      ;(await apiArticles.putArticle({ status: 2 }, element.id || 0)).subscribe({
+      ;(await apiArticles.putArticle({ status: 2, date: Math.round(Date.now() / 1000) + '' }, element.id || 0)).subscribe({
         next: (res) => {
           data.data = res.body.data?.articles || []
         },
@@ -160,7 +197,7 @@
     }
   }
 
-  async function deleteElement(element: WebradioShow | Video | Article) {
+  async function deleteElement() {
     if (!confirm(`Êtes-vous sûr de vouloir supprimer "${element.title}" ?`)) {
       return
     }
@@ -195,21 +232,24 @@
     <p class="info">
       <span class="optional">
         {#if 'streamId' in element}
-          {element.status === -2
+          {element.status === -2 && (!authorization || authorization.status === -2)
             ? 'Brouillon'
-            : element.status === -2.5
-            ? 'En attente (rediff.)'
-            : element.status === -1
-            ? 'Salle d\'attente'
-            : element.status === -1.5
-            ? 'Salle d\'attente (rediff.)'
-            : element.status === 0
-            ? 'En direct'
-            : element.status === 0.5
-            ? 'En direct (rediff.)'
-            : element.status === 1
-            ? 'En vérification'
-            : 'Publié'}&nbsp;&nbsp;•&nbsp;
+            : // : element.status === -2.5
+            // ? 'En attente (rediff.)'
+            // : element.status === -1
+            // ? 'Salle d\'attente'
+            element.status === -2 && authorization
+            ? "En attente"
+            : element.status === 2
+            // : element.status === -1.5
+              // ? 'Salle d\'attente (rediff.)'
+              // : element.status === 0
+              // ? 'En direct'
+              // : element.status === 0.5
+              // ? 'En direct (rediff.)'
+              // : element.status === 1
+              // ? 'En vérification'
+              ? 'Publié' : 'Erreur'}&nbsp;&nbsp;•&nbsp;
         {:else if 'category' in element}
           {element.status === -2 ? 'Brouillon' : 'Publié'}&nbsp;&nbsp;• &nbsp;{utils.categoryToString(
             element.category
@@ -246,31 +286,18 @@
       </button>
       <button
         class="secondary"
-        on:click={() => {
-          let a = (data.authorizations || []).find(
-            (a) =>
-              (a.elementType ===
-                (authorizationModalType === 'emissions' ? 'show' : authorizationModalType === 'videos' ? 'video' : 'article') &&
-                a.elementId === element.id) ||
-              0
-          )
-          authorizationModalElement = element
-          if ('streamId' in element) authorizationModalType = 'emissions'
-          else if ('type' in element) authorizationModalType = 'videos'
-          else if ('article' in element) authorizationModalType = 'articles'
-          if (a) authorizationModalAction = { action: 'edit', authorization: a }
-          else authorizationModalAction = { action: 'add' }
-          showAddEditAuthorizationModal = true
-        }}
+        disabled={disabledAuthorizationButton}
+        title={disabledAuthorizationButton
+          ? "L'autorisation précédemment créée est incompatible\navec le système d'autorisation numérique"
+          : ''}
+        on:click={generateAuthorization}
       >
         <i class="fa-solid fa-file-circle-check" />
       </button>
-      <button class="secondary" on:click={() => deleteElement(element)}><i class="fa-solid fa-trash" /></button>
+      <button class="secondary" on:click={deleteElement}><i class="fa-solid fa-trash" /></button>
       {#if 'streamId' in element}
         <a
-          href={`https://radio.le-jdl-laroche.cf/download/${element.streamId}_vid_${utils.timestampToDate(
-            +element.date
-          )}.flv`}
+          href={`https://radio.le-jdl-laroche.cf/download/${element.streamId}_vid_${utils.timestampToDate(+element.date)}.flv`}
           class="not-a"
           target="_blank"
         >
@@ -286,7 +313,7 @@
         </a>
       {/if}
     </div>
-    {#if 'streamId' in element}
+    <!-- {#if 'streamId' in element}
       {#if element.status === -2}
         <button class="secondary grey" on:click={() => startWaitStream(element)} {disabled} {title}>
           <i class="fa-solid fa-video" />Commencer
@@ -341,9 +368,39 @@
       <button class="secondary green" on:click={() => publishElement(element)}>
         <i class="fa-solid fa-check" />Publier
       </button>
+    {/if} -->
+    {#if element.status === -2}
+      {#if !authorization || authorization.status === -2}
+        <button class="secondary grey" on:click={() => askAuthorization(element)} disabled={disabledAskAuthorization} {title}>
+          <i class="fa-solid fa-paper-plane" />Autorisation
+        </button>
+      {:else if authorization && authorization.status === 1}
+        <button
+          class="secondary red"
+          on:click={(e) => {
+            generateAuthorization(e, false)
+            showAuthorizationRefusalModal = true
+          }}
+          title="Plus d'infos..."
+        >
+          <i class="fa-solid fa-exclamation-circle" />Pub. refusée
+        </button>
+      {:else}
+        <button class="secondary green" on:click={publishElement} disabled={disabledPublish} {title}>
+          <i class="fa-solid fa-check" />Publier
+        </button>
+      {/if}
     {/if}
   </div>
 </div>
+
+<AuthorizationRefusalModal
+  bind:show={showAuthorizationRefusalModal}
+  bind:showAddEditAuthorizationModal
+  bind:element
+  bind:authorization
+  bind:elementType={authorizationModalType}
+/>
 
 <style lang="scss">
   div.element {

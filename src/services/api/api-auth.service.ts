@@ -7,11 +7,20 @@ import { api } from '$services/store'
 export default class ApiAuthService {
   async getAuth(name: string, password: string) {
     const req: RequestInit = {
-      headers: {
-        Authorization: 'Basic ' + Buffer.from(name + ':' + password).toString('base64')
-      }
+      headers: { Authorization: 'Basic ' + Buffer.from(name + ':' + password).toString('base64') }
     }
     return await http.get<DataHttpResponse<{ jwt: string }>>(`${api}/auth`, req)
+  }
+
+  async getAuthMan(name?: string, password?: string) {
+    const req =
+      name && password
+        ? ({
+            headers: { Authorization: 'Basic ' + Buffer.from(name + ':' + password).toString('base64') }
+          } as RequestInit)
+        : undefined
+
+    return await http.get<DataHttpResponse<{ jwt: string }>>(`${api}/auth-manager`, req)
   }
 
   async getVerify() {
@@ -22,3 +31,4 @@ export default class ApiAuthService {
     return await http.delete<DefaultHttpResponse>(`${api}/logout`)
   }
 }
+

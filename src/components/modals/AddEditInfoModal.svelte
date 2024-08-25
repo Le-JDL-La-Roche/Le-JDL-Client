@@ -31,8 +31,8 @@
     error = ''
     if (action.action === 'add') {
       required = true
-      html = '<Contenu HTML & Markdown ; utiliser la balise br pour aller à la ligne>'
-      css = '<Style CSS>'
+      html = ''
+      css = ''
       enabled = false
     } else {
       required = false
@@ -83,7 +83,12 @@
 
     <div class="add-modal">
       <div class="add">
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label>Contenu HTML & Markdown (utiliser la balise &lt;br&gt; pour aller à la ligne)</label>
         <MarkdownEditor bind:value={html} lite={1} code={true} />
+
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label>Mise en forme CSS</label>
         <MarkdownEditor bind:value={css} lite={3} code={true} />
         <small style="position: relative; top: -20px">
           <i><b>Attention </b> à la compatibilité ordinateur/téléphone !</i>

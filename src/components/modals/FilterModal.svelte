@@ -34,22 +34,22 @@
     {/if}
 
     <p class="section-title">Filtrer :</p>
-    <label for="show-videos">
+    <label for="show-videos" class="opt">
       <input type="checkbox" checked id="show-videos" disabled />&nbsp;&nbsp;Afficher les vidéos
     </label>
-    <label for="show-articles">
+    <label for="show-articles" class="opt">
       <input type="checkbox" bind:checked={showArticles} id="show-articles" />&nbsp;&nbsp;Afficher les articles
     </label>
 
     <p class="section-title">Trier :</p>
-    <label for="order-by-date">
+    <label for="order-by-date" class="opt">
       <input type="radio" bind:group={orderBy} name="order" id="order-by-date" value="date" />&nbsp;&nbsp;Ordonner par date
     </label>
-    <label for="order-by-type">
+    <label for="order-by-type" class="opt"> 
       <input type="radio" bind:group={orderBy} name="order" id="order-by-type" value="type" />&nbsp;&nbsp;Ordonner par type
       (vidéos/articles)
     </label>
-    <label for="order-by-title">
+    <label for="order-by-title" class="opt">
       <input type="radio" bind:group={orderBy} name="order" id="order-by-title" value="title" />&nbsp;&nbsp;Ordonner par titre
       (A-Z)
     </label>

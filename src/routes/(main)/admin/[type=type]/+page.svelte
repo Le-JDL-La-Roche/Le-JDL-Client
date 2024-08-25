@@ -7,6 +7,7 @@
   import type { Video } from '$models/features/video.model'
   import type { WebradioShow } from '$models/features/webradio-show.model'
   import type { Authorization } from '$models/data/authorization.model'
+  import AuthorizationRefusalModal from '$components/modals/AuthorizationRefusalModal.svelte'
 
   export let data: PageData
 
@@ -25,7 +26,7 @@
 
 <svelte:head>
   <title>
-    {data.type === 'emissions' ? 'Emissions de radio' : data.type === 'videos' ? 'Vidéos' : 'Articles'} - Administration • Le JDL -
+    {data.type === 'emissions' ? 'Emissions' : data.type === 'videos' ? 'Vidéos' : 'Articles'} - Administration • Le JDL -
     La Roche
   </title>
   <meta name="robots" content="noindex" />
@@ -34,7 +35,7 @@
 <h2>
   <a href="/admin">Espace administration</a>&nbsp;&nbsp;<i class="fa-solid fa-caret-right" />&nbsp;
   {#if data.type === 'emissions'}
-    Gérer les émissions de radio
+    Gérer les émissions
   {:else if data.type === 'videos'}
     Gérer les vidéos
   {:else}

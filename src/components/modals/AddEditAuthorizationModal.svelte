@@ -11,11 +11,11 @@
   } from '$models/data/authorization.model'
   import ApiAuthorizationsService from '$services/api/api-authorizations.service'
   import type { PageData } from '../../routes/(main)/admin/[type=type]/$types'
-  import PageAuthorization from '$components/others/PageAuthorization.svelte'
   import PageMajorGuestAuthorization from '$components/others/PageMajorGuestAuthorization.svelte'
   import PageMinorGuestAuthorization from '$components/others/PageMinorGuestAuthorization.svelte'
   import { printAuthorization$ } from '$services/store'
   import utils from '$services/utils'
+  import AuthorizationForm from '$components/others/AuthorizationForm.svelte'
 
   export let data: PageData
   export let show: boolean
@@ -26,7 +26,15 @@
   const apiAuthorizations = new ApiAuthorizationsService()
 
   $: elementId = null as number | null
+  $: elementType = null as 'show' | 'video' | 'article' | 'guest' | null
   $: content = '' as any
+  $: submitDate = null as Date | string | null
+  $: status = -2 as number
+  $: manager = '' as string
+  $: comments = '' as string
+  $: responseDate = null as Date | string | null
+  $: signature = '' as string
+
   $: error = '' as string
   $: guestId = false as number | false
   $: guestType = false as 'in' | 'out' | false
@@ -39,12 +47,19 @@
     error = ''
     guestId = false
     guestType = false
+
+    elementType = type === 'emissions' ? 'show' : type === 'videos' ? 'video' : type === 'articles' ? 'article' : 'guest'
+    submitDate = Date.now() / 1000 + ''
+    status = -2
+    manager = ''
+    comments = ''
+    responseDate = null
+    signature = ''
     if (action.action === 'add') {
       elementId = element.id || 0
       if (type === 'emissions') {
         element = element as WebradioShow
         content = {
-          title: element.title,
           subject: '',
           date: element.date,
           estimatedDuration: '40 mn',
@@ -85,24 +100,22 @@
               media: '[le site Web, le compte Instagram, la chaîne YouTube, le compte LinkedIn et les plateformes de streaming]'
             }
           ],
-          synopsis: element.description
+          synopsis: element.description,
+          link: `https://youtube.com/watch?v=${element.streamId}`
         } as WebradioAuthorization
       } else if (type === 'videos') {
         element = element as Video
         content = {
-          title: element.title,
           subject: '',
-          medium: '',
-          author: element.author,
           duration: '1 mn',
           inGuests: [],
           outGuests: [],
-          synopsis: element.description
+          synopsis: element.description,
+          link: element.type === 'youtube' ? `https://youtube.com/watch?v=${element.videoId}` : ''
         } as VideoAuthorization
       } else if (type === 'articles') {
         element = element as Article
         content = {
-          title: element.title,
           subject: '',
           author: element.author,
           synopsis: ''
@@ -110,16 +123,31 @@
       }
     } else if (action.action === 'edit') {
       elementId = action.authorization.elementId
-      if (type === 'emissions') content = JSON.parse(action.authorization.content as string) as WebradioAuthorization
-      else if (type === 'videos') content = JSON.parse(action.authorization.content as string) as VideoAuthorization
-      else if (type === 'articles') content = JSON.parse(action.authorization.content as string) as ArticleAuthorization
+      content =
+        type === 'emissions'
+          ? (JSON.parse(action.authorization.content as string) as WebradioAuthorization)
+          : type === 'videos'
+          ? (JSON.parse(action.authorization.content as string) as VideoAuthorization)
+          : (JSON.parse(action.authorization.content as string) as ArticleAuthorization)
+      submitDate = Date.now() / 1000 + ''
+      status = action.authorization.status
+      manager = action.authorization.manager || ''
+      comments = action.authorization.comments || ''
+      responseDate = action.authorization.responseDate || null
+      signature = action.authorization.signature || ''
     }
   }
 
   $: authorization = {
-    elementId: elementId || 0,
-    elementType: type === 'emissions' ? 'show' : type === 'videos' ? 'video' : type === 'articles' ? 'article' : 'guest',
-    content: content
+    elementId,
+    elementType,
+    content,
+    submitDate,
+    status,
+    manager,
+    comments,
+    responseDate,
+    signature
   } as Authorization
 
   async function print() {
@@ -129,10 +157,9 @@
     printAuthorization$.set(false)
   }
 
-  async function submit() {
-    let exec
+  async function save() {
+    const exec = action.action === 'add' ? apiAuthorizations.postAuthorization : apiAuthorizations.putAuthorization
     authorization.content = JSON.stringify(authorization.content)
-    exec = action.action === 'add' ? apiAuthorizations.postAuthorization : apiAuthorizations.putAuthorization
     ;(await exec(authorization, action.action === 'edit' ? action.authorization.id || 0 : 0)).subscribe({
       next: (res) => {
         data.authorizations = res.body.data?.authorizations || []
@@ -143,10 +170,17 @@
       }
     })
   }
+
+  async function submit() {
+    if (status != -2 && status != 1) return
+    if (!confirm('Êtes-vous sûr de vouloir envoyer cette autorisation ? Vous ne pourrez plus la modifier.')) return
+    authorization.status = -1
+    await save()
+  }
 </script>
 
 <svelte:head>
-  <meta name="author" content="Le JDL - La Rochefoucauld">
+  <meta name="author" content="Le JDL - La Rochefoucauld" />
 </svelte:head>
 
 <ModalTemplate size={'l'} bind:show>
@@ -164,7 +198,7 @@
 
     <div class="pages">
       {#if guestId === false}
-        <PageAuthorization bind:type bind:authorization bind:guestId bind:guestType />
+        <AuthorizationForm bind:type bind:authorization bind:element bind:guestId bind:guestType />
       {:else if (guestType === 'in' && typeof authorization.content !== 'string' && 'inGuests' in authorization.content && authorization.content.inGuests[guestId].authorizationType === 'M') || (guestType === 'out' && typeof authorization.content !== 'string' && 'outGuests' in authorization.content && authorization.content.outGuests[guestId].authorizationType === 'M')}
         <PageMajorGuestAuthorization bind:guestId bind:guestType bind:authorization />
       {:else if (guestType === 'in' && typeof authorization.content !== 'string' && 'inGuests' in authorization.content && authorization.content.inGuests[guestId].authorizationType === 'm') || (guestType === 'out' && typeof authorization.content !== 'string' && 'outGuests' in authorization.content && authorization.content.outGuests[guestId].authorizationType === 'm')}
@@ -175,8 +209,12 @@
         <p class="error">{error}</p>
         <div class="flex">
           {#if guestId === false}
-            <button class="secondary" on:click={print} type="button">Imprimer</button>
-            <button class="primary">{action.action === 'add' ? 'Ajouter' : 'Modifier'}</button>
+          {#if authorization.status === -2 || authorization.status === 1}
+            <button class="secondary" on:click={save} type="button">Enregistrer en tant que brouillon</button>
+            <button class="primary">Enregistrer et envoyer</button>
+          {:else}
+            <button class="secondary" on:click={() => show = false} type="button">Fermer</button>
+          {/if}
           {:else}
             <button
               class="secondary"
@@ -186,9 +224,9 @@
                 guestType = false
               }}
               type="button"
-              style="width: 100px"
+              style="width: 200px"
             >
-              <i class="fa-solid fa-caret-left" />&nbsp;&nbsp;Retour
+              <i class="fa-solid fa-caret-left" />&nbsp;&nbsp;Enregistrer & Retour
             </button>
             <button class="secondary" on:click={print} type="button">Imprimer</button>
           {/if}
