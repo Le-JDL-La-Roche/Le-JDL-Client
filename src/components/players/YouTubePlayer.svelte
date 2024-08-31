@@ -20,11 +20,9 @@
         events: {
           onStateChange: (event) => {
             play = event.data == YT.PlayerState.PLAYING
-            console.log(play)
           }
         }
       })
-      console.log('player', player)
     }
 
     if (window.YT) {

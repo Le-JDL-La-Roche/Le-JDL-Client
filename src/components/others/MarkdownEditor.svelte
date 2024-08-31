@@ -8,7 +8,7 @@
   /**
    * Lite mode is a mode where only the basic formatting options are available.
    *
-   * `0` *default* — Full mode
+   * `0` Full mode *(default)*
    *
    * `1` Remove header styles
    *
@@ -20,9 +20,16 @@
   /**
    * If the editor is in code mode, the text will be displayed in a monospace font.
    * 
-   * `false` *default*
+   * (`false` *by default*)
    */
   export let code = false
+
+  /**
+   * If the editor is disabled, the user will not be able to edit the text.
+   *
+   * (`false` *by default*)
+   */
+  export let disabled = false
 
   let editor: HTMLDivElement
   let selection: Selection,
@@ -274,13 +281,14 @@
           title="Chapô"
           on:click={() => globalFormat('###', true)}
           style="border-top-left-radius: 5px"
+          {disabled}
         >
           <i class="fa-solid fa-grip-lines" />
         </button>
       </div>
 
       <div class="section">
-        <button class="secondary" type="button" title="Titre de partie" on:click={() => globalFormat('#')}>
+        <button class="secondary" type="button" title="Titre de partie" on:click={() => globalFormat('#')} {disabled}>
           <i class="fa-solid fa-a" />
         </button>
       </div>
@@ -294,16 +302,17 @@
           title="Gras"
           on:click={() => format('**')}
           style={lite ? 'border-top-left-radius: 5px' : ''}
+          {disabled}
         >
           <i class="fa-solid fa-bold" />
         </button>
-        <button class="secondary" type="button" title="Italique" on:click={() => format('*')}>
+        <button class="secondary" type="button" title="Italique" on:click={() => format('*')} {disabled}>
           <i class="fa-solid fa-italic" />
         </button>
-        <button class="secondary" type="button" title="Souligné" on:click={() => format('__')}>
+        <button class="secondary" type="button" title="Souligné" on:click={() => format('__')} {disabled}>
           <i class="fa-solid fa-underline" />
         </button>
-        <button class="secondary" type="button" title="Barré" on:click={() => format('~~')}>
+        <button class="secondary" type="button" title="Barré" on:click={() => format('~~')} {disabled}>
           <i class="fa-solid fa-strikethrough" />
         </button>
       </div>
@@ -311,19 +320,19 @@
 
     {#if lite < 2}
       <div class="section">
-        <button class="secondary" type="button" title="Lien" on:click={() => insert('link')}>
+        <button class="secondary" type="button" title="Lien" on:click={() => insert('link')} {disabled}>
           <i class="fa-solid fa-link" />
         </button>
-        <button class="secondary" type="button" title="Lien externe" on:click={() => insert('link_')}>
+        <button class="secondary" type="button" title="Lien externe" on:click={() => insert('link_')} {disabled}>
           <i class="fa-solid fa-arrow-up-right-from-square" />
         </button>
-        <button class="secondary" type="button" title="Citation" on:click={() => globalFormat('>', true, '<')}>
+        <button class="secondary" type="button" title="Citation" on:click={() => globalFormat('>', true, '<')} {disabled}>
           <i class="fa-solid fa-quote-left" />
         </button>
-        <button class="secondary" type="button" title="Image" on:click={() => insert('image')}>
+        <button class="secondary" type="button" title="Image" on:click={() => insert('image')} {disabled}>
           <i class="fa-solid fa-image" />
         </button>
-        <button class="secondary" type="button" title="Vidéo YouTube" on:click={() => insert('youtube')}>
+        <button class="secondary" type="button" title="Vidéo YouTube" on:click={() => insert('youtube')} {disabled}>
           <i class="fa-brands fa-youtube" />
         </button>
       </div>
@@ -332,8 +341,9 @@
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     class="editor"
+    class:disabled
     style={code ? 'font-family: monospace' : ''}
-    contenteditable="true"
+    contenteditable={!disabled}
     on:change={preview}
     on:keyup={preview}
     bind:this={editor}
@@ -364,6 +374,14 @@
 
   div.editor {
     border-radius: 0 0 3px 3px;
+
+    &.disabled {
+      cursor: not-allowed;
+
+      &:hover {
+        border: 1px solid var(--mid-gray-color) !important;
+      }
+    }
   }
 
   @media screen and (min-width: 850px) {

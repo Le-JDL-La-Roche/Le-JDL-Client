@@ -26,7 +26,7 @@ export default class ApiWebradioService {
     for (const [key, value] of Object.entries(show)) {
       body.set(key, value)
     }
-    return await http.post<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows`, body)
+    return await http.post<DataHttpResponse<{ shows: WebradioShow[]; id: number }>>(`${api}/webradio/shows`, body)
   }
 
   async putShow(show: Partial<WebradioShow>, id: number | string) {
@@ -38,7 +38,7 @@ export default class ApiWebradioService {
         body.set(key, value as any)
       }
     }
-    return await http.put<DataHttpResponse<{ shows: WebradioShow[] }>>(`${api}/webradio/shows/${id}`, body)
+    return await http.put<DataHttpResponse<{ shows: WebradioShow[]; id: number }>>(`${api}/webradio/shows/${id}`, body)
   }
 
   async deleteShow(id: number | string) {
@@ -64,3 +64,4 @@ export default class ApiWebradioService {
     return await http.get<any>(`https://radio.le-jdl-laroche.cf/hls/${streamId}.m3u8`, req)
   }
 }
+

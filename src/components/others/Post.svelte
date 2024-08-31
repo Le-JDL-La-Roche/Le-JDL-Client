@@ -53,8 +53,8 @@
         <InstagramVideo videoId={data.data.videoId} />
       </figure>
     {/if}
-  {:else if 'podcastId' in data.data}
-    {#if !data.data.id || data.data.id > 27}
+  {:else if 'streamId' in data.data}
+    {#if data.data.streamId && data.data.podcastId}
       <p style="font-size: 18px">Retrouvez l'émission en vidéo ...</p>
       <figure class="video" class:preview>
         <iframe
@@ -67,13 +67,27 @@
           allowfullscreen
         />
       </figure>
-    {/if}
-    {#if !data.data.id || data.data.id > 27}
       <p style="font-size: 18px">ou en podcast !</p>
+      <figure class="podcast">
+        <AushaPlayer podcastId={data.data.podcastId} />
+      </figure>
+    {:else if data.data.podcastId}
+      <figure class="podcast">
+        <AushaPlayer podcastId={data.data.podcastId} />
+      </figure>
+    {:else}
+      <figure class="video" class:preview>
+        <iframe
+          width="100%"
+          height="auto"
+          src={`https://www.youtube.com/embed/${data.data.streamId}`}
+          frameborder="0"
+          title="YouTube video player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        />
+      </figure>
     {/if}
-    <figure class="podcast">
-      <AushaPlayer podcastId={data.data.podcastId} />
-    </figure>
   {/if}
 
   <p class="article">

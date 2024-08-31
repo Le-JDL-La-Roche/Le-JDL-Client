@@ -1,5 +1,8 @@
 # Mises à jour du site Web
 
+### 1<sup>er</sup> septembre 2024 `v2.4.0`
+- Espaces administrateur & encadrants (signatures numériques)
+
 ### 12 avril 2024 `v2.3.0`
 - Informations à la Une
 - Espaces administrateur

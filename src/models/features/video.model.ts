@@ -8,5 +8,10 @@ export interface Video {
   category: 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche' | ''
   author: string
   date: string
+  /**
+   * `-2` Draft/Waiting for authorization
+   * 
+   * ` 2` Published
+   */
   status: -2 | 2
 }

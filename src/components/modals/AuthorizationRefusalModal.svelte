@@ -10,8 +10,18 @@
 
   export let showAddEditAuthorizationModal: boolean
   export let element: WebradioShow | Video | Article
-  export let type: 'emissions' | 'videos' | 'articles'
-  export let action: { action: 'add' } | { action: 'edit'; authorization: Authorization }
+  export let authorization: Authorization | undefined
+  export let elementType: 'emissions' | 'videos' | 'articles'
+
+  $: date = null as string | null
+
+  $: if (show && authorization && authorization.responseDate) {
+    date = new Date(+authorization.responseDate! * 1000).toLocaleDateString('fr-FR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+  }
 
   async function generate() {
     show = false
@@ -21,16 +31,20 @@
 </script>
 
 <ModalTemplate size={'s'} bind:show>
-  <h3>Générer une autorisation</h3>
+  <h3>Publication refusée</h3>
   <p>
-    Souhaitez-vous générer une autorisation de diffusion et/ou de publication pour {type === 'emissions'
+    La publication de {elementType === 'emissions'
       ? "l'émission"
-      : type === 'videos'
+      : elementType === 'videos'
       ? 'la vidéo'
-      : "l'article"} <i>{element.title} {element.id}</i> ?
+      : "l'article"} <i>{element.title}</i> a été refusée par {authorization?.manager} le {date}.
+  </p>
+
+  <p>
+    <b>Motif :</b> {authorization?.comments}
   </p>
   <div class="actions">
-    <button class="primary" on:click={generate}>Générer</button>
+    <button class="primary" on:click={generate}>Modifier la demande d'autorisation</button>
   </div>
 </ModalTemplate>
 

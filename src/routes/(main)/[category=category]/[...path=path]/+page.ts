@@ -34,11 +34,6 @@ export const load: PageLoad = async ({ params }) => {
         error(404, 'Non trouvée');
       }
     })
-    if (data && 'streamId' in data) {
-      if (!data.podcastId) {
-        error(404, 'Non trouvée');
-      }
-    }
   } else if (type === 'video') {
     ;(await apiVideos.getVideo(+slug.split('--')[0])).subscribe({
       next: (res) => {

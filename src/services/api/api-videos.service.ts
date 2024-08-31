@@ -21,7 +21,7 @@ export default class ApiVideosService {
     for (const [key, value] of Object.entries(video)) {
       body.set(key, value)
     }
-    return await http.post<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos`, body)
+    return await http.post<DataHttpResponse<{ videos: Video[]; id: number }>>(`${api}/videos`, body)
   }
 
   async putVideo(video: Partial<Video>, id: number | string) {
@@ -33,10 +33,11 @@ export default class ApiVideosService {
         body.set(key, value)
       }
     }
-    return await http.put<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos/${id}`, body)
+    return await http.put<DataHttpResponse<{ videos: Video[]; id: number }>>(`${api}/videos/${id}`, body)
   }
 
   async deleteVideo(id: number | string) {
     return await http.delete<DataHttpResponse<{ videos: Video[] }>>(`${api}/videos/${id}`)
   }
 }
+

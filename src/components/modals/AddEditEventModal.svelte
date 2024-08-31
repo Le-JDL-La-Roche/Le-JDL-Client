@@ -93,25 +93,30 @@
       </h3>
     {/if}
 
+    <label for="title">Titre</label>
     <!-- svelte-ignore a11y-autofocus -->
-    <input type="text" bind:value={title} placeholder="Titre" {required} autofocus />
+    <input type="text" bind:value={title} {required} autofocus id="title" />
+
+    <!-- svelte-ignore a11y-label-has-associated-control -->
+    <label>Description</label>
     <MarkdownEditor bind:value={content} lite={1} />
-    <label for="date">Date de l'évènement :</label>
+
+    <label for="date">Date de l'évènement</label>
     <div class="flex-date">
       <input type="date" id="date" bind:value={eventDate.date} />
       <input type="time" bind:value={eventDate.time} />
     </div>
 
-    <label for="color">Couleur :</label>
+    <label for="color">Couleur</label>
     <div class="flex-input">
-      <input type="color" id="color" bind:value={color}>
-      <button type="button" class="secondary jdl-red" on:click={() => color = '#c31718'}>Rouge</button>
-      <button type="button" class="secondary jdl-blue" on:click={() => color = '#161f63'}>Bleu</button>
-      <button type="button" class="secondary jdl-black" on:click={() => color = '#000000'}>Noir</button>
+      <input type="color" id="color" bind:value={color} />
+      <button type="button" class="secondary jdl-red" on:click={() => (color = '#c31718')}>Rouge</button>
+      <button type="button" class="secondary jdl-blue" on:click={() => (color = '#161f63')}>Bleu</button>
+      <button type="button" class="secondary jdl-black" on:click={() => (color = '#000000')}>Noir</button>
     </div>
 
-    <label for="thumbnail">Image :</label>
-        <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" on:change={handleThumbnailChange} {required} />
+    <label for="thumbnail">Image</label>
+    <input type="file" accept=".png, .jpg, .jpeg" id="thumbnail" on:change={handleThumbnailChange} {required} />
 
     <div class="actions">
       <p class="error">{error}</p>
@@ -139,7 +144,7 @@
     width: calc(50% - 7.5px);
   }
 
-  input[type=color] {
+  input[type='color'] {
     min-width: 100px;
     height: 30px;
     border-radius: 3px;
@@ -148,25 +153,26 @@
   }
 
   button.secondary {
-    &.jdl-red, &.jdl-blue, &.jdl-black {
+    &.jdl-red,
+    &.jdl-blue,
+    &.jdl-black {
       margin-top: 0;
       color: white;
       margin-bottom: 20px;
-      
+
       &:hover:active {
         color: black;
       }
     }
 
-
     &.jdl-red {
       background-color: var(--primary-red-color);
     }
-    
+
     &.jdl-blue {
       background-color: var(--blue-color);
     }
-    
+
     &.jdl-black {
       background-color: black;
     }

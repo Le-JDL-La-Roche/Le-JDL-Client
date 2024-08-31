@@ -119,7 +119,7 @@
     font-size: 11pt !important;
     border: none !important;
     padding: 0 !important;
-    color: black !important;
+    color: var(--primary-red-color) !important;
     font-family: Bahnschrift !important;
     display: inline !important;
   }
@@ -139,6 +139,10 @@
       padding: 0;
       border: none !important;
       height: 29.685cm !important;
+    }
+
+    span.s {
+      color: black !important;
     }
 
     :global {

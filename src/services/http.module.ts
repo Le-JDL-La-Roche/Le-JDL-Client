@@ -6,9 +6,7 @@ import CookiesService from './cookies.service'
 const cookies = new CookiesService()
 
 class Http {
-  private headers: Record<string, string> = {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
+  private headers: Record<string, string> = {}
 
   async get<T extends DefaultHttpResponse>(url: string, req?: RequestInit) {
     return this.sendRequest<T>(url, 'GET', req)
@@ -49,6 +47,8 @@ class Http {
   }
 
   private setRequest(url: string, method: 'GET' | 'POST' | 'PUT' | 'DELETE', req?: RequestInit, body?: any): RequestInit {
+    this.headers = {}
+
     this.sendInterceptor(url)
 
     let body_: any
@@ -118,7 +118,11 @@ class Http {
   }
 
   private sendInterceptor(url: string): void {
-    if (!url.includes('/auth') && !url.includes('/register')) {
+    if (this.headers['Authorization'] && this.headers['Authorization'].length > 7) {
+      return
+    } else if (cookies.get('JWT_MAN')) {
+      this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT_MAN') } }
+    } else if (url.includes('/authorizations') || (!url.includes('/auth') && !url.includes('/register'))) {
       this.headers = { ...this.headers, ...{ Authorization: 'Bearer ' + cookies.get('JWT') } }
     }
   }
@@ -134,7 +138,7 @@ class Http {
         window.location.pathname != '/admin' &&
         window.location.pathname.includes('/admin')
       ) {
-        redirect(300, '/admin');
+        redirect(300, '/admin')
       }
     } else if (response.body.code == 'DB_ERROR') {
       // TODO: Handle DB errors

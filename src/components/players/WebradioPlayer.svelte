@@ -142,7 +142,6 @@
   bind:mute
   bind:volume
   bind:showQuestions
-  bind:questions
 />
 
 <!-- svelte-ignore a11y-media-has-caption -->

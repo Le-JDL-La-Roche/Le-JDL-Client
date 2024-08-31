@@ -2,15 +2,48 @@
   import type { PageData } from './$types'
   import ApiAuthService from '$services/api/api-auth.service'
   import AdminLoginForm from '$components/others/AdminLoginForm.svelte'
-  import { scale } from 'svelte/transition'
   import { popIn, popOut } from '$services/transitions'
   import { invalidateAll } from '$app/navigation'
   import CookiesService from '$services/cookies.service'
+  import ApiEnvService from '$services/api/api-env.service'
+  import utils from '$services/utils'
 
   export let data: PageData
 
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
+  const apiEnv = new ApiEnvService()
+
+  let button = 'Connexion'
+  let error = false
+
+  async function submit(username: string, password: string) {
+    button = '...'
+    ;(await apiAuth.getAuth(username, password)).subscribe({
+      next: async (res) => {
+        cookies.delete('JWT_MAN')
+        cookies.add({ name: 'JWT', value: res.body.data?.jwt + '' })
+        if (sessionStorage.getItem('VISITED') && sessionStorage.getItem('VISITED') !== 'admin') {
+          ;(await apiEnv.deleteAdminVisits(+sessionStorage.getItem('VISITED')!)).subscribe({
+            next: () => {
+              sessionStorage.setItem('VISITED', 'admin')
+            }
+          })
+        } else {
+          sessionStorage.setItem('VISITED', 'admin')
+        }
+
+        data.logged = true
+      },
+      error: async (resp) => {
+        button = 'Connexion'
+        error = true
+        password = ''
+        await utils.sleep(600)
+        error = false
+      }
+    })
+  }
 
   async function logout() {
     ;(await apiAuth.deleteLogout()).subscribe({
@@ -28,15 +61,15 @@
 
 {#if !data.logged}
   <div out:popOut in:popIn style="padding: 0.02px 0">
-    <AdminLoginForm bind:logged={data.logged} />
+    <AdminLoginForm bind:button bind:error {submit} />
   </div>
 {:else}
   <div in:popIn out:popOut style="padding: 0.02px 0">
     <button class="logout" on:click={logout}><i class="fa-solid fa-right-from-bracket" />&nbsp;&nbsp;Déconnexion</button>
     <h2 style="margin-top: 10px">Espace administration</h2>
-    
+
     <a class="not-a" href="/admin/emissions">
-      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Gérer les émissions de radio</button>
+      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Gérer les émissions</button>
     </a>
     <a class="not-a" href="/admin/videos">
       <button class="primary"><i class="fa-solid fa-video" />&nbsp;&nbsp;Gérer les vidéos</button>
