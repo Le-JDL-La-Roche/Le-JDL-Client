@@ -29,7 +29,11 @@ body {
 
 p,
 a,
-button, input, input::placeholder, select, option {
+button,
+input,
+input::placeholder,
+select,
+option {
   font-family: 'Bahnschrift', 'Arial', 'Helvetica', sans-serif;
 }
 
@@ -150,12 +154,13 @@ select {
 label {
   display: block;
 
-  &:not(.opt) {
-    color: var(--dark2-gray-color);
-    font-size: 14px;
-    margin-bottom: 5px;
-    margin-top: 0;
-  }
+}
+
+label:not(.opt) {
+  color: var(--dark2-gray-color);
+  font-size: 14px;
+  margin-bottom: 5px;
+  margin-top: 0;
 }
 
 div.error {

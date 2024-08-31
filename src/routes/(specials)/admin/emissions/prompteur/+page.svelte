@@ -140,14 +140,12 @@
           if (countdown === 0) {
             clearInterval(countdownInterval)
             startScroll()
-            console.log('start')
           }
         }, 1000)
       } else if (scene === '🛑 Fin') {
         prompt = -1
         const div = document.getElementById(`prompt-0`)
         if (div) div.style.display = `none`
-        else console.log('oops')
         stopScroll()
       }
     }
@@ -201,9 +199,7 @@
     if (data.show) {
       for (let i = 0; i < JSON.parse(data.show.prompter + '').length; i++) {
         const div = document.getElementById(`prompt-${i}`)
-        console.log(div)
         if (div) div.style.display = `none`
-        else console.log('oops')
       }
     }
     s = 0

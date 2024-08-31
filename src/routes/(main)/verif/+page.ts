@@ -9,6 +9,8 @@ import type { Article } from '$models/features/article.model'
 import type { Video } from '$models/features/video.model'
 import type { WebradioShow } from '$models/features/webradio-show.model'
 import type { Authorization } from '$models/data/authorization.model'
+import { page } from '$app/stores'
+import { get } from 'svelte/store'
 
 const apiAuth = new ApiAuthService()
 const apiAuthorizations = new ApiAuthorizationsService()
@@ -18,10 +20,6 @@ const apiArticles = new ApiArticlesService()
 const cookies = new CookiesService()
 
 export const load: PageLoad = async () => {
-  if (!cookies.get('JWT_MAN') || cookies.get('JWT_MAN') == null) {
-    return { logged: false }
-  }
-
   let logged = false
   let data: {
     shows: WebradioShow[]
@@ -35,17 +33,25 @@ export const load: PageLoad = async () => {
     authorizations: []
   }
 
-  ;(await apiAuth.getAuthMan()).subscribe({
+  const token = new URLSearchParams(window.location.search).get('token')
+
+  if ((!cookies.get('JWT_MAN') || cookies.get('JWT_MAN') == null) && (!token || token == null)) {
+    return { logged, data }
+  }
+
+  ;(await apiAuth.getAuthMan(undefined, undefined, token ? token : undefined)).subscribe({
     next: (res) => {
       logged = true
+      cookies.delete('JWT')
+      cookies.add({ name: 'JWT_MAN', value: res.body.data?.jwt || '', expireDays: 1 })
     },
     error: (err) => {
-      cookies.delete('JWT')
+      cookies.delete('JWT_MAN')
       logged = false
     }
   })
 
-  if (!logged) return { logged }
+  if (!logged) return { logged, data }
   ;(await apiWebradio.getAllShows()).subscribe({
     next: (res) => {
       data.shows = res.body.data?.shows || []
@@ -69,4 +75,3 @@ export const load: PageLoad = async () => {
 
   return { logged, data }
 }
-

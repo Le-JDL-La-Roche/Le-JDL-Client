@@ -13,6 +13,7 @@
   import type { Authorization } from '$models/data/authorization.model'
   import WebradioModal from '$components/modals/WebradioModal.svelte'
   import AuthorizationRefusalModal from '$components/modals/AuthorizationRefusalModal.svelte'
+  import ApiAuthorizationsService from '$services/api/api-authorizations.service'
 
   export let element: WebradioShow | Video | Article
   export let data: PageData
@@ -28,6 +29,7 @@
   const apiWebradio = new ApiWebradioService()
   const apiVideos = new ApiVideosService()
   const apiArticles = new ApiArticlesService()
+  const apiAuthorizations = new ApiAuthorizationsService()
 
   let showAuthorizationRefusalModal = false
 
@@ -170,7 +172,16 @@
     showAddEditAuthorizationModal = show
   }
 
-  async function askAuthorization(element: WebradioShow | Video | Article) {}
+  async function askAuthorization(element: WebradioShow | Video | Article) {
+    if (!authorization) return
+    if (!confirm('Êtes-vous sûr de vouloir envoyer cette autorisation ? Vous ne pourrez plus la modifier.')) return
+    authorization.content = JSON.stringify(authorization.content)
+    ;(await apiAuthorizations.putAuthorization({ status: -1 }, authorization.id || 0)).subscribe({
+      next: (res) => {
+        data.authorizations = res.body.data?.authorizations || []
+      }
+    })
+  }
 
   async function publishElement() {
     if ('streamId' in element) {
@@ -239,9 +250,9 @@
             // : element.status === -1
             // ? 'Salle d\'attente'
             element.status === -2 && authorization
-            ? "En attente"
+            ? 'En attente'
             : element.status === 2
-            // : element.status === -1.5
+            ? // : element.status === -1.5
               // ? 'Salle d\'attente (rediff.)'
               // : element.status === 0
               // ? 'En direct'
@@ -249,7 +260,8 @@
               // ? 'En direct (rediff.)'
               // : element.status === 1
               // ? 'En vérification'
-              ? 'Publié' : 'Erreur'}&nbsp;&nbsp;•&nbsp;
+              'Publié'
+            : 'Erreur'}&nbsp;&nbsp;•&nbsp;
         {:else if 'category' in element}
           {element.status === -2 ? 'Brouillon' : 'Publié'}&nbsp;&nbsp;• &nbsp;{utils.categoryToString(
             element.category
@@ -295,20 +307,16 @@
         <i class="fa-solid fa-file-circle-check" />
       </button>
       <button class="secondary" on:click={deleteElement}><i class="fa-solid fa-trash" /></button>
-      {#if 'streamId' in element}
-        <a
-          href={`https://radio.le-jdl-laroche.cf/download/${element.streamId}_vid_${utils.timestampToDate(+element.date)}.flv`}
-          class="not-a"
-          target="_blank"
-        >
-          <button class="secondary"><i class="fa-solid fa-download" /></button>
-        </a>
-      {:else if 'type' in element && element.type === 'instagram'}
+      {#if 'type' in element && element.type === 'instagram'}
         <a href={`https://instagram.com/p/${element.videoId}`} class="not-a" target="_blank">
           <button class="secondary"><i class="fa-brands fa-instagram" /></button>
         </a>
-      {:else if 'type' in element && element.type === 'youtube'}
-        <a href={`https://studio.youtube.com/video/${element.videoId}/edit`} class="not-a" target="_blank">
+      {:else if ('type' in element && element.type === 'youtube') || 'streamId' in element}
+        <a
+          href={`https://youtube.com/watch?v=${'videoId' in element ? element.videoId : element.streamId}`}
+          class="not-a"
+          target="_blank"
+        >
           <button class="secondary"><i class="fa-brands fa-youtube" /></button>
         </a>
       {/if}

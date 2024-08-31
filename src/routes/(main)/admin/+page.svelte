@@ -21,6 +21,7 @@
     button = '...'
     ;(await apiAuth.getAuth(username, password)).subscribe({
       next: async (res) => {
+        cookies.delete('JWT_MAN')
         cookies.add({ name: 'JWT', value: res.body.data?.jwt + '' })
         if (sessionStorage.getItem('VISITED') && sessionStorage.getItem('VISITED') !== 'admin') {
           ;(await apiEnv.deleteAdminVisits(+sessionStorage.getItem('VISITED')!)).subscribe({

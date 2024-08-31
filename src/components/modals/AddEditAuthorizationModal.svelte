@@ -100,7 +100,7 @@
               media: '[le site Web, le compte Instagram, la chaîne YouTube, le compte LinkedIn et les plateformes de streaming]'
             }
           ],
-          synopsis: element.description,
+          synopsis: '',
           link: `https://youtube.com/watch?v=${element.streamId}`
         } as WebradioAuthorization
       } else if (type === 'videos') {
@@ -110,7 +110,7 @@
           duration: '1 mn',
           inGuests: [],
           outGuests: [],
-          synopsis: element.description,
+          synopsis: '',
           link: element.type === 'youtube' ? `https://youtube.com/watch?v=${element.videoId}` : ''
         } as VideoAuthorization
       } else if (type === 'articles') {
@@ -259,10 +259,6 @@
   }
 
   @media screen and (min-width: 850px) {
-    div.actions {
-      display: block;
-    }
-
     div.actions {
       display: block;
     }

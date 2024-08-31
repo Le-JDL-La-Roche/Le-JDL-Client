@@ -1,6 +1,7 @@
 <script lang="ts">
   import { invalidateAll } from '$app/navigation'
   import AdminLoginForm from '$components/others/AdminLoginForm.svelte'
+  import AuthorizationList from '$components/lists/AuthorizationList.svelte'
   import type { Authorization } from '$models/data/authorization.model'
   import type { Article } from '$models/features/article.model'
   import type { Video } from '$models/features/video.model'
@@ -20,11 +21,14 @@
 
   const apiAuth = new ApiAuthService()
   const cookies = new CookiesService()
-  const apiEnv = new ApiEnvService()
   const apiAuthorizations = new ApiAuthorizationsService()
   const apiWebradio = new ApiWebradioService()
   const apiVideos = new ApiVideosService()
   const apiArticles = new ApiArticlesService()
+
+  const authorizationId = parseInt(new URLSearchParams(window.location.search).get('id') || '0') || null
+
+  window.history.replaceState({}, document.title, window.location.pathname)
 
   let button = 'Connexion'
   let error = false
@@ -33,6 +37,7 @@
     button = '...'
     ;(await apiAuth.getAuthMan(username, password)).subscribe({
       next: async (res) => {
+        cookies.delete('JWT')
         cookies.add({ name: 'JWT_MAN', value: res.body.data?.jwt + '' })
         data.logged = true
 
@@ -86,7 +91,7 @@
 </script>
 
 <svelte:head>
-  <title>{data.logged ? 'Gestion des autorisation' : 'Connexion responsable'} • Le JDL - La Roche</title>
+  <title>{data.logged ? 'Gestion des autorisations' : 'Connexion responsable'} • Le JDL - La Roche</title>
 </svelte:head>
 
 {#if !data.logged || !data.data}
@@ -96,29 +101,24 @@
 {:else}
   <div in:popIn out:popOut style="padding: 0.02px 0">
     <button class="logout" on:click={logout}><i class="fa-solid fa-right-from-bracket" />&nbsp;&nbsp;Déconnexion</button>
-    <h2 style="margin-top: 10px">Espace administration</h2>
+    <h2 style="margin-top: 10px">Gestion des autorisations</h2>
 
-    <a class="not-a" href="/admin/emissions">
-      <button class="primary"> <i class="fa-solid fa-microphone" />&nbsp;&nbsp;Gérer les émissions</button>
-    </a>
-    <a class="not-a" href="/admin/videos">
-      <button class="primary"><i class="fa-solid fa-video" />&nbsp;&nbsp;Gérer les vidéos</button>
-    </a>
-    <a class="not-a" href="/admin/articles">
-      <button class="primary"><i class="fa-solid fa-file" />&nbsp;&nbsp;Gérer les articles</button>
-    </a>
-    <a class="not-a" href="/admin/journalistes">
-      <button class="primary"><i class="fa-solid fa-user" />&nbsp;&nbsp;Gérer les journalistes</button>
-    </a>
-    <a class="not-a" href="/admin/agenda">
-      <button class="primary"><i class="fa-solid fa-calendar" />&nbsp;&nbsp;Gérer l'agenda</button>
-    </a>
-    <a class="not-a" href="/admin/infos">
-      <button class="primary"><i class="fa-solid fa-exclamation-triangle" />&nbsp;&nbsp;Gérer les informations</button>
-    </a>
-    <a class="not-a" href="/admin/stats">
-      <button class="primary"><i class="fa-solid fa-circle-info" />&nbsp;&nbsp;Statistiques du site</button>
-    </a>
+    <h3>Autorisations en attente</h3>
+    {#each data.data.authorizations as authorization, i}
+      {#if authorization.status === -1}
+        <AuthorizationList bind:data {i} {authorizationId} />
+      {/if}
+    {/each}
+    {#if !data.data.authorizations.find((auth) => auth.status === -1)}
+      <p>Aucune autorisation en attente</p>
+    {/if}
+
+    <h3 style="margin-top: 30px;">Autorisations archivées</h3>
+    {#each data.data.authorizations as authorization, i}
+      {#if authorization.status > 0}
+        <AuthorizationList bind:data {i} {authorizationId} />
+      {/if}
+    {/each}
   </div>
 {/if}
 

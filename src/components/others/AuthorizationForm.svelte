@@ -19,7 +19,6 @@
   let allowDiv = ['']
 
   let date = null as string | null
-  $: console.log(date)
   $: disabled = authorization.status !== -2 && authorization.status !== 1
 
   if (type === 'emissions') {
@@ -38,7 +37,7 @@
 
     if (authorization.status !== -2 && authorization.status !== 1) {
       authorization.content.inGuests = authorization.content.inGuests.filter((guest) => guest.name !== '' || guest.status !== '')
-    } else if (inGuests[length - 1].name !== '' || inGuests[length - 1].status !== '') {
+    } else if (inGuests[length - 1]?.name !== '' || inGuests[length - 1]?.status !== '') {
       inGuests.push({
         name: '',
         status: '',
@@ -51,11 +50,11 @@
         media: '[le site Web, le compte Instagram, la chaîne YouTube, le compte LinkedIn et les plateformes de streaming]'
       })
     } else if (
-      inGuests[length - 1].name === '' &&
-      inGuests[length - 1].status === '' &&
+      inGuests[length - 1]?.name === '' &&
+      inGuests[length - 1]?.status === '' &&
       length > 1 &&
-      inGuests[length - 2].name === '' &&
-      inGuests[length - 2].status === ''
+      inGuests[length - 2]?.name === '' &&
+      inGuests[length - 2]?.status === ''
     ) {
       inGuests.pop()
     }
@@ -69,7 +68,7 @@
       authorization.content.outGuests = authorization.content.outGuests.filter(
         (guest) => guest.name !== '' || guest.status !== ''
       )
-    } else if (outGuests[length - 1].name !== '' || outGuests[length - 1].status !== '') {
+    } else if (outGuests[length - 1]?.name !== '' || outGuests[length - 1]?.status !== '') {
       outGuests.push({
         name: '',
         status: '',
@@ -82,22 +81,35 @@
         media: '[le site Web, le compte Instagram, la chaîne YouTube, le compte LinkedIn et les plateformes de streaming]'
       })
     } else if (
-      outGuests[length - 1].name === '' &&
-      outGuests[length - 1].status === '' &&
+      outGuests[length - 1]?.name === '' &&
+      outGuests[length - 1]?.status === '' &&
       length > 1 &&
-      outGuests[length - 2].name === '' &&
-      outGuests[length - 2].status === ''
+      outGuests[length - 2]?.name === '' &&
+      outGuests[length - 2]?.status === ''
     ) {
       outGuests.pop()
     }
   }
 
   $: if (date && type === 'emissions') {
-    (authorization.content as WebradioAuthorization).date = new Date(date).getTime() / 1000 + ''
+    ;(authorization.content as WebradioAuthorization).date = new Date(date).getTime() / 1000 + ''
   }
 </script>
 
+<p class="error">Utilisez un ordinateur pour créer ou modifier une autorisation.</p>
+
 <div class="add-modal">
+  {#if authorization.status > -2}
+  <div class="info date">
+    <p>
+      <i class="fa-solid fa-calendar-days" />&nbsp;&nbsp;&nbsp;Autorisation demandée le
+      <strong>{new Date(+(authorization.submitDate || 0) * 1000).toLocaleDateString('fr-fr')}</strong>.
+      {#if authorization.status === 1 || authorization.status === 2}
+        Réponse reçue le <strong>{new Date(+(authorization.responseDate || 0) * 1000).toLocaleDateString('fr-fr')}</strong>.
+      {/if}
+    </p>
+  </div>
+  {/if}
   <div
     class="info"
     class:draft={authorization.status == -2}
@@ -118,7 +130,7 @@
     {:else if authorization.status == 1}
       <p>
         <i class="fa-solid fa-ban" />&nbsp;&nbsp;&nbsp;<strong>Refusée</strong> — Demande d'autorisation de publication refusée
-        par {authorization.manager}. Motif : {authorization.comments}. Vous devez modifier votre demande et la renvoyer.
+        par {authorization.manager}. Motif : <i>{authorization.comments}</i>. Vous devez modifier votre demande et la renvoyer.
       </p>
     {:else if authorization.status == 2}
       <p>
@@ -139,36 +151,36 @@
     <input type="text" placeholder="Titre" bind:value={element.title} disabled id="title" />
 
     <label for="subjects">{type === 'articles' ? 'Sujet' : 'Thème(s)'}</label>
-    <input type="text" id="subjects" bind:value={authorization.content.subject} {disabled} />
+    <input type="text" id="subjects" bind:value={authorization.content.subject} {disabled} required />
 
     {#if type === 'emissions' && 'estimatedDuration' in authorization.content}
       <div class="flex-date">
         <div style="flex: 1">
           <label for="date">Date de publication</label>
-          <input type="date" id="date" bind:value={date} {disabled} />
+          <input type="date" id="date" bind:value={date} {disabled} required />
         </div>
         <div style="flex: 1">
           <label for="estimated-duration">Durée estimée</label>
-          <input type="text" bind:value={authorization.content.estimatedDuration} id="estimated-duration" {disabled} />
+          <input type="text" bind:value={authorization.content.estimatedDuration} id="estimated-duration" {disabled} required />
         </div>
       </div>
     {:else if type === 'videos' && 'type' in element && 'duration' in authorization.content}
       <label for="type">Publication sur</label>
       <input type="text" value={element.type === 'instagram' ? 'Instagram' : 'YouTube'} disabled />
 
-      <label for="link">Lien de visionnage (video non répertorié sur YouTube ou lien accessible sur OneDrive)</label>
-      <input type="text" bind:value={authorization.content.link} id="link" {disabled} />
-
       <div class="flex-date">
         <div style="flex: 1">
-          <label for="duration">Durée :</label>
-          <input type="text" bind:value={authorization.content.duration} id="duration" />
+          <label for="duration">Durée</label>
+          <input type="text" bind:value={authorization.content.duration} id="duration" required />
         </div>
         <div style="flex: 1">
           <label for="author">Auteur</label>
           <input type="text" bind:value={element.author} id="author" disabled />
         </div>
       </div>
+
+      <label for="link">Lien de visionnage (video non répertoriée sur YouTube ou lien accessible sur OneDrive)</label>
+      <input type="text" bind:value={authorization.content.link} id="link" {disabled} required />
     {:else if type === 'articles' && 'author' in element}
       <label for="author2">Auteur</label>
       <input type="text" bind:value={element.author} id="author2" disabled />
@@ -182,7 +194,7 @@
           <tr>
             <th>Nom</th>
             <th>Statut</th>
-            <th class="image-right">Accord de droit à<br /> l'image et au son</th>
+            <th class="image-right">Accord de droit à l'image</th>
             <th class="image-right generate">Générer</th>
           </tr>
         </thead>
@@ -193,7 +205,12 @@
                 <input bind:value={guest.name} placeholder="Nom" style="margin-bottom: 0" {disabled} />
               </td>
               <td class="status">
-                <input bind:value={guest.status} placeholder="Status (élève, professeur, ...)" style="margin-bottom: 0" {disabled} />
+                <input
+                  bind:value={guest.status}
+                  placeholder="Status (élève, professeur, ...)"
+                  style="margin-bottom: 0"
+                  {disabled}
+                />
               </td>
               <td class="allow">
                 <input type="checkbox" name="allow" class="allow page" bind:checked={guest.authorization} {disabled} />
@@ -247,7 +264,7 @@
           <tr>
             <th>Nom</th>
             <th>Statut</th>
-            <th class="image-right">Accord de droit<br />à l'image et au son</th>
+            <th class="image-right">Accord de droit à l'image</th>
             <th class="image-right generate">Générer</th>
           </tr>
         </thead>
@@ -325,6 +342,13 @@
       }
     }
 
+    &.date {
+      background-color: #d7e3f8;
+      border: 1px solid #c7cde8;
+      color: #27273f;
+      margin-bottom: 20px;
+    }
+
     &.draft {
       background-color: #f8f8f8;
       border: 1px solid #e8e8e8;
@@ -368,10 +392,16 @@
 
   table.filling {
     width: 100%;
-    border-bottom: 2pt solid #f5f5f5;
+    border-collapse: collapse;
+    // border-bottom: 2pt solid #f5f5f5;
+
+    th,
+    td {
+      border: 1.5px solid #eaeaea;
+    }
 
     thead tr {
-      background-color: #f5f5f5;
+      background-color: #f0f0f0;
 
       th {
         padding: 10px;
@@ -380,12 +410,12 @@
 
     tr {
       &:nth-of-type(1) th {
-        border-bottom: 1pt solid #505050;
+        border-bottom: 1pt solid #c0c0c0;
         text-align: center;
       }
 
       &:nth-of-type(2n) {
-        background-color: #f5f5f5;
+        background-color: #fafafa;
       }
 
       th:nth-of-type(1) {
@@ -400,8 +430,9 @@
       }
 
       th:nth-of-type(3) {
-        max-width: 100px;
-        min-width: 100px;
+        max-width: 45px;
+        min-width: 45px;
+        font-size: 11px;
       }
     }
 
@@ -439,6 +470,28 @@
           margin-bottom: 3px;
         }
       }
+    }
+  }
+
+  div.add-modal {
+    display: none;
+  }
+
+  @media screen and (min-width: 850px) {
+    table.filling tr {
+      th:nth-of-type(3) {
+        max-width: 80px;
+        min-width: 80px;
+        font-size: 16px;
+      }
+    }
+
+    p.error {
+      display: none;
+    }
+
+    div.add-modal {
+      display: block;
     }
   }
 </style>

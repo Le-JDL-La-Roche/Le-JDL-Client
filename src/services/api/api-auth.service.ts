@@ -12,13 +12,17 @@ export default class ApiAuthService {
     return await http.get<DataHttpResponse<{ jwt: string }>>(`${api}/auth`, req)
   }
 
-  async getAuthMan(name?: string, password?: string) {
+  async getAuthMan(name?: string, password?: string, token?: string) {
     const req =
       name && password
         ? ({
             headers: { Authorization: 'Basic ' + Buffer.from(name + ':' + password).toString('base64') }
           } as RequestInit)
-        : undefined
+        : token
+        ? ({
+            headers: { Authorization: 'Bearer ' + token }
+          } as RequestInit)
+        : ({} as RequestInit)
 
     return await http.get<DataHttpResponse<{ jwt: string }>>(`${api}/auth-manager`, req)
   }
@@ -31,4 +35,3 @@ export default class ApiAuthService {
     return await http.delete<DefaultHttpResponse>(`${api}/logout`)
   }
 }
-
