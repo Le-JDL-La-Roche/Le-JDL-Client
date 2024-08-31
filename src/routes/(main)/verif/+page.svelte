@@ -91,12 +91,12 @@
 </script>
 
 <svelte:head>
-  <title>{data.logged ? 'Gestion des autorisations' : 'Connexion responsable'} • Le JDL - La Roche</title>
+  <title>{data.logged ? 'Gestion des autorisations' : 'Connexion encadrant'} • Le JDL - La Roche</title>
 </svelte:head>
 
 {#if !data.logged || !data.data}
   <div out:popOut in:popIn style="padding: 0.02px 0">
-    <AdminLoginForm bind:button bind:error {submit} title="Connexion responsable" />
+    <AdminLoginForm bind:button bind:error {submit} title="Connexion encadrant" />
   </div>
 {:else}
   <div in:popIn out:popOut style="padding: 0.02px 0">
