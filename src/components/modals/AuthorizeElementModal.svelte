@@ -82,11 +82,33 @@
             </p>
           {:else if authorization.status == 1}
             <p>
+              <button
+                class="secondary"
+                on:click|stopPropagation={() => {
+                  navigator.clipboard.writeText(authorization.signature + '')
+                  alert(`Signature copiée ! 
+Vous pouvez vérifier la signature en utilisant un décrypteur RSA et la clé publique disponible sur la page "A propos de l'API". 
+Le décryptage de la signature ne fonctionnera que si la signature est valide. Seul le serveur du JDL est en mesure de créer des signatures valides ; une signature ne peut donc pas être falsifiée.`)
+                }}
+              >
+                <i class="fa-solid fa-copy" />
+              </button>
               <i class="fa-solid fa-ban" />&nbsp;&nbsp;&nbsp;<strong>Refusée</strong> — Publication refusée par {authorization.manager}.
               Motif : <i>{authorization.comments}</i>. Vous ne pouvez pas apporter de modifications à la réponse.
             </p>
           {:else if authorization.status == 2}
             <p>
+              <button
+                class="secondary"
+                on:click|stopPropagation={() => {
+                  navigator.clipboard.writeText(authorization.signature + '')
+                  alert(`Signature copiée ! 
+Vous pouvez vérifier la signature en utilisant un décrypteur RSA et la clé publique disponible sur la page "A propos de l'API". 
+Le décryptage de la signature ne fonctionnera que si la signature est valide. Seul le serveur du JDL est en mesure de créer des signatures valides ; une signature ne peut donc pas être falsifiée.`)
+                }}
+              >
+                <i class="fa-solid fa-copy" />
+              </button>
               <i class="fa-solid fa-check" />&nbsp;&nbsp;&nbsp;<strong>Acceptée</strong> — Publication autorisée par {authorization.manager}.
               Vous ne pouvez pas apporter de modifications à la réponse.
             </p>
@@ -348,6 +370,13 @@
       background-color: #d7f8d7;
       border: 1px solid #c7e8c7;
       color: #273f27;
+    }
+
+    button {
+      float: right;
+      width: 33px;
+      opacity: 0.8;
+      margin-top: 0;
     }
   }
 

@@ -100,15 +100,15 @@
 
 <div class="add-modal">
   {#if authorization.status > -2}
-  <div class="info date">
-    <p>
-      <i class="fa-solid fa-calendar-days" />&nbsp;&nbsp;&nbsp;Autorisation demandée le
-      <strong>{new Date(+(authorization.submitDate || 0) * 1000).toLocaleDateString('fr-fr')}</strong>.
-      {#if authorization.status === 1 || authorization.status === 2}
-        Réponse reçue le <strong>{new Date(+(authorization.responseDate || 0) * 1000).toLocaleDateString('fr-fr')}</strong>.
-      {/if}
-    </p>
-  </div>
+    <div class="info date">
+      <p>
+        <i class="fa-solid fa-calendar-days" />&nbsp;&nbsp;&nbsp;Autorisation demandée le
+        <strong>{new Date(+(authorization.submitDate || 0) * 1000).toLocaleDateString('fr-fr')}</strong>.
+        {#if authorization.status === 1 || authorization.status === 2}
+          Réponse reçue le <strong>{new Date(+(authorization.responseDate || 0) * 1000).toLocaleDateString('fr-fr')}</strong>.
+        {/if}
+      </p>
+    </div>
   {/if}
   <div
     class="info"
@@ -129,11 +129,33 @@
       </p>
     {:else if authorization.status == 1}
       <p>
+        <button
+          class="secondary"
+          on:click|stopPropagation={() => {
+            navigator.clipboard.writeText(authorization.signature + '')
+            alert(`Signature copiée ! 
+Vous pouvez vérifier la signature en utilisant un décrypteur RSA et la clé publique disponible sur la page "A propos de l'API". 
+Le décryptage de la signature ne fonctionnera que si la signature est valide. Seul le serveur du JDL est en mesure de créer des signatures valides ; une signature ne peut donc pas être falsifiée.`)
+          }}
+        >
+          <i class="fa-solid fa-copy" />
+        </button>
         <i class="fa-solid fa-ban" />&nbsp;&nbsp;&nbsp;<strong>Refusée</strong> — Demande d'autorisation de publication refusée
         par {authorization.manager}. Motif : <i>{authorization.comments}</i>. Vous devez modifier votre demande et la renvoyer.
       </p>
     {:else if authorization.status == 2}
       <p>
+        <button
+          class="secondary"
+          on:click|stopPropagation={() => {
+            navigator.clipboard.writeText(authorization.signature + '')
+            alert(`Signature copiée ! 
+Vous pouvez vérifier la signature en utilisant un décrypteur RSA et la clé publique disponible sur la page "A propos de l'API". 
+Le décryptage de la signature ne fonctionnera que si la signature est valide. Seul le serveur du JDL est en mesure de créer des signatures valides ; une signature ne peut donc pas être falsifiée.`)
+          }}
+        >
+          <i class="fa-solid fa-copy" />
+        </button>
         <i class="fa-solid fa-check" />&nbsp;&nbsp;&nbsp;<strong>Acceptée</strong> — Demande d'autorisation de publication
         acceptée par {authorization.manager}. Vous pouvez publier {type === 'emissions'
           ? "l'émission"
@@ -371,6 +393,13 @@
       background-color: #d7f8d7;
       border: 1px solid #c7e8c7;
       color: #273f27;
+    }
+
+    button {
+      float: right;
+      width: 33px;
+      opacity: 0.8;
+      margin-top: 0;
     }
   }
 

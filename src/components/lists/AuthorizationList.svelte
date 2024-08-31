@@ -30,7 +30,7 @@
   $: if (authorization) {
     update()
   }
-  
+
   function update() {
     showAuthorizeElementModal = authorization.id === authorizationId ? true : false
   }
@@ -56,7 +56,14 @@
     </div>
   {/if}
 
-  <AuthorizeElementModal bind:data bind:authorization bind:element bind:type bind:show={showAuthorizeElementModal} {authorizationId} />
+  <AuthorizeElementModal
+    bind:data
+    bind:authorization
+    bind:element
+    bind:type
+    bind:show={showAuthorizeElementModal}
+    {authorizationId}
+  />
 {/if}
 
 <style lang="scss">
