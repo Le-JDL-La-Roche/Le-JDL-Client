@@ -14,7 +14,7 @@ const apiArticles = new ApiArticlesService()
 const cookies = new CookiesService()
 
 export const load: PageLoad = async ({ params }) => {
-  const category = params.category as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche' | 'radio'
+  const category = params.category as 'france' | 'international' | 'culture' | 'sport' | 'sciences' | 'laroche' | 'radio'
 
   let data: (WebradioShow | Video | Article)[] = []
   let videos: Video[] = []

@@ -43,11 +43,11 @@ export class ArticlesChart extends Chart {
     })
 
     this.articlesData = [
-      data.data!.articles.category.news,
+      data.data!.articles.category.france,
+      data.data!.articles.category.international,
       data.data!.articles.category.culture,
       data.data!.articles.category.sport,
       data.data!.articles.category.science,
-      data.data!.articles.category.tech,
       data.data!.articles.category.laroche
     ]
     this.data.datasets![0].data = this.articlesData

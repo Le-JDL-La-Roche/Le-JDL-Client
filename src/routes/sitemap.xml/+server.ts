@@ -65,7 +65,7 @@ export const GET: RequestHandler = async ({ fetch, setHeaders }) => {
     .map(
       (v) => `<url>
     <loc>${siteUrl}/${
-        utils.categoriesFr[v.category as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche'].slug
+        utils.categoriesFr[v.category as 'france' | 'international' | 'culture' | 'sport' | 'sciences' | 'laroche'].slug
       }/video/${url.idToSlug(v.id || 0)}--${url.slugify(v.title)}</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -76,7 +76,7 @@ export const GET: RequestHandler = async ({ fetch, setHeaders }) => {
     .map(
       (a) => `<url>
     <loc>${siteUrl}/${
-        utils.categoriesFr[a.category as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche'].slug
+        utils.categoriesFr[a.category as 'france' | 'international' | 'culture' | 'sport' | 'sciences' | 'laroche'].slug
       }/article/${url.idToSlug(a.id || 0)}--${url.slugify(a.title)}</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
@@ -86,3 +86,4 @@ export const GET: RequestHandler = async ({ fetch, setHeaders }) => {
 </urlset>`
   )
 }
+

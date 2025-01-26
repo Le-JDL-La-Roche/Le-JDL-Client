@@ -22,9 +22,11 @@
     element.description = content.replaceNewLineByBr(element.description)
   }
 
+  $: console.log('category' in element)
+
   $: category =
-    'category' in element
-      ? utils.categoriesFr[element.category as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche'].slug
+    'category' in element && utils.categoriesFr[element.category as 'france' | 'international' | 'culture' | 'sport' | 'sciences' | 'laroche']
+      ? utils.categoriesFr[element.category as 'france' | 'international' | 'culture' | 'sport' | 'sciences' | 'laroche'].slug
       : ''
 
   $: href =

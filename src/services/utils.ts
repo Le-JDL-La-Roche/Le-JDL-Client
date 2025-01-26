@@ -1,18 +1,19 @@
 class Utils {
-  readonly categories = ['actualites', 'culture', 'sport', 'sciences', 'tech', 'laroche', 'radio']
+  // readonly categories = ['actualites', 'culture', 'sport', 'sciences', 'tech', 'laroche', 'radio']
+  readonly categories = ['france', 'international', 'culture', 'sport', 'sciences', 'laroche', 'radio']
   readonly categoriesFr = {
-    actualites: {
-      name: 'Actualités',
-      slug: 'actualites',
-      id: 'news',
+    france: {
+      name: 'France',
+      slug: 'france',
+      id: 'france',
       icon: 'fa-newspaper',
-      color: '#f51527'
+      color: '#000091'
     },
-    news: {
-      name: 'Actualités',
-      slug: 'actualites',
-      id: 'news',
-      icon: 'fa-newspaper',
+    international: {
+      name: 'International',
+      slug: 'international',
+      id: 'international',
+      icon: 'fa-earth-europe',
       color: '#f51527'
     },
     culture: {
@@ -65,6 +66,71 @@ class Utils {
       color: '#72238e'
     }
   }
+  // readonly categoriesFr = {
+  //   actualites: {
+  //     name: 'Actualités',
+  //     slug: 'actualites',
+  //     id: 'news',
+  //     icon: 'fa-newspaper',
+  //     color: '#f51527'
+  //   },
+  //   news: {
+  //     name: 'Actualités',
+  //     slug: 'actualites',
+  //     id: 'news',
+  //     icon: 'fa-newspaper',
+  //     color: '#f51527'
+  //   },
+  //   culture: {
+  //     name: 'Culture',
+  //     slug: 'culture',
+  //     id: 'culture',
+  //     icon: 'fa-book',
+  //     color: '#f5a527'
+  //   },
+  //   sport: {
+  //     name: 'Sport',
+  //     slug: 'sport',
+  //     id: 'sport',
+  //     icon: 'fa-futbol',
+  //     color: '#3bad15'
+  //   },
+  //   sciences: {
+  //     name: 'Sciences',
+  //     slug: 'sciences',
+  //     id: 'science',
+  //     icon: 'fa-dna',
+  //     color: '#15f5aa'
+  //   },
+  //   science: {
+  //     name: 'Sciences',
+  //     slug: 'sciences',
+  //     id: 'science',
+  //     icon: 'fa-dna',
+  //     color: '#15f5aa'
+  //   },
+  //   tech: {
+  //     name: 'Tech',
+  //     slug: 'tech',
+  //     id: 'tech',
+  //     icon: 'fa-microchip',
+  //     color: '#3715f5'
+  //   },
+  //   laroche: {
+  //     name: 'La Roche',
+  //     slug: 'laroche',
+  //     id: 'laroche',
+  //     icon: 'fa-star',
+  //     color: '#c31718'
+  //   },
+  //   radio: {
+  //     name: 'Émissions',
+  //     slug: 'radio',
+  //     id: 'radio',
+  //     icon: 'fa-podcast',
+  //     color: '#72238e'
+  //   }
+  // }
 
   private readonly shortDateOptions: Intl.DateTimeFormatOptions = {
     weekday: 'short',
@@ -141,13 +207,13 @@ class Utils {
     return months[month]
   }
 
-  categoryToString(category: 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche' | ''): string {
+  categoryToString(category: 'france' | 'international' | 'culture' | 'sport' | 'science' | 'laroche' | ''): string {
     const categories = {
-      news: 'Actualités',
+      france: 'France',
+      international: 'International',
       culture: 'Culture',
       sport: 'Sport',
       science: 'Sciences',
-      tech: 'Tech',
       laroche: 'La Roche',
       '': 'Divers'
     }
@@ -156,3 +222,4 @@ class Utils {
 }
 
 export default new Utils()
+

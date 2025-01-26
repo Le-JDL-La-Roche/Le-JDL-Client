@@ -5,13 +5,15 @@ export interface Video {
   thumbnail: string
   videoId: string
   type: 'youtube' | 'instagram' | ''
-  category: 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche' | ''
+  // category: 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche' | ''
+  category: 'france' | 'international' | 'culture' | 'sport' | 'science' | 'laroche' | ''
   author: string
   date: string
   /**
    * `-2` Draft/Waiting for authorization
-   * 
+   *
    * ` 2` Published
    */
   status: -2 | 2
 }
+

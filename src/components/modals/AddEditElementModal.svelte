@@ -42,7 +42,8 @@
   $: podcastId = '' as string
   $: status = null as -2 | -2.5 | -1 | -1.5 | 0 | 0.5 | 1 | 2 | null
   $: videoId = '' as string
-  $: category = null as 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche' | null
+  // $: category = null as 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche' | null
+  $: category = null as 'france' | 'international' | 'culture' | 'sport' | 'science' | 'laroche' | null
   $: videoType = null as 'youtube' | 'instagram' | null
   $: author = '' as string
   $: date = type !== 'emissions' ? Math.round(Date.now() / 1000) : Math.round(new Date().getTime() / 1000) + ''
@@ -105,13 +106,13 @@
       } else if ('videoId' in action.element) {
         content = action.element.description
         videoId = action.element.videoId
-        category = action.element.category as 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche'
+        category = action.element.category as 'france' | 'international' | 'culture' | 'sport' | 'science' | 'laroche'
         videoType = action.element.type as 'youtube' | 'instagram'
         author = action.element.author
       } else {
         content = action.element.article
         thumbnailSrc = action.element.thumbnailSrc
-        category = action.element.category as 'news' | 'culture' | 'sport' | 'science' | 'tech' | 'laroche'
+        category = action.element.category as 'france' | 'international' | 'culture' | 'sport' | 'science' | 'laroche'
         author = action.element.author
       }
     }
@@ -152,7 +153,7 @@
             action.action === 'add' ||
             !data.authorizations?.find((a) => a.elementId === action.element.id && a.elementType === 'show')
           ) {
-            showGenerationModal = true
+            // showGenerationModal = true
             authorizationModalElement = element.data
             authorizationModalType = 'emissions'
             authorizationModalAction = { action: 'add' }
@@ -175,7 +176,7 @@
             action.action === 'add' ||
             !data.authorizations?.find((a) => a.elementId === action.element.id && a.elementType === 'video')
           ) {
-            showGenerationModal = true
+            // showGenerationModal = true
             authorizationModalElement = element.data
             authorizationModalType = 'videos'
             authorizationModalAction = { action: 'add' }
@@ -198,7 +199,7 @@
             action.action === 'add' ||
             !data.authorizations?.find((a) => a.elementId === action.element.id && a.elementType === 'article')
           ) {
-            showGenerationModal = true
+            // showGenerationModal = true
             authorizationModalElement = element.data
             authorizationModalType = 'articles'
             authorizationModalAction = { action: 'add' }
@@ -271,26 +272,39 @@
               <option value={1}>En attente de validation de publication par l'administration</option>
               <option value={2}>Publié au format podcast</option>
             </select> -->
+            <label for="status">Status</label>
+            <select bind:value={status} {required} id="status">
+              <option value={null} disabled selected>-- Sélectionner --</option>
+              <option value={-2}>Brouillon</option>
+              <option value={2}>Publié</option>
+            </select>
 
             <p class="section-title" style="margin-top: 30px"><strong>Modifier le prompteur</strong></p>
             <button class="secondary" style="margin-top: 0" type="button" on:click={() => (showPrompterModal = true)}>
               <i class="fa-solid fa-align-left" />&nbsp;&nbsp;Modifier le prompteur
             </button>
           {:else}
-            <!-- <select bind:value={status} {required}>
-              <option value={null} disabled selected>-- Status de {type === 'videos' ? 'la video' : "l'article"} --</option>
-              <option value={-2}>Brouillon, en attente de l'autorisation de publication par l'administration</option>
+            <label for="status">Status</label>
+            <select bind:value={status} {required} id="status">
+              <option value={null} disabled selected>-- Sélectionner --</option>
+              <option value={-2}>Brouillon</option>
               <option value={2}>Publié</option>
-            </select> -->
+            </select>
             {#if type === 'videos'}
               <label for="category">Rubrique</label>
               <select bind:value={category} {required} id="category">
                 <option value={null} disabled selected>-- Sélectionner --</option>
-                <option value={'news'}>Actualités</option>
+                <!-- <option value={'news'}>Actualités</option>
                 <option value={'culture'}>Culture</option>
                 <option value={'sport'}>Sport</option>
                 <option value={'science'}>Sciences</option>
                 <option value={'tech'}>Tech</option>
+                <option value={'laroche'}>La Roche</option> -->
+                <option value={'france'}>France</option>
+                <option value={'international'}>International</option>
+                <option value={'culture'}>Culture</option>
+                <option value={'sport'}>Sport</option>
+                <option value={'science'}>Sciences</option>
                 <option value={'laroche'}>La Roche</option>
               </select>
 
@@ -319,11 +333,11 @@
               <label for="category2">Rubrique</label>
               <select bind:value={category} {required} id="category2">
                 <option value={null} disabled selected>-- Sélectionner --</option>
-                <option value={'news'}>Actualités</option>
+                <option value={'france'}>France</option>
+                <option value={'international'}>International</option>
                 <option value={'culture'}>Culture</option>
                 <option value={'sport'}>Sport</option>
                 <option value={'science'}>Sciences</option>
-                <option value={'tech'}>Tech</option>
                 <option value={'laroche'}>La Roche</option>
               </select>
 

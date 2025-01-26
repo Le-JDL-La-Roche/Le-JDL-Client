@@ -9,8 +9,6 @@ import type { Article } from '$models/features/article.model'
 import type { Video } from '$models/features/video.model'
 import type { WebradioShow } from '$models/features/webradio-show.model'
 import type { Authorization } from '$models/data/authorization.model'
-import { page } from '$app/stores'
-import { get } from 'svelte/store'
 
 const apiAuth = new ApiAuthService()
 const apiAuthorizations = new ApiAuthorizationsService()

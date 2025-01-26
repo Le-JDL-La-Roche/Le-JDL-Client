@@ -56,11 +56,11 @@ export class VideoChart extends Chart {
 
     this.rawData = data.data!.videos
     this.videosData = [
-      this.rawData.category.news,
+      this.rawData.category.france,
+      this.rawData.category.international,
       this.rawData.category.culture,
       this.rawData.category.sport,
       this.rawData.category.science,
-      this.rawData.category.tech,
       this.rawData.category.laroche
     ]
     this.data.labels = this.labels.category.labels
@@ -74,11 +74,11 @@ export class VideoChart extends Chart {
     this.data.labels = this.labels[display].labels
     if (display === 'category') {
       this.videosData = [
-        this.rawData.category.news,
+        this.rawData.category.france,
+        this.rawData.category.international,
         this.rawData.category.culture,
         this.rawData.category.sport,
         this.rawData.category.science,
-        this.rawData.category.tech,
         this.rawData.category.laroche
       ]
     } else {

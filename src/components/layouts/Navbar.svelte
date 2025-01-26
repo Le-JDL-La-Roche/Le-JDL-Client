@@ -24,11 +24,18 @@
       <NavbarLink href="/" exact bind:mobileNavOpen>
         <strong>Accueil</strong>
       </NavbarLink>
-      <NavbarLink href="/actualites" bind:mobileNavOpen>Actualités</NavbarLink>
+      <!-- <NavbarLink href="/actualites" bind:mobileNavOpen>Actualités</NavbarLink>
       <NavbarLink href="/culture" bind:mobileNavOpen>Culture</NavbarLink>
       <NavbarLink href="/sport" bind:mobileNavOpen>Sport</NavbarLink>
       <NavbarLink href="/sciences" bind:mobileNavOpen>Sciences</NavbarLink>
       <NavbarLink href="/tech" bind:mobileNavOpen>Tech</NavbarLink>
+      <NavbarLink href="/laroche" bind:mobileNavOpen>La Roche</NavbarLink>
+      <NavbarLink href="/radio" bind:mobileNavOpen customClass="podcasts">Émissions</NavbarLink> -->
+      <NavbarLink href="/france" bind:mobileNavOpen>France</NavbarLink>
+      <NavbarLink href="/international" bind:mobileNavOpen>International</NavbarLink>
+      <NavbarLink href="/culture" bind:mobileNavOpen>Culture</NavbarLink>
+      <NavbarLink href="/sport" bind:mobileNavOpen>Sport</NavbarLink>
+      <NavbarLink href="/sciences" bind:mobileNavOpen>Sciences</NavbarLink>
       <NavbarLink href="/laroche" bind:mobileNavOpen>La Roche</NavbarLink>
       <NavbarLink href="/radio" bind:mobileNavOpen customClass="podcasts">Émissions</NavbarLink>
     </div>

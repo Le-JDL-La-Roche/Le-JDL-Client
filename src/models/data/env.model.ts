@@ -27,11 +27,11 @@ interface Shows {
 interface Videos {
   total: number
   category: {
-    news: number
+    france: number
+    international: number
     culture: number
     sport: number
     science: number
-    tech: number
     laroche: number
   }
   type: {
@@ -43,11 +43,11 @@ interface Videos {
 interface Articles {
   total: number
   category: {
-    news: number
+    france: number
+    international: number
     culture: number
     sport: number
     science: number
-    tech: number
     laroche: number
   }
 }

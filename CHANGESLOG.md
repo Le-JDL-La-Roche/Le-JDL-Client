@@ -1,5 +1,9 @@
 # Mises à jour du site Web
 
+### 26 janvier 2025 `v2.5.0`
+- Nouvelles rubriques
+- Espace administrateur
+
 ### 1<sup>er</sup> septembre 2024 `v2.4.0`
 - Espaces administrateur & encadrants (signatures numériques)
 

@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ params }) => {
     error(404, 'Non trouvée');
   }
 
-  const category = categoryParam as 'actualites' | 'culture' | 'sport' | 'sciences' | 'tech' | 'laroche' | 'radio'
+  const category = categoryParam as 'france' | 'international' | 'culture' | 'sport' | 'sciences' | 'laroche' | 'radio'
 
   let data: WebradioShow | Video | Article | undefined
 

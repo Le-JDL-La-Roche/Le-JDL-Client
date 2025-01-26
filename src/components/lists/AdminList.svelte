@@ -49,7 +49,8 @@
     })
   $: authorization = authorizations?.[0]
   $: disabledAskAuthorization = authorization ? false : true
-  $: disabledPublish = authorization && authorization.status === 2 ? false : true
+  // $: disabledPublish = authorization && authorization.status === 2 ? false : true
+  $: disabledPublish = false
   $: title = disabledAskAuthorization ? 'Aucune autorisation créée' : disabledPublish ? "En attente de l'autorisation" : undefined
   $: viewersCounter = 0
   $: disabledAuthorizationButton = (authorization &&
@@ -245,12 +246,12 @@
         {#if 'streamId' in element}
           {element.status === -2 && (!authorization || authorization.status === -2)
             ? 'Brouillon'
-            : // : element.status === -2.5
+            // : element.status === -2.5
             // ? 'En attente (rediff.)'
             // : element.status === -1
             // ? 'Salle d\'attente'
-            element.status === -2 && authorization
-            ? 'En attente'
+            // element.status === -2 && authorization
+            // ? 'En attente'
             : element.status === 2
             ? // : element.status === -1.5
               // ? 'Salle d\'attente (rediff.)'
@@ -296,7 +297,7 @@
       >
         <i class="fa-solid fa-pencil" />
       </button>
-      <button
+      <!-- <button
         class="secondary"
         disabled={disabledAuthorizationButton}
         title={disabledAuthorizationButton
@@ -305,7 +306,7 @@
         on:click={generateAuthorization}
       >
         <i class="fa-solid fa-file-circle-check" />
-      </button>
+      </button> -->
       <button class="secondary" on:click={deleteElement}><i class="fa-solid fa-trash" /></button>
       {#if 'type' in element && element.type === 'instagram'}
         <a href={`https://instagram.com/p/${element.videoId}`} class="not-a" target="_blank">
@@ -378,7 +379,7 @@
       </button>
     {/if} -->
     {#if element.status === -2}
-      {#if !authorization || authorization.status === -2}
+      <!-- {#if !authorization || authorization.status === -2}
         <button class="secondary grey" on:click={() => askAuthorization(element)} disabled={disabledAskAuthorization} {title}>
           <i class="fa-solid fa-paper-plane" />Autorisation
         </button>
@@ -393,11 +394,11 @@
         >
           <i class="fa-solid fa-exclamation-circle" />Pub. refusée
         </button>
-      {:else}
+      {:else} -->
         <button class="secondary green" on:click={publishElement} disabled={disabledPublish} {title}>
           <i class="fa-solid fa-check" />Publier
         </button>
-      {/if}
+      <!-- {/if} -->
     {/if}
   </div>
 </div>
